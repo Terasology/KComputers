@@ -1,0 +1,16 @@
+{
+    "categories": [
+        "metal"
+    ],
+    "attachmentAllowed": false,
+    "family": "horizontal",
+    // Graphics
+    "tiles": {
+        "sides": "Display",
+        "front": "Display",
+        "topBottom": "Display"
+    },
+    "entity": {
+        "prefab": "display"
+    }
+}
