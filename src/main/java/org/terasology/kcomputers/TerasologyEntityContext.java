@@ -16,23 +16,22 @@
 package org.terasology.kcomputers;
 
 import org.terasology.kallisti.base.component.ComponentContext;
-import org.terasology.math.geom.Vector3i;
 
-public class TerasologyPositionalContext implements ComponentContext {
-	private final Vector3i pos;
+public class TerasologyEntityContext implements ComponentContext {
+	private final long pos;
 	private final int id;
 
-	public TerasologyPositionalContext(Vector3i pos) {
+	public TerasologyEntityContext(long pos) {
 		this(pos,0);
 	}
 
-	public TerasologyPositionalContext(Vector3i pos, int id) {
+	public TerasologyEntityContext(long pos, int id) {
 		this.pos = pos;
 		this.id = id;
 	}
 
 	@Override
 	public String identifier() {
-		return pos.toString() + ":" + id;
+		return pos + ":" + id;
 	}
 }

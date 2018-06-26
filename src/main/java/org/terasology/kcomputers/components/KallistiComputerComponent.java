@@ -19,5 +19,5 @@ import org.terasology.entitySystem.Component;
 import org.terasology.kallisti.base.component.Machine;
 
 public class KallistiComputerComponent implements Component {
-	public Machine machine;
+	public transient Machine machine;
 }

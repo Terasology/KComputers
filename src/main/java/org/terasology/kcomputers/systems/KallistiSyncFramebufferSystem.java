@@ -16,56 +16,31 @@
 package org.terasology.kcomputers.systems;
 
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnAddedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.events.KallistiRequestInitialEvent;
-import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 import org.terasology.network.ClientComponent;
 import org.terasology.world.block.BlockComponent;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Collection;
 
-@RegisterSystem(RegisterMode.CLIENT)
-public class KallistiSyncClientSystem extends BaseComponentSystem {
-	@ReceiveEvent
-	public void onSyncInitial(KallistiSyncInitialEvent event, EntityRef entity) {
-		onSync(event.getEntity(), event.getData(), Synchronizable.Type.INITIAL);
-	}
-
-	@ReceiveEvent
-	public void onSyncDelta(KallistiSyncDeltaEvent event, EntityRef entity) {
-		onSync(event.getEntity(), event.getData(), Synchronizable.Type.DELTA);
-	}
-
-	private void onSync(EntityRef target, byte[] data, Synchronizable.Type type) {
-		Synchronizable.Receiver s = null;
-
-		for (Object o : KComputersUtil.getKallistiComponents(target)) {
-			if (o instanceof Synchronizable.Receiver) {
-				if (s != null) {
-					throw new RuntimeException("May only have one Synchronizable per Entity! TODO");
-				} else {
-					s = (Synchronizable.Receiver) o;
-				}
+@RegisterSystem(RegisterMode.AUTHORITY)
+public class KallistiSyncFramebufferSystem extends BaseComponentSystem {
+	@ReceiveEvent(components = ClientComponent.class)
+	public void onRequestInitialUpdate(KallistiRequestInitialEvent event, EntityRef entity) {
+		for (Object o : event.getMachine().iterateComponents()) {
+			if (o instanceof KallistiDisplayComponent && ((KallistiDisplayComponent) o).getSource() != null) {
+				KComputersUtil.synchronize(event.getInstigator(), event.getMachine(), ((KallistiDisplayComponent) o).getSource(), Synchronizable.Type.INITIAL);
 			}
-		}
-
-		if (s != null) {
-			try {
-				s.update(new ByteArrayInputStream(data));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} else {
-			// TODO: log warning
 		}
 	}
 }

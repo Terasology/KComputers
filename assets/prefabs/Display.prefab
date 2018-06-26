@@ -2,5 +2,6 @@
     "MeshRender": {},
     "KallistiComputer": {},
     "KallistiDisplay": {},
+    "KallistiKeyboard": {},
     "Network": {}
 }

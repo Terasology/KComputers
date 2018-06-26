@@ -19,13 +19,22 @@ import org.terasology.entitySystem.Component;
 import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kallisti.base.util.Dimension;
+import org.terasology.kallisti.base.util.KallistiFileUtils;
+import org.terasology.kallisti.oc.OCFont;
+import org.terasology.kallisti.oc.OCGPURenderer;
+import org.terasology.kallisti.oc.OCTextRenderer;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 
 public class KallistiDisplayComponent implements Component, FrameBuffer, KallistiComponentContainer {
 	private transient Synchronizable source;
 	private transient Renderer renderer;
+
+	public Synchronizable getSource() {
+		return source;
+	}
 
 	@Override
 	public void bind(Synchronizable source, Renderer renderer) {
@@ -40,7 +49,26 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Kallist
 
 	@Override
 	public void blit(Image image) {
-		// TODO
+		System.out.println("Received blittable image OwO");
+	}
+
+	public void render() {
+		if (renderer == null) {
+			try {
+				renderer = new OCGPURenderer(
+						new OCTextRenderer(
+								new OCFont(
+										KallistiFileUtils.readString(
+												new File("/home/asie/Kallisti/funscii-16.hex")
+										),
+										16
+								)
+						)
+				);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

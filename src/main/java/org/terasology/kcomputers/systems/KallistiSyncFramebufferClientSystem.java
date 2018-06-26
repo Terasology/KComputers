@@ -16,31 +16,28 @@
 package org.terasology.kcomputers.systems;
 
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
+import org.terasology.entitySystem.entity.lifecycleEvents.OnAddedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
+import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.events.KallistiRequestInitialEvent;
-import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
+import org.terasology.logic.players.LocalPlayer;
 import org.terasology.network.ClientComponent;
+import org.terasology.registry.In;
+import org.terasology.world.block.BlockComponent;
 
-import java.io.IOException;
+@RegisterSystem(RegisterMode.CLIENT)
+public class KallistiSyncFramebufferClientSystem extends BaseComponentSystem {
+	@In
+	private LocalPlayer player;
 
-@RegisterSystem(RegisterMode.AUTHORITY)
-public class KallistiSyncServerSystem extends BaseComponentSystem {
-	@ReceiveEvent(components = ClientComponent.class)
-	public void onRequestInitialUpdate(KallistiRequestInitialEvent event) {
-		synchronize(event.getMachine(), Synchronizable.Type.INITIAL);
-	}
-
-	public void synchronize(EntityRef target, Synchronizable.Type type) {
-		try {
-			KallistiSyncInitialEvent syncInitial = new KallistiSyncInitialEvent(target, null);
-			event.getInstigator().send(syncInitial);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@ReceiveEvent
+	public void onDisplayAdded(OnActivatedComponent event, EntityRef entity, KallistiDisplayComponent display) {
+		player.getClientEntity().send(new KallistiRequestInitialEvent(player.getClientEntity(), entity));
 	}
 }
