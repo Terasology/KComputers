@@ -17,65 +17,62 @@ package org.terasology.kcomputers.systems;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
-import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
+import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
+import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
-import org.terasology.kcomputers.events.KallistiRequestInitialEvent;
-import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
+import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
 import org.terasology.network.ClientComponent;
-import org.terasology.world.block.BlockComponent;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-	private Set<EntityRef> displays = new HashSet<>();
-
-	@ReceiveEvent
-	public void displayActivated(OnActivatedComponent event, EntityRef entity, KallistiDisplayComponent component) {
-		displays.add(entity);
-	}
-
-	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayComponent component) {
-		displays.remove(entity);
-	}
+	private MultiValueMap<EntityRef, EntityRef> displayListeners = new ListBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
+	private Map<EntityRef, Object> lastSource = new HashMap<>();
 
 	@Override
 	public void update(float delta) {
-		Iterator<EntityRef> displayIt = displays.iterator();
-		while (displayIt.hasNext()) {
-			EntityRef ref = displayIt.next();
-			/* if (!ref.exists()) {
-				displayIt.remove();
-				continue;
-			} */
+		for (EntityRef machine : displayListeners.keys()) {
+			KallistiDisplayComponent displayComponent = machine.getComponent(KallistiDisplayComponent.class);
 
-			KallistiDisplayComponent component = ref.getComponent(KallistiDisplayComponent.class);
-			if (component.getSource() != null) {
-				KComputersUtil.synchronize(ref, ref, component.getSource(), Synchronizable.Type.INITIAL);
+			if (displayComponent != null) {
+				Object lastSourceObj = lastSource.get(machine);
+				Object sourceObj = displayComponent.getSource();
+
+				if (lastSourceObj != sourceObj) {
+					lastSource.put(machine, sourceObj);
+					if (sourceObj != null) {
+						KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.INITIAL, displayListeners.values(machine));
+					}
+				} else {
+					if (sourceObj != null) {
+						KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.DELTA, displayListeners.values(machine));
+					}
+				}
 			}
 		}
 	}
 
 	@ReceiveEvent(components = ClientComponent.class)
-	public void onRequestInitialUpdate(KallistiRequestInitialEvent event, EntityRef entity) {
-		for (Object o : event.getMachine().iterateComponents()) {
-			if (o instanceof KallistiDisplayComponent && ((KallistiDisplayComponent) o).getSource() != null) {
-				KComputersUtil.synchronize(event.getInstigator(), event.getMachine(), ((KallistiDisplayComponent) o).getSource(), Synchronizable.Type.INITIAL);
+	public void onRequestInitialUpdate(KallistiRegisterSyncListenerEvent event, EntityRef entity) {
+		for (Object o : event.getSyncEntity().iterateComponents()) {
+			if (o instanceof KallistiDisplayComponent) {
+				displayListeners.add(event.getSyncEntity(), event.getInstigator());
+				lastSource.put(event.getSyncEntity(), null);
 			}
 		}
+	}
+
+	@ReceiveEvent
+	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayComponent component) {
+		displayListeners.remove(entity);
+		lastSource.remove(entity);
 	}
 }

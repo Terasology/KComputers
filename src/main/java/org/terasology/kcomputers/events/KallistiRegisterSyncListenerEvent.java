@@ -20,19 +20,19 @@ import org.terasology.network.NetworkEvent;
 import org.terasology.network.ServerEvent;
 
 @ServerEvent
-public class KallistiRequestInitialEvent extends NetworkEvent {
+public class KallistiRegisterSyncListenerEvent extends NetworkEvent {
 	private EntityRef machine;
 
-	public KallistiRequestInitialEvent() {
+	public KallistiRegisterSyncListenerEvent() {
 
 	}
 
-	public KallistiRequestInitialEvent(EntityRef instigator, EntityRef machine) {
+	public KallistiRegisterSyncListenerEvent(EntityRef instigator, EntityRef machine) {
 		super(instigator);
 		this.machine = machine;
 	}
 
-	public EntityRef getMachine() {
+	public EntityRef getSyncEntity() {
 		return machine;
 	}
 }

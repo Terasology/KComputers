@@ -79,7 +79,6 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 	}
 
 	private transient ByteBuffer dataBB;
-	private transient int i;
 
 	@Override
 	public void finalize() {

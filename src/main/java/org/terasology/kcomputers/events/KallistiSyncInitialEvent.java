@@ -41,7 +41,7 @@ public class KallistiSyncInitialEvent implements Event {
 		this.data = stream.toByteArray();
 	}
 
-	public EntityRef getEntity() {
+	public EntityRef getSyncEntity() {
 		return entity;
 	}
 

@@ -33,7 +33,7 @@ public final class KComputersUtil {
 
 	}
 
-	public static void synchronize(EntityRef instigator, EntityRef target, Synchronizable syncer, Synchronizable.Type type) {
+	public static void synchronize(EntityRef target, Synchronizable syncer, Synchronizable.Type type, Collection<EntityRef> targets) {
 		try {
 			if (!syncer.hasSyncPacket(type)) {
 				return;
@@ -42,11 +42,15 @@ public final class KComputersUtil {
 			switch (type) {
 				case INITIAL:
 					KallistiSyncInitialEvent syncInitial = new KallistiSyncInitialEvent(target, syncer);
-					instigator.send(syncInitial);
+					targets.forEach((t) -> {
+						if (t.exists()) t.send(syncInitial);
+					});
 					break;
 				case DELTA:
 					KallistiSyncDeltaEvent syncDelta = new KallistiSyncDeltaEvent(target, syncer);
-					instigator.send(syncDelta);
+					targets.forEach((t) -> {
+						if (t.exists()) t.send(syncDelta);
+					});
 					break;
 			}
 		} catch (IOException e) {

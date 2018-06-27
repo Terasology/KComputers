@@ -40,7 +40,7 @@ public class KallistiSyncDeltaEvent implements Event {
 		this.data = stream.toByteArray();
 	}
 
-	public EntityRef getEntity() {
+	public EntityRef getSyncEntity() {
 		return entity;
 	}
 

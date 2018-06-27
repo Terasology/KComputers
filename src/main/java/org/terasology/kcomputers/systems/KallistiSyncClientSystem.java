@@ -16,19 +16,14 @@
 package org.terasology.kcomputers.systems;
 
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnAddedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.kcomputers.events.KallistiRequestInitialEvent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
-import org.terasology.network.ClientComponent;
-import org.terasology.world.block.BlockComponent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,12 +32,12 @@ import java.io.IOException;
 public class KallistiSyncClientSystem extends BaseComponentSystem {
 	@ReceiveEvent
 	public void onSyncInitial(KallistiSyncInitialEvent event, EntityRef entity) {
-		onSync(event.getEntity(), event.getData(), Synchronizable.Type.INITIAL);
+		onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.INITIAL);
 	}
 
 	@ReceiveEvent
 	public void onSyncDelta(KallistiSyncDeltaEvent event, EntityRef entity) {
-		onSync(event.getEntity(), event.getData(), Synchronizable.Type.DELTA);
+		onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.DELTA);
 	}
 
 	private void onSync(EntityRef target, byte[] data, Synchronizable.Type type) {

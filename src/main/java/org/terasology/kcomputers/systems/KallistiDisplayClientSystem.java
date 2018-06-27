@@ -19,25 +19,16 @@ import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnAddedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
-import org.terasology.kallisti.base.interfaces.Synchronizable;
-import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
-import org.terasology.kcomputers.events.KallistiRequestInitialEvent;
+import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
 import org.terasology.logic.players.LocalPlayer;
-import org.terasology.math.geom.Vector3f;
-import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.world.block.BlockComponent;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiDisplayClientSystem extends BaseComponentSystem {
@@ -49,11 +40,11 @@ public class KallistiDisplayClientSystem extends BaseComponentSystem {
 	@ReceiveEvent
 	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
 		component.setMeshRenderComponent(entityManager, blockComponent.getPosition().toVector3f(), entity, meshRenderComponent);
-		player.getClientEntity().send(new KallistiRequestInitialEvent(player.getClientEntity(), entity));
+		player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
 	}
 
 	@ReceiveEvent
-	public void displayDeactivated(OnActivatedComponent event, EntityRef entity, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
+	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
 		meshRenderComponent.clear();
 	}
 }
