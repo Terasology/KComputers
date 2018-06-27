@@ -11,6 +11,7 @@
         "topBottom": "Display"
     },
     "entity": {
-        "prefab": "display"
+        "prefab": "KComputers:Display",
+        "keepActive": true
     }
 }

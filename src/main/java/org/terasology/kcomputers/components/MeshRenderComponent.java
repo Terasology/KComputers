@@ -29,8 +29,7 @@ import java.util.Map;
 public class MeshRenderComponent implements Component {
 	private final Map<String, EntityRef> meshes = new HashMap<>();
 
-	public boolean remove(String name) {
-		EntityRef ref = meshes.get(name);
+	private boolean remove(EntityRef ref) {
 		if (ref != null) {
 			ref.getComponent(MeshComponent.class).mesh.dispose();
 			ref.getComponent(MeshComponent.class).material.dispose();
@@ -39,6 +38,10 @@ public class MeshRenderComponent implements Component {
 		} else {
 			return false;
 		}
+	}
+
+	public boolean remove(String name) {
+		return remove(meshes.remove(name));
 	}
 
 	public MeshComponent get(String name) {
@@ -54,9 +57,17 @@ public class MeshRenderComponent implements Component {
 			builder.addComponent(new LocationComponent(location));
 			builder.addComponent(component);
 			ref = builder.build();
+			meshes.put(name, ref);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	public void clear() {
+		for (EntityRef ref : meshes.values()) {
+			remove(ref);
+		}
+		meshes.clear();
 	}
 }

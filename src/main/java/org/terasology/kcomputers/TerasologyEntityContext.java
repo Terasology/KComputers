@@ -16,22 +16,34 @@
 package org.terasology.kcomputers;
 
 import org.terasology.kallisti.base.component.ComponentContext;
+import org.terasology.kallisti.base.interfaces.ConnectedContext;
+import org.terasology.math.geom.Vector3i;
+import org.terasology.world.BlockEntityRegistry;
 
-public class TerasologyEntityContext implements ComponentContext {
-	private final long pos;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TerasologyEntityContext implements ComponentContext, ConnectedContext {
+	private final long entityId;
 	private final int id;
+	private final List<ComponentContext> neighbors = new ArrayList<>();
 
-	public TerasologyEntityContext(long pos) {
-		this(pos,0);
+	public TerasologyEntityContext(long entityId, int id) {
+		this.entityId = entityId;
+		this.id = id;
 	}
 
-	public TerasologyEntityContext(long pos, int id) {
-		this.pos = pos;
-		this.id = id;
+	public void addNeighbor(TerasologyEntityContext context) {
+		neighbors.add(context);
 	}
 
 	@Override
 	public String identifier() {
-		return pos + ":" + id;
+		return entityId + ":" + id;
+	}
+
+	@Override
+	public List<ComponentContext> getNeighbors() {
+		return neighbors;
 	}
 }
