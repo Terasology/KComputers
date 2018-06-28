@@ -3,5 +3,12 @@
     "KallistiComputer": {},
     "KallistiDisplay": {},
     "KallistiKeyboard": {},
+    "PlaySoundAction": {
+        "sounds": "engine:click"
+    },
+    "InteractionTarget": {},
+    "InteractionScreen": {
+        "screen": "KComputers:computerDisplay"
+    },
     "Network": {}
 }

@@ -39,7 +39,7 @@ public class KallistiDisplayClientSystem extends BaseComponentSystem {
 
 	@ReceiveEvent
 	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
-		component.setMeshRenderComponent(entityManager, blockComponent.getPosition().toVector3f(), entity, meshRenderComponent);
+		component.setMeshRenderComponent(entityManager, entity, meshRenderComponent);
 		player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
 	}
 

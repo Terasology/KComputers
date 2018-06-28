@@ -1,0 +1,19 @@
+{
+    "type": "computerDisplay",
+    "skin": "inventoryDefault",
+    "contents": {
+        "type": "relativeLayout",
+        "contents": [
+            {
+                "type": "ComputerDisplayWidget",
+                "id": "display",
+                "layoutInfo": {
+                    "use-content-width": true,
+                    "use-content-height": true,
+                    "position-vertical-center": {},
+                    "position-horizontal-center": {}
+                }
+            }
+        ]
+    }
+}

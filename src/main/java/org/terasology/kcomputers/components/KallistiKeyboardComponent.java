@@ -18,22 +18,32 @@ package org.terasology.kcomputers.components;
 import org.terasology.entitySystem.Component;
 import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class KallistiKeyboardComponent implements Component, KeyboardInputProvider, KallistiComponentContainer {
+	private transient ArrayList<Key> keyQueue = new ArrayList<>();
+
 	@Override
 	public boolean hasNextKey() {
-		return false;
+		return !keyQueue.isEmpty();
 	}
 
 	@Override
 	public Key nextKey() {
-		return null;
+		return keyQueue.remove(0);
 	}
 
 	@Override
 	public Collection<Object> getKallistiComponents() {
 		return Collections.singleton(this);
+	}
+
+	public void addKey(Key key) {
+		if (key.getCode() != 0) {
+			keyQueue.add(key);
+		}
 	}
 }

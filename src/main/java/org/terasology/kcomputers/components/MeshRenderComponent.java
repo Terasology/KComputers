@@ -31,8 +31,10 @@ public class MeshRenderComponent implements Component {
 
 	private boolean remove(EntityRef ref) {
 		if (ref != null) {
-			ref.getComponent(MeshComponent.class).mesh.dispose();
-			ref.getComponent(MeshComponent.class).material.dispose();
+			if (ref.getComponent(MeshComponent.class) != null) {
+				ref.getComponent(MeshComponent.class).mesh.dispose();
+				ref.getComponent(MeshComponent.class).material.dispose();
+			}
 			ref.destroy();
 			return true;
 		} else {

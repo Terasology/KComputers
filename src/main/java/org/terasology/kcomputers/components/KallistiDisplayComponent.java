@@ -33,14 +33,15 @@ import org.terasology.rendering.assets.material.MaterialData;
 import org.terasology.rendering.assets.mesh.MeshBuilder;
 import org.terasology.rendering.assets.texture.Texture;
 import org.terasology.rendering.assets.texture.TextureData;
-import org.terasology.rendering.assets.texture.TextureUtil;
 import org.terasology.rendering.logic.MeshComponent;
 import org.terasology.rendering.nui.Color;
 import org.terasology.utilities.Assets;
+import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockPart;
 import org.terasology.world.block.shapes.BlockMeshPart;
 import org.terasology.world.block.shapes.BlockShape;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,16 +50,20 @@ import java.util.Collection;
 import java.util.Collections;
 
 public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver, KallistiComponentContainer {
+	private static final String DISPLAY_KEY = "display";
+
+	public float borderThickness = 1 / 16f;
+
 	private transient Synchronizable source;
 	private transient Renderer renderer;
 	private transient EntityManager entityManager;
-	private transient Vector3f location;
 	private transient EntityRef self;
 	private transient MeshRenderComponent mesh;
+	private transient Texture texture;
+	private transient int pw, ph;
 
-	public void setMeshRenderComponent(EntityManager entityManager, Vector3f location, EntityRef self, MeshRenderComponent mesh) {
+	public void setMeshRenderComponent(EntityManager entityManager, EntityRef self, MeshRenderComponent mesh) {
 		this.entityManager = entityManager;
-		this.location = location;
 		this.self = self;
 		this.mesh = mesh;
 	}
@@ -87,7 +92,6 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 
 	@Override
 	public void blit(Image image) {
-		String key = "tmp";
 		MeshComponent component;
 
 		if (dataBB == null || dataBB.capacity() != 4 * image.size().getX() * image.size().getY()) {
@@ -109,7 +113,9 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 
 		dataBB.rewind();
 
-		Texture texture = Assets.generateAsset(new TextureData(image.size().getX(), image.size().getY(),
+		pw = image.size().getX();
+		ph = image.size().getY();
+		texture = Assets.generateAsset(new TextureData(image.size().getX(), image.size().getY(),
 			new ByteBuffer[]{ dataBB }, Texture.WrapMode.REPEAT, Texture.FilterMode.NEAREST), Texture.class);
 
 		MaterialData terrainMatData = new MaterialData(Assets.getShader("engine:genericMeshMaterial").get());
@@ -118,7 +124,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 		terrainMatData.setParam("textured", true);
 		Material material = Assets.generateAsset(terrainMatData, Material.class);
 
-		component = mesh.get(key);
+		component = mesh.get(DISPLAY_KEY);
 		if (component != null) {
 			component.material.dispose();
 			component.material = material;
@@ -126,16 +132,31 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 			component = new MeshComponent();
 			component.material = material;
 
+			Vector3f location = self.getComponent(BlockComponent.class).getPosition().toVector3f().add(0.5f, 0.5f, 0.5f);
+			Side side = self.getComponent(BlockComponent.class).getBlock().getDirection();
+			if (side == null) side = Side.TOP;
+
 			MeshBuilder meshBuilder = new MeshBuilder();
 			BlockShape blockShape = Assets.get("engine:cube", BlockShape.class).get();
-			BlockMeshPart meshPart = blockShape.getMeshPart(BlockPart.fromSide(Side.TOP));
+			BlockMeshPart meshPart = blockShape.getMeshPart(BlockPart.fromSide(side));
 
 			for (int i = 0; i < meshPart.indicesSize(); i++) {
 				meshBuilder.addIndices(meshPart.getIndex(i));
 			}
 
 			for (int i = 0; i < meshPart.size(); i++) {
-				meshBuilder.addVertex(new Vector3f(meshPart.getVertex(i)).add(0, 0, 0));
+				Vector3f v = new Vector3f(meshPart.getVertex(i));
+				// reduce by border size
+				Vector3f reduction = new Vector3f(
+						1 - (borderThickness * (1 - Math.abs(side.getVector3i().x))),
+						1 - (borderThickness * (1 - Math.abs(side.getVector3i().y))),
+						1 - (borderThickness * (1 - Math.abs(side.getVector3i().z)))
+				);
+
+				// bring forward to avoid Z-fighting
+				v.mul(reduction.x, reduction.y, reduction.z).add(side.getVector3i().toVector3f().mul(0.01f));
+
+				meshBuilder.addVertex(v.sub(.5f, .5f, .5f));
 				meshBuilder.addColor(Color.WHITE);
 				meshBuilder.addTexCoord(meshPart.getTexCoord(i));
 			}
@@ -145,7 +166,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 			component.hideFromOwner = false;
 			component.color = Color.WHITE;
 
-			mesh.add(entityManager, key, new Vector3f(location).add(0, 1f, 0), component);
+			mesh.add(entityManager, DISPLAY_KEY, new Vector3f(location), component);
 		}
 
 		self.saveComponent(mesh);
@@ -188,5 +209,22 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 			renderer.update(stream);
 			render();
 		}
+	}
+
+	@Nullable
+	public Texture getTexture() {
+		return texture;
+	}
+
+	public int getPixelWidth() {
+		return pw;
+	}
+
+	public int getPixelHeight() {
+		return ph;
+	}
+
+	public EntityRef getEntityRef() {
+		return self;
 	}
 }
