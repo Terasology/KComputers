@@ -15,6 +15,9 @@
  */
 package org.terasology.kcomputers.systems;
 
+import com.google.common.base.Charsets;
+import org.terasology.assets.ResourceUrn;
+import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
@@ -24,28 +27,29 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.jnlua.LuaState53;
-import org.terasology.kallisti.base.util.KallistiFileUtils;
 import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kallisti.oc.MachineOpenComputers;
-import org.terasology.kallisti.oc.OCFont;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.PeripheralOCGPU;
-import org.terasology.kallisti.simulator.InMemoryStaticByteStorage;
 import org.terasology.kallisti.simulator.SimulatorComponentContext;
 import org.terasology.kallisti.simulator.SimulatorFileSystem;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
+import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
+import org.terasology.kcomputers.kallisti.HexFont;
+import org.terasology.kcomputers.kallisti.KallistiAsset;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
-import java.io.File;
 import java.util.*;
+import java.util.logging.Logger;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiComputerSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
@@ -79,7 +83,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					computerComponentIterator.remove();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				KComputersUtil.LOGGER.warn("Error updating machine!", e);
 				computer.machine = null;
 				computerComponentIterator.remove();
 			}
@@ -158,20 +162,33 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		}
 
 		try {
+			KallistiAsset ocFiles = CoreRegistry.get(AssetManager.class)
+					.getAsset(new ResourceUrn("KComputers:opencomputers"), KallistiAsset.class)
+					.get();
+
 			computer.machine = new MachineOpenComputers(
-					KallistiFileUtils.readString(new File("/home/asie/Kallisti/lua/machine.lua")), contextComputer,
-					new OCFont(KallistiFileUtils.readString(new File("/home/asie/Kallisti/funscii-16.hex")), 16),
+					ocFiles.getData().readFully("machine.lua", Charsets.UTF_8),
+                    contextComputer,
+                    CoreRegistry.get(AssetManager.class)
+                            .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
+                            .get().getKallistiFont(),
 					1048576, LuaState53.class, false
 			);
 
+			KallistiAsset openOsDisk = CoreRegistry.get(AssetManager.class)
+					.getAsset(new ResourceUrn("KComputers:disk_openos"), KallistiAsset.class)
+					.get();
+
 			computer.machine.addComponent(
 					new SimulatorComponentContext("test1"),
-					new InMemoryStaticByteStorage("/home/asie/Kallisti/lua/bios.lua", 4096)
+					new ByteArrayStaticByteStorage(
+							ocFiles.getData().readFully("bios.lua")
+					)
 			);
 
 			computer.machine.addComponent(
 					new SimulatorComponentContext("test2"),
-					new SimulatorFileSystem("/home/asie/Kallisti/lua/openos")
+					openOsDisk
 			);
 
 			computer.machine.addComponent(
@@ -179,11 +196,11 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					new PeripheralOCGPU((MachineOpenComputers) computer.machine, 80, 25, OCGPURenderer.genThirdTierPalette())
 			);
 		} catch (Exception e) {
-			e.printStackTrace();
+			KComputersUtil.LOGGER.warn("Error initializing machine components!", e);
 		}
 
 		for (TerasologyEntityContext context : kallistiComponents.keySet()) {
-			System.out.println("adding " + kallistiComponents.get(context).getClass().getName());
+			KComputersUtil.LOGGER.info("adding " + kallistiComponents.get(context).getClass().getName());
 			computer.machine.addComponent(context, kallistiComponents.get(context));
 		}
 
@@ -191,7 +208,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		try {
 			computer.machine.start();
 		} catch (Exception e) {
-			e.printStackTrace();
+			KComputersUtil.LOGGER.warn("Error initializing machine!", e);
 			computer.machine = null;
 			return false;
 		}

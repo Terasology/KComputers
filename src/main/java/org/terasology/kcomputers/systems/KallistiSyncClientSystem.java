@@ -27,6 +27,7 @@ import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiSyncClientSystem extends BaseComponentSystem {
@@ -57,7 +58,7 @@ public class KallistiSyncClientSystem extends BaseComponentSystem {
 			try {
 				s.update(new ByteArrayInputStream(data));
 			} catch (IOException e) {
-				e.printStackTrace();
+				KComputersUtil.LOGGER.warn("Error syncing with client!", e);
 			}
 		} else {
 			// TODO: log warning

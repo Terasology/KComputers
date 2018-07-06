@@ -15,6 +15,7 @@
  */
 package org.terasology.kcomputers;
 
+import org.slf4j.Logger;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
@@ -24,13 +25,27 @@ import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
 public final class KComputersUtil {
+	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger("KComputers");
 	private KComputersUtil() {
 
+	}
+
+	public static byte[] toByteArray(InputStream stream) throws IOException {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		int len;
+		while ((len = stream.read(buffer)) > 0) {
+			outputStream.write(buffer, 0, len);
+		}
+		byte[] out = outputStream.toByteArray();
+		outputStream.close();
+		return out;
 	}
 
 	public static void synchronize(EntityRef target, Synchronizable syncer, Synchronizable.Type type, Collection<EntityRef> targets) {
@@ -54,7 +69,7 @@ public final class KComputersUtil {
 					break;
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			KComputersUtil.LOGGER.warn("Error syncing to client!", e);
 		}
 	}
 

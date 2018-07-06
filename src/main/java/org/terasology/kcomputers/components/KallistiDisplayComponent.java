@@ -16,6 +16,8 @@
 package org.terasology.kcomputers.components;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.terasology.assets.ResourceUrn;
+import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -26,8 +28,12 @@ import org.terasology.kallisti.base.util.KallistiFileUtils;
 import org.terasology.kallisti.oc.OCFont;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.OCTextRenderer;
+import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.kallisti.HexFont;
+import org.terasology.kcomputers.kallisti.HexFontData;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.registry.CoreRegistry;
 import org.terasology.rendering.assets.material.Material;
 import org.terasology.rendering.assets.material.MaterialData;
 import org.terasology.rendering.assets.mesh.MeshBuilder;
@@ -177,16 +183,13 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 			try {
 				renderer = new OCGPURenderer(
 						new OCTextRenderer(
-								new OCFont(
-										KallistiFileUtils.readString(
-												new File("/home/asie/Kallisti/funscii-16.hex")
-										),
-										16
-								)
+								CoreRegistry.get(AssetManager.class)
+								.getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
+								.get().getKallistiFont()
 						)
 				);
 			} catch (Exception e) {
-				e.printStackTrace();
+				KComputersUtil.LOGGER.warn("Error initializing display renderer!", e);
 			}
 		}
 	}
