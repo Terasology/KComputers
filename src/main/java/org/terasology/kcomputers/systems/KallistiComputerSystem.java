@@ -179,10 +179,17 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					.getAsset(new ResourceUrn("KComputers:disk_openos"), KallistiAsset.class)
 					.get();
 
+			byte[] biosEepromCode = ocFiles.getData().readFully("bios.lua");
+			int dataSize = 256;
+
+			// The OpenComputers EEPROM keeps 256 bytes of "data" at the end.
+			byte[] biosEeprom = new byte[biosEepromCode.length + dataSize];
+			System.arraycopy(biosEepromCode, 0, biosEeprom, 0, biosEepromCode.length);
+
 			computer.machine.addComponent(
 					new SimulatorComponentContext("test1"),
 					new ByteArrayStaticByteStorage(
-							ocFiles.getData().readFully("bios.lua")
+							biosEeprom
 					)
 			);
 
