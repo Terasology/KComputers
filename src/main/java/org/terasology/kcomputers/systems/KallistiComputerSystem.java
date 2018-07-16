@@ -26,6 +26,8 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
+import org.terasology.jnlua.LuaRuntimeException;
+import org.terasology.jnlua.LuaStackTraceElement;
 import org.terasology.jnlua.LuaState53;
 import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
@@ -84,6 +86,11 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 				}
 			} catch (Exception e) {
 				KComputersUtil.LOGGER.warn("Error updating machine!", e);
+				if (e instanceof LuaRuntimeException) {
+					for (LuaStackTraceElement element : ((LuaRuntimeException) e).getLuaStackTrace()) {
+						KComputersUtil.LOGGER.warn("LUA: " + element.toString());
+					}
+				}
 				computer.machine = null;
 				computerComponentIterator.remove();
 			}
@@ -195,11 +202,6 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 
 			computer.machine.addComponent(
 					new SimulatorComponentContext("test2"),
-					openOsDisk.getData()
-			);
-
-			computer.machine.addComponent(
-					new SimulatorComponentContext("test4"),
 					openOsDisk.getData()
 			);
 

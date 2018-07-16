@@ -31,11 +31,11 @@ public class ByteArrayStaticByteStorage implements StaticByteStorage {
 
     @Override
     public boolean canModify() {
-        return false;
+        return true;
     }
 
     @Override
     public void markModified() {
-
+        // TODO
     }
 }

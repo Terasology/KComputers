@@ -199,8 +199,10 @@ public class KallistiAssetData implements AssetData, FileSystem {
         @Override
         public byte[] read(int bytes) throws IOException {
             byte[] d = new byte[Math.max(Math.min((int) (data.length - pos), bytes), 0)];
-            System.arraycopy(data, (int) pos, d, 0, d.length);
-            pos += bytes;
+            if (d.length > 0) {
+                System.arraycopy(data, (int) pos, d, 0, d.length);
+                pos += d.length;
+            }
             return d;
         }
 
