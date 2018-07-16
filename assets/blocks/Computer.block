@@ -1,0 +1,17 @@
+{
+    "categories": [
+        "metal"
+    ],
+    "attachmentAllowed": false,
+    "family": "horizontal",
+    // Graphics
+    "tiles": {
+        "sides": "CaseSide",
+        "front": "CaseFront",
+        "topBottom": "Display"
+    },
+    "entity": {
+        "prefab": "KComputers:Computer",
+        "keepActive": true
+    }
+}

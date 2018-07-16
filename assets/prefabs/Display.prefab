@@ -1,6 +1,6 @@
 {
     "MeshRender": {},
-    "KallistiComputer": {},
+    "KallistiConnectable": {},
     "KallistiDisplay": {},
     "KallistiKeyboard": {},
     "PlaySoundAction": {

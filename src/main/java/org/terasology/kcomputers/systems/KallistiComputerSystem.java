@@ -39,6 +39,7 @@ import org.terasology.kallisti.simulator.SimulatorFileSystem;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
+import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.kallisti.HexFont;
 import org.terasology.kcomputers.kallisti.KallistiAsset;
@@ -132,7 +133,9 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 
 								kallistiComponents.put(context, o);
 							}
+						}
 
+						if (lref.hasComponent(KallistiConnectableComponent.class)) {
 							for (Side side : Side.values()) {
 								positions.add(new Vector3i(location).add(side.getVector3i()));
 							}
@@ -140,10 +143,6 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					}
 				}
 			}
-		}
-
-		if (kallistiComponents.isEmpty()) {
-			return false;
 		}
 
 		for (Vector3i vec : contextsPerPos.keys()) {
