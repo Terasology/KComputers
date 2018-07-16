@@ -195,7 +195,12 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 
 			computer.machine.addComponent(
 					new SimulatorComponentContext("test2"),
-					openOsDisk
+					openOsDisk.getData()
+			);
+
+			computer.machine.addComponent(
+					new SimulatorComponentContext("test4"),
+					openOsDisk.getData()
 			);
 
 			computer.machine.addComponent(

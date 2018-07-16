@@ -249,7 +249,7 @@ public class KallistiAssetData implements AssetData, FileSystem {
             Optional<VirtualDirectory> vdir = dir.getDirectory(s);
             if (vdir.isPresent()) {
                 dir = vdir.get();
-            } else if (i == str.length - ignore - 1) {
+            } else if (i == lstr.size() - ignore - 1) {
                 Optional<VirtualFile> vfile = dir.getFile(s);
                 return Optional.ofNullable(vfile.orElse(null));
             }
@@ -292,6 +292,8 @@ public class KallistiAssetData implements AssetData, FileSystem {
 
     @Override
     public File open(String path, OpenMode mode) throws IOException {
+        KComputersUtil.LOGGER.info("Trying to open '" + path + "' in " + mode.name());
+
         if (mode != OpenMode.READ) {
             throw new IOException("file is read-only");
         }
