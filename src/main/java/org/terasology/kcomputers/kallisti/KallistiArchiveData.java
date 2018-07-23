@@ -39,7 +39,7 @@ import java.util.TreeMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class KallistiAssetData implements AssetData, FileSystem {
+public class KallistiArchiveData implements AssetData, FileSystem {
     public static class VirtualDirectory extends VirtualBase {
         private final Map<String, VirtualDirectory> subdirs;
         private final Map<String, VirtualFile> files;
@@ -219,7 +219,7 @@ public class KallistiAssetData implements AssetData, FileSystem {
 
     private final VirtualDirectory root;
 
-    public KallistiAssetData(ZipInputStream stream) throws IOException {
+    public KallistiArchiveData(ZipInputStream stream) throws IOException {
         ZipEntry fakeRootEntry = new ZipEntry("/");
         root = new VirtualDirectory(fakeRootEntry);
 

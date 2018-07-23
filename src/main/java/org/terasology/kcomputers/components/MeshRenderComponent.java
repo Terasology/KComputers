@@ -26,6 +26,9 @@ import org.terasology.rendering.logic.MeshComponent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility component used for holding a collection of mesh renderers.
+ */
 public class MeshRenderComponent implements Component {
 	private final Map<String, EntityRef> meshes = new HashMap<>();
 

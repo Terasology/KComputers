@@ -15,35 +15,28 @@
  */
 package org.terasology.kcomputers.kallisti;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.ByteStreams;
 import org.terasology.assets.ResourceUrn;
-import org.terasology.assets.exceptions.InvalidAssetFilenameException;
 import org.terasology.assets.format.AbstractAssetFileFormat;
 import org.terasology.assets.format.AssetDataFile;
-import org.terasology.assets.format.AssetFileFormat;
 import org.terasology.assets.module.annotations.RegisterAssetFileFormat;
-import org.terasology.kallisti.oc.OCFont;
-import org.terasology.naming.Name;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.PathMatcher;
 import java.util.List;
 import java.util.zip.ZipInputStream;
 
 @RegisterAssetFileFormat
-public class KallistiAssetFormat extends AbstractAssetFileFormat<KallistiAssetData> {
-    public KallistiAssetFormat() {
+public class KallistiArchiveFormat extends AbstractAssetFileFormat<KallistiArchiveData> {
+    public KallistiArchiveFormat() {
         super("zip");
     }
 
     @Override
-    public KallistiAssetData load(ResourceUrn urn, List<AssetDataFile> inputs) throws IOException {
+    public KallistiArchiveData load(ResourceUrn urn, List<AssetDataFile> inputs) throws IOException {
         try (InputStream stream = inputs.get(0).openStream()) {
-            return new KallistiAssetData(new ZipInputStream(stream));
+            return new KallistiArchiveData(new ZipInputStream(stream));
         } catch (IOException e) {
-            throw new IOException("Failed to load Kallisti data; " + e.getMessage(), e);
+            throw new IOException("Failed to load Kallisti archive; " + e.getMessage(), e);
         }
     }
 }

@@ -33,7 +33,9 @@ import org.terasology.kcomputers.kallisti.HexFont;
 import org.terasology.kcomputers.kallisti.HexFontData;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.network.NoReplicate;
 import org.terasology.registry.CoreRegistry;
+import org.terasology.registry.In;
 import org.terasology.rendering.assets.material.Material;
 import org.terasology.rendering.assets.material.MaterialData;
 import org.terasology.rendering.assets.mesh.MeshBuilder;
@@ -55,24 +57,31 @@ import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Collections;
 
+/**
+ * Component provided by blocks which provide a Kallisti-compatible display.
+ */
+@NoReplicate
 public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver, KallistiComponentContainer {
 	private static final String DISPLAY_KEY = "display";
 
-	public float borderThickness = 1 / 16f;
+	private transient EntityManager entityManager;
+	private transient EntityRef self;
+	private transient KallistiDisplayCandidateComponent candidate;
+	private transient MeshRenderComponent mesh;
+
+	public void configure(EntityManager entityManager, EntityRef self, KallistiDisplayCandidateComponent candidate, MeshRenderComponent mesh) {
+		this.entityManager = entityManager;
+		this.self = self;
+		this.candidate = candidate;
+		this.mesh = mesh;
+
+		candidate.setDisplay(this);
+	}
 
 	private transient Synchronizable source;
 	private transient Renderer renderer;
-	private transient EntityManager entityManager;
-	private transient EntityRef self;
-	private transient MeshRenderComponent mesh;
 	private transient Texture texture;
 	private transient int pw, ph;
-
-	public void setMeshRenderComponent(EntityManager entityManager, EntityRef self, MeshRenderComponent mesh) {
-		this.entityManager = entityManager;
-		this.self = self;
-		this.mesh = mesh;
-	}
 
 	public Synchronizable getSource() {
 		return source;
@@ -154,9 +163,9 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 				Vector3f v = new Vector3f(meshPart.getVertex(i));
 				// reduce by border size
 				Vector3f reduction = new Vector3f(
-						1 - (borderThickness * (1 - Math.abs(side.getVector3i().x))),
-						1 - (borderThickness * (1 - Math.abs(side.getVector3i().y))),
-						1 - (borderThickness * (1 - Math.abs(side.getVector3i().z)))
+						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().x))),
+						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().y))),
+						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().z)))
 				);
 
 				// bring forward to avoid Z-fighting

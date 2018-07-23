@@ -23,6 +23,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 
+/**
+ * Component provided by blocks which provide a Kallisti-compatible keyboard.
+ */
 public class KallistiKeyboardComponent implements Component, KeyboardInputProvider, KallistiComponentContainer {
 	private transient ArrayList<Key> keyQueue = new ArrayList<>();
 

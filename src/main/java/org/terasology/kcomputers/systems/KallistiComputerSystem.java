@@ -35,14 +35,13 @@ import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.PeripheralOCGPU;
 import org.terasology.kallisti.simulator.SimulatorComponentContext;
-import org.terasology.kallisti.simulator.SimulatorFileSystem;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.kallisti.HexFont;
-import org.terasology.kcomputers.kallisti.KallistiAsset;
+import org.terasology.kcomputers.kallisti.KallistiArchive;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.CoreRegistry;
@@ -52,7 +51,6 @@ import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiComputerSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
@@ -168,8 +166,8 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		}
 
 		try {
-			KallistiAsset ocFiles = CoreRegistry.get(AssetManager.class)
-					.getAsset(new ResourceUrn("KComputers:opencomputers"), KallistiAsset.class)
+			KallistiArchive ocFiles = CoreRegistry.get(AssetManager.class)
+					.getAsset(new ResourceUrn("KComputers:opencomputers"), KallistiArchive.class)
 					.get();
 
 			computer.machine = new MachineOpenComputers(
@@ -181,8 +179,8 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					1048576, LuaState53.class, false
 			);
 
-			KallistiAsset openOsDisk = CoreRegistry.get(AssetManager.class)
-					.getAsset(new ResourceUrn("KComputers:disk_openos"), KallistiAsset.class)
+			KallistiArchive openOsDisk = CoreRegistry.get(AssetManager.class)
+					.getAsset(new ResourceUrn("KComputers:disk_openos"), KallistiArchive.class)
 					.get();
 
 			byte[] biosEepromCode = ocFiles.getData().readFully("bios.lua");

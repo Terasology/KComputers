@@ -23,6 +23,7 @@ import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
@@ -38,13 +39,19 @@ public class KallistiDisplayClientSystem extends BaseComponentSystem {
 	private EntityManager entityManager;
 
 	@ReceiveEvent
-	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
-		component.setMeshRenderComponent(entityManager, entity, meshRenderComponent);
-		player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
+	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+		if (!component.multiBlock) {
+			KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
+			displayComponent.configure(
+					entityManager, entity, component, meshRenderComponent
+			);
+			entity.addComponent(displayComponent);
+			player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
+		}
 	}
 
 	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayComponent component, MeshRenderComponent meshRenderComponent) {
+	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
 		meshRenderComponent.clear();
 	}
 }

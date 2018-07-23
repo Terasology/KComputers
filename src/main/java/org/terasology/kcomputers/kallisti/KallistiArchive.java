@@ -20,33 +20,29 @@ import org.terasology.assets.AssetFactory;
 import org.terasology.assets.AssetType;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.module.annotations.RegisterAssetType;
-import org.terasology.kallisti.oc.OCFont;
-import org.terasology.module.sandbox.API;
 
-import java.nio.charset.Charset;
-
-@RegisterAssetType(factoryClass = KallistiAsset.Factory.class, folderName = "kallisti")
-public class KallistiAsset extends Asset<KallistiAssetData> {
-    public static class Factory implements AssetFactory<KallistiAsset, KallistiAssetData> {
+@RegisterAssetType(factoryClass = KallistiArchive.Factory.class, folderName = "kallisti")
+public class KallistiArchive extends Asset<KallistiArchiveData> {
+    public static class Factory implements AssetFactory<KallistiArchive, KallistiArchiveData> {
         @Override
-        public KallistiAsset build(ResourceUrn urn, AssetType<KallistiAsset, KallistiAssetData> assetType, KallistiAssetData data) {
-            return new KallistiAsset(urn, assetType, data);
+        public KallistiArchive build(ResourceUrn urn, AssetType<KallistiArchive, KallistiArchiveData> assetType, KallistiArchiveData data) {
+            return new KallistiArchive(urn, assetType, data);
         }
     }
 
-    private KallistiAssetData data;
+    private KallistiArchiveData data;
 
-    public KallistiAsset(ResourceUrn urn, AssetType<?, KallistiAssetData> assetType, KallistiAssetData data) {
+    public KallistiArchive(ResourceUrn urn, AssetType<?, KallistiArchiveData> assetType, KallistiArchiveData data) {
         super(urn, assetType);
         reload(data);
     }
 
-    public KallistiAssetData getData() {
+    public KallistiArchiveData getData() {
         return data;
     }
 
     @Override
-    protected void doReload(KallistiAssetData data) {
+    protected void doReload(KallistiArchiveData data) {
         this.data = data;
     }
 }

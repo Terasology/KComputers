@@ -18,6 +18,9 @@ package org.terasology.kcomputers.components;
 import org.terasology.entitySystem.Component;
 import org.terasology.kallisti.base.component.Machine;
 
+/**
+ * Component provided by blocks which provide a Kallisti Machine.
+ */
 public class KallistiComputerComponent implements Component {
 	public transient Machine machine;
 }

@@ -18,8 +18,8 @@ package org.terasology.kcomputers.components;
 import java.util.Collection;
 
 /**
- * Implemented by Terasology Components which contain
- * one or more Kallisti-compatible Components.
+ * Implemented by Terasology Components which contain one or more
+ * Kallisti-compatible Components.
  */
 public interface KallistiComponentContainer {
 	Collection<Object> getKallistiComponents();

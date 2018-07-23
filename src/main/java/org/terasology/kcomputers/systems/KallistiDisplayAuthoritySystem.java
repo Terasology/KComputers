@@ -15,8 +15,10 @@
  */
 package org.terasology.kcomputers.systems;
 
+import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
+import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
@@ -26,9 +28,13 @@ import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
+import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
 import org.terasology.network.ClientComponent;
+import org.terasology.registry.In;
+import org.terasology.world.block.BlockComponent;
 
 import java.util.*;
 
@@ -37,10 +43,13 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
 	private MultiValueMap<EntityRef, EntityRef> displayListeners = new ListBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
 	private Map<EntityRef, Object> lastSource = new HashMap<>();
 
+	@In
+	private EntityManager entityManager;
+
 	@Override
 	public void update(float delta) {
 		for (EntityRef machine : displayListeners.keys()) {
-			KallistiDisplayComponent displayComponent = machine.getComponent(KallistiDisplayComponent.class);
+			KallistiDisplayComponent displayComponent = machine.getComponent(KallistiDisplayCandidateComponent.class).getDisplay();
 
 			if (displayComponent != null) {
 				Object lastSourceObj = lastSource.get(machine);
@@ -60,6 +69,17 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
 		}
 	}
 
+	@ReceiveEvent
+	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+		if (!component.multiBlock) {
+			KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
+			displayComponent.configure(
+					entityManager, entity, component, meshRenderComponent
+			);
+			entity.addComponent(displayComponent);
+		}
+	}
+
 	@ReceiveEvent(components = ClientComponent.class)
 	public void onRequestInitialUpdate(KallistiRegisterSyncListenerEvent event, EntityRef entity) {
 		for (Object o : event.getSyncEntity().iterateComponents()) {
@@ -71,7 +91,7 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
 	}
 
 	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayComponent component) {
+	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component) {
 		displayListeners.remove(entity);
 		lastSource.remove(entity);
 	}
