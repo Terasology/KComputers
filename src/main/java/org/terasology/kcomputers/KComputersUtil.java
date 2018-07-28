@@ -79,7 +79,7 @@ public final class KComputersUtil {
 
 		for (Component component : ref.iterateComponents()) {
 			if (component instanceof KallistiComponentContainer) {
-				Collection<Object> kcc = ((KallistiComponentContainer) component).getKallistiComponents();
+				Collection<Object> kcc = ((KallistiComponentContainer) component).getKallistiComponents(ref);
 
 				if (collectionCount == 0) {
 					kc = kcc;

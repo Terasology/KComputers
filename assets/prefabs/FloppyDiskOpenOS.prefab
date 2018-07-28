@@ -1,0 +1,13 @@
+{
+  "parent": "engine:iconItem",
+  "Item": {
+    "icon": "KComputers:FloppyDisk",
+    "stackId": "KComputers:FloppyDiskOpenOS"
+  },
+  "DisplayName": {
+    "name": "Floppy Disk (OpenOS)"
+  },
+  "KallistiFilesystemAsseted": {
+    "assetName": "KComputers:disk_openos"
+  }
+}

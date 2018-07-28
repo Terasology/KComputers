@@ -209,7 +209,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 	}
 
 	@Override
-	public Collection<Object> getKallistiComponents() {
+	public Collection<Object> getKallistiComponents(EntityRef entity) {
 		return Collections.singleton(this);
 	}
 

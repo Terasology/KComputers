@@ -29,6 +29,7 @@ import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.jnlua.LuaRuntimeException;
 import org.terasology.jnlua.LuaStackTraceElement;
 import org.terasology.jnlua.LuaState53;
+import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kallisti.oc.MachineOpenComputers;
@@ -37,8 +38,11 @@ import org.terasology.kallisti.oc.PeripheralOCGPU;
 import org.terasology.kallisti.simulator.SimulatorComponentContext;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.TerasologyEntityContext;
+import org.terasology.kcomputers.components.KallistiComponentContainer;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.components.KallistiConnectableComponent;
+import org.terasology.kcomputers.components.parts.KallistiOpenComputersGPUComponent;
+import org.terasology.kcomputers.events.KallistiToggleComputerEvent;
 import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.kallisti.HexFont;
 import org.terasology.kcomputers.kallisti.KallistiArchive;
@@ -59,29 +63,54 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	@In
 	private BlockEntityRegistry blockEntityRegistry;
 
-	private Set<KallistiComputerComponent> computers = new HashSet<>();
+	private Set<EntityRef> computers = new HashSet<>();
 
 	@ReceiveEvent
-	public void computerActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
-		init(entity, false);
+	public void computerToggle(KallistiToggleComputerEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+		if (event.getState()) {
+			if (computerComponent.getMachine() == null) {
+				init(ref, false);
+			}
+		} else {
+			if (computerComponent.getMachine() != null) {
+				deinit(ref, computerComponent);
+			}
+		}
+	}
+
+	private void deinit(EntityRef ref, KallistiComputerComponent computerComponent) {
+		if (computerComponent.getMachine() != null && computerComponent.getMachine().getState() == Machine.MachineState.RUNNING) {
+			try {
+				computerComponent.getMachine().stop();
+			} catch (Exception e) {
+				KComputersUtil.LOGGER.warn("Error stopping machine!", e);
+			}
+		}
+		computerComponent.setMachine(null);
+		computers.remove(ref);
 	}
 
 	@ReceiveEvent
-	public void computerDeactivated(BeforeDeactivateComponent event, EntityRef entity, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
-		// TODO: Add Machine.stop()?
-		computerComponent.machine = null;
-		computers.remove(computerComponent);
+	public void computerDeactivated(BeforeDeactivateComponent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+		deinit(ref, computerComponent);
 	}
 
 	@Override
 	public void update(float delta) {
-		Iterator<KallistiComputerComponent> computerComponentIterator = computers.iterator();
-		while (computerComponentIterator.hasNext()) {
-			KallistiComputerComponent computer = computerComponentIterator.next();
+		Iterator<EntityRef> computerRefIterator = computers.iterator();
+		while (computerRefIterator.hasNext()) {
+			EntityRef ref = computerRefIterator.next();
+			if (!ref.exists() || !ref.hasComponent(KallistiComputerComponent.class)) {
+				computerRefIterator.remove();
+				continue;
+			}
+			KallistiComputerComponent computer = ref.getComponent(KallistiComputerComponent.class);
+
 			try {
-				if (computer.machine == null || !computer.machine.tick(delta)) {
-					computer.machine = null;
-					computerComponentIterator.remove();
+				if (computer.getMachine() == null || !computer.getMachine().tick(delta)) {
+					computer.setMachine(null);
+					computer.onMachineChanged(ref);
+					computerRefIterator.remove();
 				}
 			} catch (Exception e) {
 				KComputersUtil.LOGGER.warn("Error updating machine!", e);
@@ -90,8 +119,9 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 						KComputersUtil.LOGGER.warn("LUA: " + element.toString());
 					}
 				}
-				computer.machine = null;
-				computerComponentIterator.remove();
+				computer.setMachine(null);
+				computer.onMachineChanged(ref);
+				computerRefIterator.remove();
 			}
 		}
 	}
@@ -102,7 +132,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		}
 
 		KallistiComputerComponent computer = ref.getComponent(KallistiComputerComponent.class);
-		if (computer.machine != null && !force) {
+		if (computer.getMachine() != null && !force) {
 			return true;
 		}
 
@@ -170,61 +200,39 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 					.getAsset(new ResourceUrn("KComputers:opencomputers"), KallistiArchive.class)
 					.get();
 
-			computer.machine = new MachineOpenComputers(
+			Machine machine = new MachineOpenComputers(
 					ocFiles.getData().readFully("machine.lua", Charsets.UTF_8),
-                    contextComputer,
-                    CoreRegistry.get(AssetManager.class)
-                            .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
-                            .get().getKallistiFont(),
+					contextComputer,
+					CoreRegistry.get(AssetManager.class)
+							.getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
+							.get().getKallistiFont(),
 					1048576, LuaState53.class, false
 			);
 
-			KallistiArchive openOsDisk = CoreRegistry.get(AssetManager.class)
-					.getAsset(new ResourceUrn("KComputers:disk_openos"), KallistiArchive.class)
-					.get();
+			// TODO: Abstract away somehow?
+			machine.registerRules(KallistiOpenComputersGPUComponent.class);
 
-			byte[] biosEepromCode = ocFiles.getData().readFully("bios.lua");
-			int dataSize = 256;
-
-			// The OpenComputers EEPROM keeps 256 bytes of "data" at the end.
-			byte[] biosEeprom = new byte[biosEepromCode.length + dataSize];
-			System.arraycopy(biosEepromCode, 0, biosEeprom, 0, biosEepromCode.length);
-
-			computer.machine.addComponent(
-					new SimulatorComponentContext("test1"),
-					new ByteArrayStaticByteStorage(
-							biosEeprom
-					)
-			);
-
-			computer.machine.addComponent(
-					new SimulatorComponentContext("test2"),
-					openOsDisk.getData()
-			);
-
-			computer.machine.addComponent(
-					new SimulatorComponentContext("test3"),
-					new PeripheralOCGPU((MachineOpenComputers) computer.machine, 80, 25, OCGPURenderer.genThirdTierPalette())
-			);
+			computer.setMachine(machine);
 		} catch (Exception e) {
 			KComputersUtil.LOGGER.warn("Error initializing machine components!", e);
 		}
 
 		for (TerasologyEntityContext context : kallistiComponents.keySet()) {
 			KComputersUtil.LOGGER.info("adding " + kallistiComponents.get(context).getClass().getName());
-			computer.machine.addComponent(context, kallistiComponents.get(context));
+			computer.getMachine().addComponent(context, kallistiComponents.get(context));
 		}
 
-		computer.machine.initialize();
+		computer.getMachine().initialize();
 		try {
-			computer.machine.start();
+			computer.getMachine().start();
 		} catch (Exception e) {
 			KComputersUtil.LOGGER.warn("Error initializing machine!", e);
-			computer.machine = null;
+			computer.setMachine(null);
 			return false;
 		}
 
-		computers.add(computer);
+		computers.add(ref);
+		computer.onMachineChanged(ref);
 		return true;
 	}
 }

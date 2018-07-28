@@ -17,37 +17,28 @@ package org.terasology.kcomputers.components;
 
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
+import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.logic.inventory.InventoryComponent;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.List;
 
-/**
- * Component provided by blocks which provide a Kallisti-compatible keyboard.
- */
-public class KallistiKeyboardComponent implements Component, KeyboardInputProvider, KallistiComponentContainer {
-	private transient ArrayList<Key> keyQueue = new ArrayList<>();
+public class KallistiInventoryWithContainerComponent implements Component, KallistiComponentContainer {
+    @Override
+    public Collection<Object> getKallistiComponents(EntityRef entity) {
+        if (entity.hasComponent(InventoryComponent.class)) {
+            List<Object> kallistiComponentList = new ArrayList<>();
+            InventoryComponent inv = entity.getComponent(InventoryComponent.class);
 
-	@Override
-	public boolean hasNextKey() {
-		return !keyQueue.isEmpty();
-	}
+            for (EntityRef ref : inv.itemSlots) {
+                kallistiComponentList.addAll(KComputersUtil.getKallistiComponents(ref));
+            }
 
-	@Override
-	public Key nextKey() {
-		return keyQueue.remove(0);
-	}
-
-	@Override
-	public Collection<Object> getKallistiComponents(EntityRef entity) {
-		return Collections.singleton(this);
-	}
-
-	public void addKey(Key key) {
-		if (key.getCode() != 0) {
-			keyQueue.add(key);
-		}
-	}
+            return kallistiComponentList;
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }

@@ -1,14 +1,14 @@
 {
     "MeshRender": {},
+    "KallistiDisplayCandidate": {},
     "KallistiConnectable": {},
-    "KallistiDisplay": {},
     "KallistiKeyboard": {},
     "PlaySoundAction": {
         "sounds": "engine:click"
     },
     "InteractionTarget": {},
     "InteractionScreen": {
-        "screen": "KComputers:computerDisplay"
+        "screen": "KComputers:computerDisplayScreen"
     },
     "Network": {}
 }

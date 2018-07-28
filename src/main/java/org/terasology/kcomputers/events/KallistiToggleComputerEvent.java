@@ -13,16 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.components;
+package org.terasology.kcomputers.events;
 
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.event.Event;
+import org.terasology.network.ServerEvent;
 
-import java.util.Collection;
+@ServerEvent
+public class KallistiToggleComputerEvent implements Event {
+    private boolean state;
 
-/**
- * Implemented by Terasology Components which contain one or more
- * Kallisti-compatible Components.
- */
-public interface KallistiComponentContainer {
-	Collection<Object> getKallistiComponents(EntityRef entity);
+    public KallistiToggleComputerEvent() {
+
+    }
+
+    public KallistiToggleComputerEvent(boolean state) {
+        this.state = state;
+    }
+
+    public boolean getState() {
+        return state;
+    }
 }

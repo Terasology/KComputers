@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.components;
+package org.terasology.kcomputers.components.parts;
 
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.Component;
 
-import java.util.Collection;
-
-/**
- * Implemented by Terasology Components which contain one or more
- * Kallisti-compatible Components.
- */
-public interface KallistiComponentContainer {
-	Collection<Object> getKallistiComponents(EntityRef entity);
+public class KallistiMemoryComponent implements Component {
+    public int amount;
 }

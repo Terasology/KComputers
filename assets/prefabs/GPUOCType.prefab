@@ -1,0 +1,14 @@
+{
+  "parent": "engine:iconItem",
+  "Item": {
+    "icon": "KComputers:GPUOCType",
+    "stackId": "KComputers:GPUOCType"
+  },
+  "DisplayName": {
+    "name": "Graphics Card (OpenComputers-type)"
+  },
+  "KallistiOpenComputersGPU": {
+    "width": 80,
+    "height": 25
+  }
+}

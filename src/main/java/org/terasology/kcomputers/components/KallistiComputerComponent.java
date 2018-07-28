@@ -16,11 +16,29 @@
 package org.terasology.kcomputers.components;
 
 import org.terasology.entitySystem.Component;
+import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.Machine;
 
 /**
  * Component provided by blocks which provide a Kallisti Machine.
  */
 public class KallistiComputerComponent implements Component {
-	public transient Machine machine;
+	private boolean on;
+	private transient Machine machine;
+
+	public Machine getMachine() {
+		return machine;
+	}
+
+	public void setMachine(Machine machine) {
+		this.machine = machine;
+	}
+
+	public void onMachineChanged(EntityRef ref) {
+		boolean oldOn = on;
+		on = machine != null && machine.getState() == Machine.MachineState.RUNNING;
+		if (on != oldOn) {
+			ref.saveComponent(this);
+		}
+	}
 }

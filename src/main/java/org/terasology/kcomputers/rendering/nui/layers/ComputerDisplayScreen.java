@@ -27,7 +27,7 @@ import org.terasology.rendering.nui.events.NUIKeyEvent;
 
 /**
  */
-public class ComputerDisplay extends CoreScreenLayer {
+public class ComputerDisplayScreen extends CoreScreenLayer {
     @In
     private LocalPlayer localPlayer;
 

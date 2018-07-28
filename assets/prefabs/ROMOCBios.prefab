@@ -1,0 +1,14 @@
+{
+  "parent": "engine:iconItem",
+  "Item": {
+    "icon": "KComputers:ROM",
+    "stackId": "KComputers:ROMOCBios"
+  },
+  "DisplayName": {
+    "name": "ROM (OpenComputers BIOS)"
+  },
+  "KallistiEEPROMAsseted": {
+    "assetName": "KComputers:opencomputers",
+    "filename": "bios.lua"
+  }
+}

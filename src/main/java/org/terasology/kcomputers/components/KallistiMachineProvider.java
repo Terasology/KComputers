@@ -16,13 +16,9 @@
 package org.terasology.kcomputers.components;
 
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.kallisti.base.component.ComponentContext;
+import org.terasology.kallisti.base.component.Machine;
 
-import java.util.Collection;
-
-/**
- * Implemented by Terasology Components which contain one or more
- * Kallisti-compatible Components.
- */
-public interface KallistiComponentContainer {
-	Collection<Object> getKallistiComponents(EntityRef entity);
+public interface KallistiMachineProvider {
+    Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity);
 }

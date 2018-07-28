@@ -40,8 +40,8 @@ public class KallistiDisplayCandidateComponent implements Component, Synchroniza
     }
 
     @Override
-    public Collection<Object> getKallistiComponents() {
-        return display.getKallistiComponents();
+    public Collection<Object> getKallistiComponents(EntityRef entity) {
+        return display.getKallistiComponents(entity);
     }
 
     public void setDisplay(KallistiDisplayComponent displayComponent) {
