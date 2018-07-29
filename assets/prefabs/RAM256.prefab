@@ -1,0 +1,13 @@
+{
+  "parent": "engine:iconItem",
+  "Item": {
+    "icon": "KComputers:RAM",
+    "stackId": "KComputers:RAM256"
+  },
+  "DisplayName": {
+    "name": "RAM (256KB)"
+  },
+  "KallistiMemory": {
+    "amount": 262144
+  }
+}

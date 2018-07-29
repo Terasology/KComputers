@@ -20,15 +20,19 @@ import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.components.KallistiComponentContainer;
+import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
+import org.terasology.logic.inventory.InventoryComponent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 public final class KComputersUtil {
 	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger("KComputers");

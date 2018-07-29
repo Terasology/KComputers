@@ -1,0 +1,13 @@
+{
+  "parent": "engine:iconItem",
+  "Item": {
+    "icon": "KComputers:CPULua53",
+    "stackId": "KComputers:CPULua53"
+  },
+  "DisplayName": {
+    "name": "CPU (Lua 5.3)"
+  },
+  "KallistiMachineOpenComputers": {
+    "luaVersion": "5.3"
+  }
+}

@@ -20,5 +20,5 @@ import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 
 public interface KallistiMachineProvider {
-    Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity);
+    Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity, int memorySize);
 }

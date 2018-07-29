@@ -41,6 +41,8 @@ import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComponentContainer;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.components.KallistiConnectableComponent;
+import org.terasology.kcomputers.components.KallistiMachineProvider;
+import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
 import org.terasology.kcomputers.components.parts.KallistiOpenComputersGPUComponent;
 import org.terasology.kcomputers.events.KallistiToggleComputerEvent;
 import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
@@ -196,30 +198,51 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		}
 
 		try {
-			KallistiArchive ocFiles = CoreRegistry.get(AssetManager.class)
-					.getAsset(new ResourceUrn("KComputers:opencomputers"), KallistiArchive.class)
-					.get();
+			int memorySize = 0;
+			KallistiMachineProvider provider = null;
 
-			Machine machine = new MachineOpenComputers(
-					ocFiles.getData().readFully("machine.lua", Charsets.UTF_8),
+			Iterator<Map.Entry<TerasologyEntityContext, Object>> it = kallistiComponents.entrySet().iterator();
+			while (it.hasNext()) {
+				Object o = it.next().getValue();
+				if (o instanceof KallistiMemoryComponent) {
+					memorySize += ((KallistiMemoryComponent) o).getAmount();
+				} else if (o instanceof KallistiMachineProvider) {
+					if (provider != null && provider != o) {
+						KComputersUtil.LOGGER.error("Provided more than one machine provider!");
+						return false;
+					} else {
+						provider = (KallistiMachineProvider) o;
+					}
+				} else {
+					continue;
+				}
+
+				it.remove();
+			}
+
+			if (provider == null) {
+				KComputersUtil.LOGGER.error("Provided no machine provider!");
+				return false;
+			} else if (memorySize < 256) {
+				KComputersUtil.LOGGER.error("Not enough memory!");
+				return false;
+			}
+
+			Machine machine = provider.create(
 					contextComputer,
-					CoreRegistry.get(AssetManager.class)
-							.getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
-							.get().getKallistiFont(),
-					1048576, LuaState53.class, false
+					ref,
+					ref, /* TODO: Actually provide the correct ref */
+					memorySize
 			);
-
-			// TODO: Abstract away somehow?
-			machine.registerRules(KallistiOpenComputersGPUComponent.class);
 
 			computer.setMachine(machine);
 		} catch (Exception e) {
 			KComputersUtil.LOGGER.warn("Error initializing machine components!", e);
 		}
 
-		for (TerasologyEntityContext context : kallistiComponents.keySet()) {
-			KComputersUtil.LOGGER.info("adding " + kallistiComponents.get(context).getClass().getName());
-			computer.getMachine().addComponent(context, kallistiComponents.get(context));
+		for (Map.Entry<TerasologyEntityContext, Object> entry : kallistiComponents.entrySet()) {
+			KComputersUtil.LOGGER.info("adding " + entry.getValue().getClass().getName());
+			computer.getMachine().addComponent(entry.getKey(), entry.getValue());
 		}
 
 		computer.getMachine().initialize();
