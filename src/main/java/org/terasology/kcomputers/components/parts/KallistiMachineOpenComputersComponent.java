@@ -42,9 +42,6 @@ public class KallistiMachineOpenComputersComponent implements Component, Kallist
     public Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity, int memorySize) {
         Class<? extends LuaState> luaClass;
 
-        // TODO: multiply memory size by ~1.75 only on 64-bit architectures
-        memorySize = Math.round(memorySize * 1.75f);
-
         if ("5.2".equals(luaVersion)) {
             luaClass = LuaState52.class;
         } else if ("5.3".equals(luaVersion)) {
@@ -63,7 +60,7 @@ public class KallistiMachineOpenComputersComponent implements Component, Kallist
                 CoreRegistry.get(AssetManager.class)
                         .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
                         .get().getKallistiFont(),
-                memorySize, luaClass, false
+                memorySize, false, luaClass, false
         );
 
         machineOpenComputers.registerRules(KallistiOpenComputersGPUComponent.class);
