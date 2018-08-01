@@ -21,11 +21,17 @@ import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.kcomputers.components.KallistiKeyboardComponent;
+import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
 import org.terasology.logic.characters.CharacterComponent;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiKeyboardAuthoritySystem extends BaseComponentSystem {
+	@ReceiveEvent
+	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiKeyboardComponent component) {
+		event.addComponent(ref, component);
+	}
+
 	@ReceiveEvent
 	public void onKeyPressed(KallistiKeyPressedEvent event, EntityRef player) {
 		CharacterComponent characterComponent = player.getComponent(CharacterComponent.class);

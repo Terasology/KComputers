@@ -27,7 +27,7 @@ import java.util.LinkedList;
 /**
  * Component provided by blocks which provide a Kallisti-compatible keyboard.
  */
-public class KallistiKeyboardComponent implements Component, KeyboardInputProvider, KallistiComponentContainer {
+public class KallistiKeyboardComponent implements Component, KeyboardInputProvider {
 	private transient ArrayList<Key> keyQueue = new ArrayList<>();
 
 	@Override
@@ -38,11 +38,6 @@ public class KallistiKeyboardComponent implements Component, KeyboardInputProvid
 	@Override
 	public Key nextKey() {
 		return keyQueue.remove(0);
-	}
-
-	@Override
-	public Collection<Object> getKallistiComponents(EntityRef entity) {
-		return Collections.singleton(this);
 	}
 
 	public void addKey(Key key) {

@@ -16,23 +16,19 @@
 package org.terasology.kcomputers;
 
 import org.slf4j.Logger;
-import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.kallisti.base.component.ComponentContext;
+import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
-import org.terasology.kcomputers.components.KallistiComponentContainer;
-import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
+import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
-import org.terasology.logic.inventory.InventoryComponent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 
 public final class KComputersUtil {
 	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger("KComputers");
@@ -77,29 +73,9 @@ public final class KComputersUtil {
 		}
 	}
 
-	public static Collection<Object> getKallistiComponents(EntityRef ref) {
-		int collectionCount = 0;
-		Collection<Object> kc = Collections.emptySet();
-
-		for (Component component : ref.iterateComponents()) {
-			if (component instanceof KallistiComponentContainer) {
-				Collection<Object> kcc = ((KallistiComponentContainer) component).getKallistiComponents(ref);
-
-				if (collectionCount == 0) {
-					kc = kcc;
-				} else if (collectionCount == 1) {
-					Collection<Object> oldKcc = kc;
-					kc = new HashSet<>();
-					kc.addAll(oldKcc);
-					kc.addAll(kcc);
-				} else {
-					kc.addAll(kcc);
-				}
-
-				collectionCount++;
-			}
-		}
-
-		return kc;
+	public static Map<ComponentContext, Object> gatherKallistiComponents(EntityRef ref) {
+		KallistiAttachComponentsEvent event = new KallistiAttachComponentsEvent();
+		ref.send(event);
+		return event.getComponentMap();
 	}
 }

@@ -61,7 +61,7 @@ import java.util.Collections;
  * Component provided by blocks which provide a Kallisti-compatible display.
  */
 @NoReplicate
-public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver, KallistiComponentContainer {
+public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver {
 	private static final String DISPLAY_KEY = "display";
 
 	private transient EntityManager entityManager;
@@ -163,9 +163,9 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 				Vector3f v = new Vector3f(meshPart.getVertex(i));
 				// reduce by border size
 				Vector3f reduction = new Vector3f(
-						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().x))),
-						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().y))),
-						1 - (candidate.borderThickness * (1 - Math.abs(side.getVector3i().z)))
+						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().x))),
+						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().y))),
+						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().z)))
 				);
 
 				// bring forward to avoid Z-fighting
@@ -206,11 +206,6 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 	public void render() {
 		initRenderer();
 		renderer.render(this);
-	}
-
-	@Override
-	public Collection<Object> getKallistiComponents(EntityRef entity) {
-		return Collections.singleton(this);
 	}
 
 	@Override

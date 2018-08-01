@@ -30,7 +30,9 @@ import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
+import org.terasology.kcomputers.components.KallistiKeyboardComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
+import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
 import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
@@ -45,6 +47,16 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
 
 	@In
 	private EntityManager entityManager;
+
+	@ReceiveEvent
+	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
+		event.addComponent(ref, component.getDisplay());
+	}
+
+	@ReceiveEvent
+	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
+		event.addComponent(ref, component);
+	}
 
 	@Override
 	public void update(float delta) {

@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
-public class KallistiDisplayCandidateComponent implements Component, Synchronizable.Receiver, KallistiComponentContainer {
+public class KallistiDisplayCandidateComponent implements Component, Synchronizable.Receiver {
     public float borderThickness = 1 / 16f;
     public int maxDimension = 8;
     public boolean multiBlock = false;
@@ -37,11 +37,6 @@ public class KallistiDisplayCandidateComponent implements Component, Synchroniza
     @Override
     public void update(InputStream stream) throws IOException {
         display.update(stream);
-    }
-
-    @Override
-    public Collection<Object> getKallistiComponents(EntityRef entity) {
-        return display.getKallistiComponents(entity);
     }
 
     public void setDisplay(KallistiDisplayComponent displayComponent) {

@@ -16,21 +16,11 @@
 package org.terasology.kcomputers.components.parts;
 
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.kcomputers.components.KallistiComponentContainer;
 
-import java.util.Collection;
-import java.util.Collections;
-
-public class KallistiMemoryComponent implements Component, KallistiComponentContainer {
+public class KallistiMemoryComponent implements Component {
     public int amount;
 
     public int getAmount() {
         return amount;
-    }
-
-    @Override
-    public Collection<Object> getKallistiComponents(EntityRef entity) {
-        return Collections.singleton(this);
     }
 }

@@ -7,8 +7,8 @@
     // Graphics
     "tiles": {
         "sides": "Display",
-        "front": "Display",
-        "topBottom": "Display"
+        "front": "DisplayFront",
+        "topBottom": "CaseSide"
     },
     "entity": {
         "prefab": "KComputers:Display",

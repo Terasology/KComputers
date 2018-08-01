@@ -27,7 +27,6 @@ import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
 
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiSyncClientSystem extends BaseComponentSystem {
@@ -44,7 +43,7 @@ public class KallistiSyncClientSystem extends BaseComponentSystem {
 	private void onSync(EntityRef target, byte[] data, Synchronizable.Type type) {
 		Synchronizable.Receiver s = null;
 
-		for (Object o : KComputersUtil.getKallistiComponents(target)) {
+		for (Object o : KComputersUtil.gatherKallistiComponents(target).values()) {
 			if (o instanceof Synchronizable.Receiver) {
 				if (s != null) {
 					throw new RuntimeException("May only have one Synchronizable per Entity! TODO");

@@ -20,21 +20,11 @@ import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.kcomputers.components.KallistiComponentContainer;
 import org.terasology.kcomputers.kallisti.KallistiArchive;
 import org.terasology.registry.CoreRegistry;
 
 import java.util.Collection;
 
-public class KallistiFilesystemAssetedComponent implements Component, KallistiComponentContainer {
+public class KallistiFilesystemAssetedComponent implements Component {
     public String assetName;
-
-    @Override
-    public Collection<Object> getKallistiComponents(EntityRef entity) {
-        KallistiArchive archive = CoreRegistry.get(AssetManager.class)
-                .getAsset(new ResourceUrn(assetName), KallistiArchive.class)
-                .get();
-
-        return ImmutableSet.of(archive.getData());
-    }
 }

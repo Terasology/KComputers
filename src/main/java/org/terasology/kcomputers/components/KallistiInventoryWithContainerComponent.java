@@ -25,20 +25,5 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class KallistiInventoryWithContainerComponent implements Component, KallistiComponentContainer {
-    @Override
-    public Collection<Object> getKallistiComponents(EntityRef entity) {
-        if (entity.hasComponent(InventoryComponent.class)) {
-            List<Object> kallistiComponentList = new ArrayList<>();
-            InventoryComponent inv = entity.getComponent(InventoryComponent.class);
-
-            for (EntityRef ref : inv.itemSlots) {
-                kallistiComponentList.addAll(KComputersUtil.getKallistiComponents(ref));
-            }
-
-            return kallistiComponentList;
-        } else {
-            return Collections.emptyList();
-        }
-    }
+public class KallistiInventoryWithContainerComponent implements Component {
 }
