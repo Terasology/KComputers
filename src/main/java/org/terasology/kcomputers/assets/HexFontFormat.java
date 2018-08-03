@@ -13,30 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.assets;
 
+import com.google.common.base.Charsets;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.format.AbstractAssetFileFormat;
 import org.terasology.assets.format.AssetDataFile;
 import org.terasology.assets.module.annotations.RegisterAssetFileFormat;
+import org.terasology.kallisti.oc.OCFont;
+import org.terasology.kcomputers.KComputersUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.zip.ZipInputStream;
 
 @RegisterAssetFileFormat
-public class KallistiArchiveFormat extends AbstractAssetFileFormat<KallistiArchiveData> {
-    public KallistiArchiveFormat() {
-        super("zip");
+public class HexFontFormat extends AbstractAssetFileFormat<HexFontData> {
+    public HexFontFormat() {
+        super("hex");
     }
 
     @Override
-    public KallistiArchiveData load(ResourceUrn urn, List<AssetDataFile> inputs) throws IOException {
+    public HexFontData load(ResourceUrn urn, List<AssetDataFile> inputs) throws IOException {
+        String rname = urn.getResourceName().toString();
+        String[] parts = rname.split("x");
+        if (parts.length < 2) {
+            throw new IOException("Failed to load font: does not contain WxH part in filename!");
+        }
+
         try (InputStream stream = inputs.get(0).openStream()) {
-            return new KallistiArchiveData(new ZipInputStream(stream));
+            OCFont font = new OCFont(new String(KComputersUtil.toByteArray(stream), Charsets.UTF_8), Integer.parseInt(parts[parts.length - 1]));
+
+            return new HexFontData(font);
         } catch (IOException e) {
-            throw new IOException("Failed to load Kallisti archive; " + e.getMessage(), e);
+            throw new IOException("Failed to load font: " + e.getMessage(), e);
         }
     }
+
 }

@@ -13,29 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.components.machines;
 
-import org.terasology.kallisti.base.interfaces.StaticByteStorage;
+import org.terasology.entitySystem.Component;
 
-public class ByteArrayStaticByteStorage implements StaticByteStorage {
-    private final byte[] data;
-
-    public ByteArrayStaticByteStorage(byte[] data) {
-        this.data = data;
-    }
-
-    @Override
-    public byte[] get() {
-        return data;
-    }
-
-    @Override
-    public boolean canModify() {
-        return true;
-    }
-
-    @Override
-    public void markModified() {
-        // TODO
-    }
+public class KallistiTransposerComponent implements Component {
 }

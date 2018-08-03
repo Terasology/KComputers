@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.assets;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.ByteStreams;
 import org.terasology.assets.AssetData;
 import org.terasology.kallisti.base.interfaces.FileSystem;
-import org.terasology.kallisti.oc.OCFont;
 import org.terasology.kcomputers.KComputersUtil;
 
 import java.io.FileNotFoundException;
@@ -31,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.assets;
 
 import org.terasology.assets.Asset;
 import org.terasology.assets.AssetFactory;
@@ -21,8 +21,6 @@ import org.terasology.assets.AssetType;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.module.annotations.RegisterAssetType;
 import org.terasology.kallisti.oc.OCFont;
-import org.terasology.logic.behavior.asset.BehaviorTreeData;
-import org.terasology.module.sandbox.API;
 
 @RegisterAssetType(factoryClass = HexFont.Factory.class, folderName = "fonts")
 public class HexFont extends Asset<HexFontData> {

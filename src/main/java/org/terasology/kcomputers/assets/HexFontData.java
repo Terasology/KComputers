@@ -13,10 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.components.parts;
+package org.terasology.kcomputers.assets;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.assets.AssetData;
+import org.terasology.kallisti.oc.OCFont;
 
-public class KallistiFilesystemAssetedComponent implements Component {
-    public String assetName;
+public class HexFontData implements AssetData {
+    private final OCFont font;
+
+    public HexFontData(OCFont font) {
+        this.font = font;
+    }
+
+    public OCFont getFont() {
+        return font;
+    }
 }

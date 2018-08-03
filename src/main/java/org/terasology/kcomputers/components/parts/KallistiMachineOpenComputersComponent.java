@@ -27,12 +27,9 @@ import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
-import org.terasology.kcomputers.kallisti.HexFont;
-import org.terasology.kcomputers.kallisti.KallistiArchive;
+import org.terasology.kcomputers.assets.HexFont;
+import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.registry.CoreRegistry;
-
-import java.util.Collection;
-import java.util.Collections;
 
 public class KallistiMachineOpenComputersComponent implements Component, KallistiMachineProvider {
     public String luaVersion;

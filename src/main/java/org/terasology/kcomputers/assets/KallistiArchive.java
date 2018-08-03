@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.assets;
 
 import org.terasology.assets.Asset;
 import org.terasology.assets.AssetFactory;

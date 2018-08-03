@@ -24,18 +24,14 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kallisti.base.util.Dimension;
-import org.terasology.kallisti.base.util.KallistiFileUtils;
-import org.terasology.kallisti.oc.OCFont;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.OCTextRenderer;
 import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.kcomputers.kallisti.HexFont;
-import org.terasology.kcomputers.kallisti.HexFontData;
+import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.network.NoReplicate;
 import org.terasology.registry.CoreRegistry;
-import org.terasology.registry.In;
 import org.terasology.rendering.assets.material.Material;
 import org.terasology.rendering.assets.material.MaterialData;
 import org.terasology.rendering.assets.mesh.MeshBuilder;
@@ -50,12 +46,9 @@ import org.terasology.world.block.shapes.BlockMeshPart;
 import org.terasology.world.block.shapes.BlockShape;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Collection;
-import java.util.Collections;
 
 /**
  * Component provided by blocks which provide a Kallisti-compatible display.

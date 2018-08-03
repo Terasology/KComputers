@@ -15,7 +15,6 @@
  */
 package org.terasology.kcomputers.systems;
 
-import com.google.common.collect.ImmutableSet;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -27,6 +26,7 @@ import org.terasology.kallisti.base.component.ComponentRule;
 import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.PeripheralOCGPU;
+import org.terasology.kcomputers.components.machines.KallistiTransposerComponent;
 import org.terasology.kcomputers.components.parts.KallistiEEPROMAssetedComponent;
 import org.terasology.kcomputers.components.parts.KallistiFilesystemAssetedComponent;
 import org.terasology.kcomputers.components.parts.KallistiMachineOpenComputersComponent;
@@ -34,18 +34,26 @@ import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
 import org.terasology.kcomputers.components.parts.KallistiOpenComputersGPUComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
-import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
-import org.terasology.kcomputers.kallisti.KallistiArchive;
+import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
+import org.terasology.kcomputers.assets.KallistiArchive;
+import org.terasology.kcomputers.peripherals.PeripheralTransposer;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
+import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
-
-import java.util.function.Function;
+import org.terasology.world.block.BlockComponent;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiPeripheralSystem extends BaseComponentSystem {
     @In
     private WorldProvider provider;
+    @In
+    private BlockEntityRegistry blockEntityRegistry;
+
+    @ReceiveEvent
+    public void createTransposerPeripheral(KallistiAttachComponentsEvent event, EntityRef ref, BlockComponent block, KallistiTransposerComponent component) {
+        event.addComponent(ref, new PeripheralTransposer(provider, blockEntityRegistry, block));
+    }
 
     @ReceiveEvent
     public void createEEPROMAssetedComponent(KallistiAttachComponentsEvent event, EntityRef ref, KallistiEEPROMAssetedComponent component) {

@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.kcomputers.kallisti;
+package org.terasology.kcomputers.peripherals;
 
-import org.terasology.assets.AssetData;
-import org.terasology.kallisti.oc.OCFont;
+import org.terasology.kallisti.base.interfaces.StaticByteStorage;
 
-public class HexFontData implements AssetData {
-    private final OCFont font;
+public class ByteArrayStaticByteStorage implements StaticByteStorage {
+    private final byte[] data;
 
-    public HexFontData(OCFont font) {
-        this.font = font;
+    public ByteArrayStaticByteStorage(byte[] data) {
+        this.data = data;
     }
 
-    public OCFont getFont() {
-        return font;
+    @Override
+    public byte[] get() {
+        return data;
+    }
+
+    @Override
+    public boolean canModify() {
+        return true;
+    }
+
+    @Override
+    public void markModified() {
+        // TODO
     }
 }

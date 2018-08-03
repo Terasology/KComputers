@@ -15,16 +15,7 @@
  */
 package org.terasology.kcomputers.components.parts;
 
-import com.google.common.collect.ImmutableSet;
-import org.terasology.assets.ResourceUrn;
-import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.kcomputers.kallisti.ByteArrayStaticByteStorage;
-import org.terasology.kcomputers.kallisti.KallistiArchive;
-import org.terasology.registry.CoreRegistry;
-
-import java.util.Collection;
 
 public class KallistiEEPROMAssetedComponent implements Component {
     public String assetName;
