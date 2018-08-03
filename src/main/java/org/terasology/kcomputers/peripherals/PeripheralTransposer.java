@@ -23,6 +23,8 @@ import org.terasology.kallisti.base.component.ComponentMethod;
 import org.terasology.kallisti.base.component.Peripheral;
 import org.terasology.logic.inventory.InventoryAccessComponent;
 import org.terasology.logic.inventory.InventoryComponent;
+import org.terasology.logic.inventory.InventoryManager;
+import org.terasology.logic.inventory.InventoryUtils;
 import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.logic.nameTags.NameTagComponent;
 import org.terasology.math.geom.Vector3i;
@@ -42,36 +44,47 @@ import java.util.function.Supplier;
 public class PeripheralTransposer implements Peripheral {
     private final WorldProvider provider;
     private final BlockEntityRegistry registry;
+    private final EntityRef self;
     private final BlockComponent block;
+    private final InventoryManager inventoryManager;
 
-    public PeripheralTransposer(WorldProvider provider, BlockEntityRegistry registry, BlockComponent block) {
+    public PeripheralTransposer(WorldProvider provider, BlockEntityRegistry registry, EntityRef self, BlockComponent block, InventoryManager inventoryManager) {
         this.provider = provider;
         this.registry = registry;
+        this.self = self;
         this.block = block;
+        this.inventoryManager = inventoryManager;
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getInventorySize(Number side) {
-        Optional<InventoryComponent> component = getInventory(side.intValue());
-        return component
-                .map(inventoryComponent -> new Object[]{inventoryComponent.itemSlots.size()})
-                .orElseGet(() -> new Object[]{null, "no inventory"});
+        return getInventory(side.intValue(), (ref) -> new Object[] { ref.getComponent(InventoryComponent.class).itemSlots.size() });
     }
 
-    @ComponentMethod
-    public List<String> test1() {
-        List<String> l = new ArrayList<>();
-        l.add("hello");
-        l.add("hi");
-        return l;
-    }
+    @ComponentMethod(returnsMultipleArguments = true)
+    public Object[] transferItem(Number sourceSide, Number sinkSide, Number count, Number sourceSlot, Number sinkSlot) {
+        if (count.intValue() <= 0) {
+            return new Object[] { null, "invalid count" };
+        }
 
-    @ComponentMethod
-    public Map<String, String> test2() {
-        Map<String, String> m = new HashMap<>();
-        m.put("a", "b");
-        m.put("cd", "d");
-        return m;
+        return getInventory(sourceSide.intValue(), (sourceRef) -> getInventory(sinkSide.intValue(), (sinkRef) -> {
+            int sourceSize = sourceRef.getComponent(InventoryComponent.class).itemSlots.size();
+            int sinkSize = sinkRef.getComponent(InventoryComponent.class).itemSlots.size();
+
+            if (sourceSlot.intValue() < 0 || sourceSlot.intValue() >= sourceSize) {
+                return new Object[] { null, "invalid source slot" };
+            }
+
+            if (sinkSlot.intValue() < 0 || sinkSlot.intValue() >= sinkSize) {
+                return new Object[] { null, "invalid sink slot" };
+            }
+
+            if (inventoryManager.moveItem(sourceRef, self, sourceSlot.intValue(), sinkRef, sinkSlot.intValue(), count.intValue())) {
+                return new Object[] { count.intValue() };
+            } else {
+                return new Object[] { null, "item move failure" };
+            }
+        }));
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
@@ -105,30 +118,28 @@ public class PeripheralTransposer implements Peripheral {
     }
 
     protected Object[] getItem(int side, int slot, Function<EntityRef, Object[]> result) {
-        Optional<InventoryComponent> componentO = getInventory(side);
-        return componentO
-                .map(component -> {
-                    int slotI = slot;
-                    if (slotI < 0 || slotI >= component.itemSlots.size()) {
-                        return new Object[]{ null, "invalid slot number" };
-                    } else {
-                        EntityRef item = component.itemSlots.get(slotI);
-                        return result.apply(item);
-                    }
-                })
-                .orElseGet(() -> new Object[]{null, "no inventory"});
+        return getInventory(side, (ref) -> {
+            InventoryComponent component = ref.getComponent(InventoryComponent.class);
+            int slotI = slot;
+            if (slotI < 0 || slotI >= component.itemSlots.size()) {
+                return new Object[]{ null, "invalid slot number" };
+            } else {
+                EntityRef item = component.itemSlots.get(slotI);
+                return result.apply(item);
+            }
+        });
     }
 
-    protected Optional<InventoryComponent> getInventory(int side) {
+    protected Object[] getInventory(int side, Function<EntityRef, Object[]> result) {
         Vector3i pos = getNeighborPos(side);
         if (pos != null && provider.isBlockRelevant(pos) && registry.hasPermanentBlockEntity(pos)) {
             EntityRef ref = registry.getBlockEntityAt(pos);
             if (ref != null && ref.exists() && ref.hasComponent(InventoryComponent.class)) {
-                return Optional.of(ref.getComponent(InventoryComponent.class));
+                return result.apply(ref);
             }
         }
 
-        return Optional.empty();
+        return new Object[]{null, "no inventory"};
     }
 
     @Nullable

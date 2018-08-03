@@ -25,12 +25,11 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
-import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
+import org.terasology.kallisti.base.util.CollectionBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
-import org.terasology.kcomputers.components.KallistiKeyboardComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
@@ -42,7 +41,7 @@ import java.util.*;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-	private MultiValueMap<EntityRef, EntityRef> displayListeners = new ListBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
+	private MultiValueMap<EntityRef, EntityRef> displayListeners = new CollectionBackedMultiValueMap<>(new HashMap<>(), HashSet::new);
 	private Map<EntityRef, Object> lastSource = new HashMap<>();
 
 	@In
@@ -95,7 +94,7 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
 	@ReceiveEvent(components = ClientComponent.class)
 	public void onRequestInitialUpdate(KallistiRegisterSyncListenerEvent event, EntityRef entity) {
 		for (Object o : event.getSyncEntity().iterateComponents()) {
-			if (o instanceof KallistiDisplayComponent) {
+			if (o instanceof KallistiDisplayCandidateComponent) {
 				displayListeners.add(event.getSyncEntity(), event.getInstigator());
 				lastSource.put(event.getSyncEntity(), null);
 			}

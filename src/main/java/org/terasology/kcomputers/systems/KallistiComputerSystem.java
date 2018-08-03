@@ -26,7 +26,7 @@ import org.terasology.jnlua.LuaRuntimeException;
 import org.terasology.jnlua.LuaStackTraceElement;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
-import org.terasology.kallisti.base.util.ListBackedMultiValueMap;
+import org.terasology.kallisti.base.util.CollectionBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.TerasologyEntityContext;
@@ -142,7 +142,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		Vector3i pos = ref.getComponent(BlockComponent.class).getPosition();
 
 		Map<ComponentContext, Object> kallistiComponents = new HashMap<>();
-		MultiValueMap<Vector3i, TerasologyEntityContext> contextsPerPos = new ListBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
+		MultiValueMap<Vector3i, TerasologyEntityContext> contextsPerPos = new CollectionBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
 		Set<Vector3i> visitedPositions = new HashSet<>();
 		LinkedList<Vector3i> positions = new LinkedList<>();
 

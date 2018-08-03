@@ -37,6 +37,7 @@ import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
 import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.peripherals.PeripheralTransposer;
+import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
@@ -49,10 +50,12 @@ public class KallistiPeripheralSystem extends BaseComponentSystem {
     private WorldProvider provider;
     @In
     private BlockEntityRegistry blockEntityRegistry;
+    @In
+    private InventoryManager inventoryManager;
 
     @ReceiveEvent
     public void createTransposerPeripheral(KallistiAttachComponentsEvent event, EntityRef ref, BlockComponent block, KallistiTransposerComponent component) {
-        event.addComponent(ref, new PeripheralTransposer(provider, blockEntityRegistry, block));
+        event.addComponent(ref, new PeripheralTransposer(provider, blockEntityRegistry, ref, block, inventoryManager));
     }
 
     @ReceiveEvent
