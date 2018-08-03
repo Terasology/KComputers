@@ -36,6 +36,7 @@ import org.terasology.kcomputers.components.KallistiInventoryWithContainerCompon
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
+import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
 import org.terasology.kcomputers.events.KallistiToggleComputerEvent;
 import org.terasology.logic.inventory.InventoryComponent;
@@ -56,17 +57,6 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	private BlockEntityRegistry blockEntityRegistry;
 
 	private Set<EntityRef> computers = new HashSet<>();
-
-	@ReceiveEvent
-	public void onAttachComponentInventory(KallistiAttachComponentsEvent event, EntityRef entity, KallistiInventoryWithContainerComponent component) {
-		if (entity.hasComponent(InventoryComponent.class)) {
-			InventoryComponent inv = entity.getComponent(InventoryComponent.class);
-
-			for (EntityRef ref : inv.itemSlots) {
-				ref.send(event);
-			}
-		}
-	}
 
 	@ReceiveEvent
 	public void computerToggle(KallistiToggleComputerEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
@@ -96,6 +86,29 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	@ReceiveEvent
 	public void computerDeactivated(BeforeDeactivateComponent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
 		deinit(ref, computerComponent);
+	}
+
+	@ReceiveEvent
+	public void addConnectedEntitiesConnectable(KallistiGatherConnectedEntitiesEvent event, EntityRef ref, BlockComponent blockComponent, KallistiConnectableComponent connectableComponent) {
+		Vector3i pos = blockComponent.getPosition();
+
+		for (Side side : Side.values()) {
+			Vector3i location = new Vector3i(pos).add(side.getVector3i());
+			if (provider.isBlockRelevant(location) && blockEntityRegistry.hasPermanentBlockEntity(location)) {
+				event.addEntity(blockEntityRegistry.getBlockEntityAt(location));
+			}
+		}
+	}
+
+	@ReceiveEvent
+	public void addConnectedEntitiesInventory(KallistiGatherConnectedEntitiesEvent event, EntityRef entity, KallistiInventoryWithContainerComponent component) {
+		if (entity.hasComponent(InventoryComponent.class)) {
+			InventoryComponent inv = entity.getComponent(InventoryComponent.class);
+
+			for (EntityRef ref : inv.itemSlots) {
+				event.addEntity(ref);
+			}
+		}
 	}
 
 	@Override
@@ -139,33 +152,17 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 			return true;
 		}
 
-		Vector3i pos = ref.getComponent(BlockComponent.class).getPosition();
+		KallistiGatherConnectedEntitiesEvent gatherEvent = new KallistiGatherConnectedEntitiesEvent();
+		gatherEvent.addEntity(ref);
 
 		Map<ComponentContext, Object> kallistiComponents = new HashMap<>();
 		MultiValueMap<Vector3i, TerasologyEntityContext> contextsPerPos = new CollectionBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
-		Set<Vector3i> visitedPositions = new HashSet<>();
-		LinkedList<Vector3i> positions = new LinkedList<>();
 
-		positions.add(pos);
 		TerasologyEntityContext contextComputer = new TerasologyEntityContext(ref.getId(), -1);
-		contextsPerPos.add(pos, contextComputer);
+		contextsPerPos.add(ref.getComponent(BlockComponent.class).getPosition(), contextComputer);
 
-		while (!positions.isEmpty()) {
-			Vector3i location = positions.remove();
-			if (visitedPositions.add(location)) {
-				if (provider.isBlockRelevant(location) && blockEntityRegistry.hasPermanentBlockEntity(location)) {
-					EntityRef lref = location.equals(pos) ? ref : blockEntityRegistry.getBlockEntityAt(location);
-					if (lref != null) {
-						kallistiComponents.putAll(KComputersUtil.gatherKallistiComponents(lref));
-
-						if (lref.hasComponent(KallistiConnectableComponent.class)) {
-							for (Side side : Side.values()) {
-								positions.add(new Vector3i(location).add(side.getVector3i()));
-							}
-						}
-					}
-				}
-			}
+		for (EntityRef lref : gatherEvent.getEntities()) {
+			kallistiComponents.putAll(KComputersUtil.gatherKallistiComponents(lref));
 		}
 
 		for (Vector3i vec : contextsPerPos.keys()) {

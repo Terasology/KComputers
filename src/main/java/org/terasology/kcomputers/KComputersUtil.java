@@ -20,15 +20,27 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
+import org.terasology.kallisti.base.util.CollectionBackedMultiValueMap;
+import org.terasology.kallisti.base.util.MultiValueMap;
+import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
+import org.terasology.math.Side;
+import org.terasology.math.geom.Vector3i;
+import org.terasology.world.WorldProvider;
+import org.terasology.world.block.BlockComponent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 public final class KComputersUtil {
 	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger("KComputers");
