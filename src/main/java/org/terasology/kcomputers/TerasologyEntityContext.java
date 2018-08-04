@@ -33,6 +33,10 @@ public class TerasologyEntityContext implements ComponentContext, ConnectedConte
 		this.id = id;
 	}
 
+	public long getEntityId() {
+		return entityId;
+	}
+
 	public void addNeighbor(TerasologyEntityContext context) {
 		neighbors.add(context);
 	}

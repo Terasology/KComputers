@@ -21,12 +21,14 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.kallisti.base.component.ComponentMethod;
 import org.terasology.kallisti.base.component.Peripheral;
+import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.logic.inventory.InventoryAccessComponent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.InventoryUtils;
 import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.logic.nameTags.NameTagComponent;
+import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
@@ -144,23 +146,9 @@ public class PeripheralTransposer implements Peripheral {
 
     @Nullable
     protected Vector3i getNeighborPos(int side) {
-        Vector3i pos = new Vector3i(block.getPosition());
-        switch (side) {
-            case 0:
-                return pos.add(0, -1, 0);
-            case 1:
-                return pos.add(0, 1, 0);
-            case 2:
-                return pos.add(0, 0, -1);
-            case 3:
-                return pos.add(0, 0, 1);
-            case 4:
-                return pos.add(-1, 0, 0);
-            case 5:
-                return pos.add(1, 0, 0);
-            default:
-                return null;
-        }
+        Side sideT = KComputersUtil.getOCSide(side);
+
+        return sideT != null ? sideT.getAdjacentPos(block.getPosition()) : null;
     }
 
     @Override

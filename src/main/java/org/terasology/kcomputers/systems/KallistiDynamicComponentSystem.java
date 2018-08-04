@@ -26,18 +26,33 @@ import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
+import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
+import org.terasology.logic.inventory.InventoryComponent;
+import org.terasology.math.Side;
+import org.terasology.math.geom.Vector3i;
+import org.terasology.registry.In;
+import org.terasology.world.BlockEntityRegistry;
+import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiDynamicComponentSystem extends BaseComponentSystem {
+    @In
+    private WorldProvider provider;
+    @In
+    private BlockEntityRegistry blockEntityRegistry;
+
     @ReceiveEvent
     public void componentActivated(OnActivatedComponent event, EntityRef entity, BlockComponent component) {
         Map<ComponentContext, Object> contextMap = KComputersUtil.gatherKallistiComponents(entity);
@@ -63,21 +78,36 @@ public class KallistiDynamicComponentSystem extends BaseComponentSystem {
 
     @ReceiveEvent
     public void componentDeactivated(BeforeDeactivateComponent event, EntityRef entity, BlockComponent component) {
-        Map<ComponentContext, Object> contextMap = KComputersUtil.gatherKallistiComponents(entity);
-        if (contextMap.isEmpty()) {
-            return;
-        }
+        // The entity may be in a semi-functioning state, so add neighboring entities instead
+        // TODO: This is a bit of a non-obvious hack
 
         KallistiGatherConnectedEntitiesEvent gatherEvent = new KallistiGatherConnectedEntitiesEvent();
-        gatherEvent.addEntity(entity);
+        for (Side side : Side.values()) {
+            Vector3i pos = side.getAdjacentPos(component.getPosition());
+            if (pos != null && provider.isBlockRelevant(pos) && blockEntityRegistry.hasPermanentBlockEntity(pos)) {
+                EntityRef ref = blockEntityRegistry.getBlockEntityAt(pos);
+                if (ref != null && ref.exists()) {
+                    gatherEvent.addEntity(ref);
+                }
+            }
+        }
 
         for (EntityRef ref : gatherEvent.getEntities()) {
             if (ref.hasComponent(KallistiComputerComponent.class)) {
                 KallistiComputerComponent computer = ref.getComponent(KallistiComputerComponent.class);
                 Machine machine = computer.getMachine();
                 if (machine != null && machine.getState() == Machine.MachineState.RUNNING) {
-                    for (Map.Entry<ComponentContext, Object> entry : contextMap.entrySet()) {
-                        machine.removeComponent(entry.getKey());
+                    List<ComponentContext> contextsToRemove = new ArrayList<>();
+
+                    for (ComponentContext c : machine.getAllComponentContexts()) {
+                        if (c instanceof TerasologyEntityContext
+                                && ((TerasologyEntityContext) c).getEntityId() == entity.getId()) {
+                            contextsToRemove.add(c);
+                        }
+                    }
+
+                    for (ComponentContext c : contextsToRemove) {
+                        machine.removeComponent(c);
                     }
                 }
             }

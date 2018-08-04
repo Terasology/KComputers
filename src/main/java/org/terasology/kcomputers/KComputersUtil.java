@@ -31,6 +31,7 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
+import javax.annotation.Nullable;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,10 +49,10 @@ public final class KComputersUtil {
 
 	}
 
+	@Nullable
 	public static Side getOCSide(int side) {
 		switch (side) {
 			case 0:
-			default:
 				return Side.BOTTOM;
 			case 1:
 				return Side.TOP;
@@ -63,6 +64,8 @@ public final class KComputersUtil {
 				return Side.LEFT;
 			case 5:
 				return Side.RIGHT;
+			default:
+				return null;
 		}
 	}
 
