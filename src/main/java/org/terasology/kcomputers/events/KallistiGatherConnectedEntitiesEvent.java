@@ -29,7 +29,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
-@ServerEvent
 public class KallistiGatherConnectedEntitiesEvent implements Event {
     private transient final Set<EntityRef> entities = new HashSet<>();
 

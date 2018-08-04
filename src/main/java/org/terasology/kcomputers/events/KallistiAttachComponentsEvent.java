@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@ServerEvent
 public class KallistiAttachComponentsEvent implements Event {
     private transient final Map<ComponentContext, Object> components = new HashMap<>();
     private transient final Set<Object> addedObjects = Collections.newSetFromMap(new IdentityHashMap<>());

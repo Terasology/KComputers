@@ -23,7 +23,6 @@ import org.terasology.network.OwnerEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-
 @OwnerEvent
 public class KallistiSyncInitialEvent implements Event {
 	private EntityRef entity;

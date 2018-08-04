@@ -48,6 +48,24 @@ public final class KComputersUtil {
 
 	}
 
+	public static Side getOCSide(int side) {
+		switch (side) {
+			case 0:
+			default:
+				return Side.BOTTOM;
+			case 1:
+				return Side.TOP;
+			case 2:
+				return Side.FRONT;
+			case 3:
+				return Side.BACK;
+			case 4:
+				return Side.LEFT;
+			case 5:
+				return Side.RIGHT;
+		}
+	}
+
 	public static byte[] toByteArray(InputStream stream) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];

@@ -19,7 +19,6 @@ import org.terasology.entitySystem.event.Event;
 import org.terasology.kallisti.base.component.Machine;
 import org.terasology.network.ServerEvent;
 
-@ServerEvent
 public class KallistiRegisterComponentRulesEvent implements Event {
     private transient final Machine machine;
 
