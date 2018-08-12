@@ -17,17 +17,19 @@ package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
-import org.terasology.kcomputers.events.KallistiToggleComputerEvent;
+import org.terasology.kcomputers.events.KallistiSetComputerStateEvent;
 import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.players.LocalPlayer;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.CoreScreenLayer;
-import org.terasology.rendering.nui.UIWidget;
 import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.layers.ingame.inventory.InventoryGrid;
-import org.terasology.rendering.nui.widgets.ActivateEventListener;
 import org.terasology.rendering.nui.widgets.UIButton;
 
+/**
+ * Default implementation of a computer container UI, complete
+ * with activation and deactivation buttons for a KallistiComputerComponent.
+ */
 public class ComputerContainerScreen extends CoreScreenLayer {
     @In
     private LocalPlayer localPlayer;
@@ -61,7 +63,7 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                target.send(new KallistiToggleComputerEvent(true));
+                target.send(new KallistiSetComputerStateEvent(true));
             }
         });
 
@@ -71,7 +73,7 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                target.send(new KallistiToggleComputerEvent(false));
+                target.send(new KallistiSetComputerStateEvent(false));
             }
         });
     }

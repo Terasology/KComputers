@@ -30,6 +30,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Event for attaching Kallisti components to a virtual machine.
+ *
+ * Send this Event to a given EntityRef to gather all of the components
+ * it provides.
+ *
+ * Receive this Event and use addComponent() to add your own components.
+ *
+ * @see org.terasology.kcomputers.KComputersUtil
+ */
 public class KallistiAttachComponentsEvent implements Event {
     private transient final Map<ComponentContext, Object> components = new HashMap<>();
     private transient final Set<Object> addedObjects = Collections.newSetFromMap(new IdentityHashMap<>());
@@ -38,6 +48,11 @@ public class KallistiAttachComponentsEvent implements Event {
     public KallistiAttachComponentsEvent() {
     }
 
+    /**
+     * Add a component to be attached.
+     * @param ref The reference to the entity containing the component.
+     * @param o The object, which is a Kallisti-compatible component.
+     */
     public void addComponent(EntityRef ref, Object o) {
         if (!addedObjects.contains(o)) {
             components.put(new TerasologyEntityContext(ref.getId(), id++), o);
@@ -45,6 +60,10 @@ public class KallistiAttachComponentsEvent implements Event {
         }
     }
 
+    /**
+     * Get the map of component context to their Kallisti objects.
+     * @return The map.
+     */
     public Map<ComponentContext,Object> getComponentMap() {
         return Collections.unmodifiableMap(components);
     }

@@ -22,6 +22,16 @@ import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.module.annotations.RegisterAssetType;
 import org.terasology.kallisti.oc.OCFont;
 
+/**
+ * Asset type used for creating Kallisti-ready OCFont objects from
+ * ".hex"-format fonts.
+ *
+ * It is imperative that the font files be named in the style of
+ * "[name]-[width]x[height].hex", for example "unicode-8x16.hex" for
+ * an 8x16-glyph font file.
+ *
+ * See the documentation for OCFont for more information on the format.
+ */
 @RegisterAssetType(factoryClass = HexFont.Factory.class, folderName = "fonts")
 public class HexFont extends Asset<HexFontData> {
     public static class Factory implements AssetFactory<HexFont, HexFontData> {
@@ -38,6 +48,10 @@ public class HexFont extends Asset<HexFontData> {
         reload(data);
     }
 
+    /**
+     * Get the font in a Kallisti-usable format.
+     * @return The OCFont instance.
+     */
     public OCFont getKallistiFont() {
         return data.getFont();
     }

@@ -17,10 +17,13 @@ package org.terasology.kcomputers.components.parts;
 
 import org.terasology.entitySystem.Component;
 
+/**
+ * Component adding memory to a Kallisti virtual machine instance.
+ */
 public class KallistiMemoryComponent implements Component {
+    /**
+     * The amount of memory the entity this component is attached to,
+     * in bytes.
+     */
     public int amount;
-
-    public int getAmount() {
-        return amount;
-    }
 }

@@ -43,32 +43,22 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Utility methods for KComputers code.
+ */
 public final class KComputersUtil {
 	public static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger("KComputers");
+
 	private KComputersUtil() {
 
 	}
 
-	@Nullable
-	public static Side getOCSide(int side) {
-		switch (side) {
-			case 0:
-				return Side.BOTTOM;
-			case 1:
-				return Side.TOP;
-			case 2:
-				return Side.FRONT;
-			case 3:
-				return Side.BACK;
-			case 4:
-				return Side.LEFT;
-			case 5:
-				return Side.RIGHT;
-			default:
-				return null;
-		}
-	}
-
+	/**
+	 * Read an InputStream fully and store it as a byte array.
+	 * @param stream The InputStream to read.
+	 * @return The read byte array.
+	 * @throws IOException Upon issues reading the InputStream.
+	 */
 	public static byte[] toByteArray(InputStream stream) throws IOException {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] buffer = new byte[1024];
@@ -81,31 +71,52 @@ public final class KComputersUtil {
 		return out;
 	}
 
-	public static void synchronize(EntityRef target, Synchronizable syncer, Synchronizable.Type type, Collection<EntityRef> targets) {
+	/**
+	 * Internal until a synchronization API is formalized and improved.
+	 *
+	 * Send a synchronization packet for a given target entity
+	 * to a collection of listening entities.
+	 *
+	 * @param target The target entity.
+	 * @param syncer The Synchronizable instance used to generate the synchronization packet.
+	 * @param type The type of the synchronization packet.
+	 * @param listeners The collection of listening entities.
+	 * @return True if a packet was sent, false otherwise.
+	 */
+	public static boolean synchronize(EntityRef target, Synchronizable syncer, Synchronizable.Type type, Collection<EntityRef> listeners) {
 		try {
 			if (!syncer.hasSyncPacket(type)) {
-				return;
+				return false;
 			}
 
 			switch (type) {
 				case INITIAL:
 					KallistiSyncInitialEvent syncInitial = new KallistiSyncInitialEvent(target, syncer);
-					targets.forEach((t) -> {
+					listeners.forEach((t) -> {
 						if (t.exists()) t.send(syncInitial);
 					});
 					break;
 				case DELTA:
 					KallistiSyncDeltaEvent syncDelta = new KallistiSyncDeltaEvent(target, syncer);
-					targets.forEach((t) -> {
+					listeners.forEach((t) -> {
 						if (t.exists()) t.send(syncDelta);
 					});
 					break;
 			}
+
+			return true;
 		} catch (IOException e) {
 			KComputersUtil.LOGGER.warn("Error syncing to client!", e);
+			return false;
 		}
 	}
 
+	/**
+	 * Small utility method to emit a KallistiAttachComponentsEvent
+	 * to a given EntityRef and collect its Kallisti components
+	 * @param ref The given EntityRef.
+	 * @return A map of component contexts to their Kallisti objects.
+	 */
 	public static Map<ComponentContext, Object> gatherKallistiComponents(EntityRef ref) {
 		KallistiAttachComponentsEvent event = new KallistiAttachComponentsEvent();
 		ref.send(event);

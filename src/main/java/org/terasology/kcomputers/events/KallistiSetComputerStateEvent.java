@@ -18,18 +18,26 @@ package org.terasology.kcomputers.events;
 import org.terasology.entitySystem.event.Event;
 import org.terasology.network.ServerEvent;
 
+/**
+ * Event sent from the client to the server, used for setting a computer's
+ * on/off state.
+ */
 @ServerEvent
-public class KallistiToggleComputerEvent implements Event {
+public class KallistiSetComputerStateEvent implements Event {
     private boolean state;
 
-    public KallistiToggleComputerEvent() {
+    public KallistiSetComputerStateEvent() {
 
     }
 
-    public KallistiToggleComputerEvent(boolean state) {
+    public KallistiSetComputerStateEvent(boolean state) {
         this.state = state;
     }
 
+    /**
+     * Get the computer's target state.
+     * @return True if "on", false if "off".
+     */
     public boolean getState() {
         return state;
     }

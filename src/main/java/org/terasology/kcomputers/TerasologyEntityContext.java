@@ -23,16 +23,35 @@ import org.terasology.world.BlockEntityRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A ComponentContext implementation allowing unique identification of
+ * Terasology entities by Kallisti's environment.
+ *
+ * TODO: Better ways of discerning multiple components in one entity
+ * should be discerned than the incrementing "id" field.
+ *
+ * @see org.terasology.kallisti.base.component.ComponentContext
+ */
 public class TerasologyEntityContext implements ComponentContext, ConnectedContext {
 	private final long entityId;
 	private final int id;
 	private final List<ComponentContext> neighbors = new ArrayList<>();
 
+	/**
+	 * Create a new Terasology entity context
+	 * @param entityId The entity ID
+	 * @param id A value used for discerning between multiple components
+	 *           in one entity.
+	 */
 	public TerasologyEntityContext(long entityId, int id) {
 		this.entityId = entityId;
 		this.id = id;
 	}
 
+	/**
+	 * Get the entity ID behind a given component context.
+	 * @return The entity ID.
+	 */
 	public long getEntityId() {
 		return entityId;
 	}

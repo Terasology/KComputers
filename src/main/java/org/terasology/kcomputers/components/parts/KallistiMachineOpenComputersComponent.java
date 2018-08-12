@@ -31,7 +31,16 @@ import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.registry.CoreRegistry;
 
+/**
+ * Component for an OpenComputers-style machine provider.
+ */
 public class KallistiMachineOpenComputersComponent implements Component, KallistiMachineProvider {
+    /**
+     * The version of Lua to use for this machine provider, in the form
+     * MAJOR.MINOR (for example "5.2" or "5.3").
+     *
+     * @see org.terasology.jnlua.LuaState
+     */
     public String luaVersion;
 
     @Override

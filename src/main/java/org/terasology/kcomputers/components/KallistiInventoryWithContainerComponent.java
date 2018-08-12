@@ -25,5 +25,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Marker component. If put on an Entity which also contains an
+ * InventoryComponent, its item Entities will be accounted for when
+ * searching for Kallisti components for a virtual machine.
+ */
 public class KallistiInventoryWithContainerComponent implements Component {
 }

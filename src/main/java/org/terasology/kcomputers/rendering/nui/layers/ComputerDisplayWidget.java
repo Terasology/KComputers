@@ -32,6 +32,16 @@ import org.terasology.rendering.nui.CoreWidget;
 import org.terasology.rendering.nui.databinding.Binding;
 import org.terasology.rendering.nui.events.NUIKeyEvent;
 
+/**
+ * Widget which allows rendering the buffer of a KallistiDisplayComponent
+ * as an in-game UI, as well as proxying key presses to a
+ * KallistiKeyboardComponent.
+ *
+ * TODO: Currently, the keyboard component must be on the same block as the
+ * KallistiDisplayComponent. This should probably not have to be the
+ * case, but it is not a high priority as the current behaviour is
+ * sufficiently intuitive for end users.
+ */
 public class ComputerDisplayWidget extends CoreWidget {
 	private transient Binding<KallistiDisplayComponent> displayComponent;
 	private transient Binding<EntityRef> localPlayer;
@@ -73,7 +83,7 @@ public class ComputerDisplayWidget extends CoreWidget {
 				lastCharacter = event.getKeyCharacter();
 			}
 			return true;
-		} else {
+//		} else {
 //			KComputersUtil.LOGGER.warn("Unknown key " + event.getKey().getId());
 		}
 

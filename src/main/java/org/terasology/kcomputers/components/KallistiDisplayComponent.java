@@ -51,7 +51,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Component provided by blocks which provide a Kallisti-compatible display.
+ * Internal Kallisti display component.
  */
 @NoReplicate
 public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver {

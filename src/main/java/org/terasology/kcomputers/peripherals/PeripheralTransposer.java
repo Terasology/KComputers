@@ -15,19 +15,12 @@
  */
 package org.terasology.kcomputers.peripherals;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.jnlua.LuaValueProxy;
 import org.terasology.kallisti.base.component.ComponentMethod;
 import org.terasology.kallisti.base.component.Peripheral;
-import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.logic.inventory.InventoryAccessComponent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.logic.inventory.InventoryManager;
-import org.terasology.logic.inventory.InventoryUtils;
 import org.terasology.logic.inventory.ItemComponent;
-import org.terasology.logic.nameTags.NameTagComponent;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.BlockEntityRegistry;
@@ -35,13 +28,8 @@ import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class PeripheralTransposer implements Peripheral {
     private final WorldProvider provider;
@@ -91,17 +79,17 @@ public class PeripheralTransposer implements Peripheral {
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getSlotStackSize(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItem(ref).getOrDefault("size", 99) });
+        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref).getOrDefault("size", 99) });
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getSlotMaxStackSize(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItem(ref).getOrDefault("maxSize", 99) });
+        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref).getOrDefault("maxSize", 99) });
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getStackInSlot(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItem(ref) });
+        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref) });
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -146,7 +134,7 @@ public class PeripheralTransposer implements Peripheral {
 
     @Nullable
     protected Vector3i getNeighborPos(int side) {
-        Side sideT = KComputersUtil.getOCSide(side);
+        Side sideT = PeripheralUtils.sideOCToTerasology(side);
 
         return sideT != null ? sideT.getAdjacentPos(block.getPosition()) : null;
     }

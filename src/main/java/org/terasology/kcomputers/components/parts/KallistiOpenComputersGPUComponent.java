@@ -26,8 +26,18 @@ import org.terasology.kallisti.oc.PeripheralOCGPU;
 
 import java.util.Collection;
 
+/**
+ * Component providing an OpenComputers-style GPU peripheral.
+ */
 @ComponentInterface
 public class KallistiOpenComputersGPUComponent implements Component {
+    /**
+     * The maximum (and default) width supported by the GPU, in characters.
+     */
     public int width = 160;
+
+    /**
+     * The maximum (and default) height supported by the GPU, in characters.
+     */
     public int height = 50;
 }

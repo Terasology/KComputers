@@ -21,6 +21,10 @@ import org.terasology.assets.AssetType;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.module.annotations.RegisterAssetType;
 
+/**
+ * Asset type used for making read-only ZIP files available as filesystem
+ * structures to Kallisti virtual machines.
+ */
 @RegisterAssetType(factoryClass = KallistiArchive.Factory.class, folderName = "kallisti")
 public class KallistiArchive extends Asset<KallistiArchiveData> {
     public static class Factory implements AssetFactory<KallistiArchive, KallistiArchiveData> {

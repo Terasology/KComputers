@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 /**
- * Component provided by blocks which provide a Kallisti-compatible keyboard.
+ * Component providing a Kallisti-compatible keyboard.
  */
 public class KallistiKeyboardComponent implements Component, KeyboardInputProvider {
 	private transient ArrayList<Key> keyQueue = new ArrayList<>();
@@ -40,6 +40,10 @@ public class KallistiKeyboardComponent implements Component, KeyboardInputProvid
 		return keyQueue.remove(0);
 	}
 
+	/**
+	 * Add a key to the queue.
+	 * @param key The key to add.
+	 */
 	public void addKey(Key key) {
 		if (key.getCode() != 0) {
 			keyQueue.add(key);

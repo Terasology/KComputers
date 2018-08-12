@@ -17,13 +17,31 @@ package org.terasology.kcomputers.peripherals;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.inventory.ItemComponent;
+import org.terasology.math.Side;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility methods useful for peripheral implementations,
+ * particularly OpenComputers-emulating ones.
+ */
 public class PeripheralUtils {
-    public static Map<String, Object> convertItem(EntityRef item) {
+    /**
+     * Convert an ItemComponent-containing EntityRef to a Map representation
+     * as understood by OpenComputers methods.
+     *
+     * TODO: This should probably be registered closer to
+     * MachineOpenComputers, but necessary APIs haven't been well-designed
+     * yet on the Kallisti side. For now, however, this suffices, as
+     * all users of it are OpenComputers-specific regardless.
+     *
+     * @param item The reference to a given item.
+     * @return The OpenComputers-friendly Map.
+     */
+    public static Map<String, Object> convertItemOC(EntityRef item) {
         if (item.exists() && item.hasComponent(ItemComponent.class)) {
             ItemComponent itemComponent = item.getComponent(ItemComponent.class);
             Map<String, Object> map = new HashMap<>();
@@ -33,6 +51,31 @@ public class PeripheralUtils {
             return map;
         } else {
             return Collections.emptyMap();
+        }
+    }
+
+    /**
+     * Get the Terasology Side object based on an OpenComputers side parameter.
+     * @param side The OC side parameter.
+     * @return The matching Terasology side object, or null if invalid.
+     */
+    @Nullable
+    public static Side sideOCToTerasology(int side) {
+        switch (side) {
+            case 0:
+                return Side.BOTTOM;
+            case 1:
+                return Side.TOP;
+            case 2:
+                return Side.FRONT;
+            case 3:
+                return Side.BACK;
+            case 4:
+                return Side.LEFT;
+            case 5:
+                return Side.RIGHT;
+            default:
+                return null;
         }
     }
 }

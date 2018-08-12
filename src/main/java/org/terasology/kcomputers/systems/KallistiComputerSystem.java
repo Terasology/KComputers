@@ -35,10 +35,9 @@ import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
-import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
-import org.terasology.kcomputers.events.KallistiToggleComputerEvent;
+import org.terasology.kcomputers.events.KallistiSetComputerStateEvent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
@@ -59,7 +58,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	private Set<EntityRef> computers = new HashSet<>();
 
 	@ReceiveEvent
-	public void computerToggle(KallistiToggleComputerEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+	public void computerToggle(KallistiSetComputerStateEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
 		if (event.getState()) {
 			if (computerComponent.getMachine() == null) {
 				init(ref, false);
@@ -195,7 +194,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 			while (it.hasNext()) {
 				Object o = it.next().getValue();
 				if (o instanceof KallistiMemoryComponent) {
-					memorySize += ((KallistiMemoryComponent) o).getAmount();
+					memorySize += ((KallistiMemoryComponent) o).amount;
 				} else if (o instanceof KallistiMachineProvider) {
 					if (provider != null && provider != o) {
 						KComputersUtil.LOGGER.error("Provided more than one machine provider!");

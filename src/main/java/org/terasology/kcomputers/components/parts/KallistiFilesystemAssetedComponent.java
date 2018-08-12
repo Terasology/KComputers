@@ -17,6 +17,16 @@ package org.terasology.kcomputers.components.parts;
 
 import org.terasology.entitySystem.Component;
 
+/**
+ * Component for a Kallisti filesystem peripheral which is sourced
+ * from an asset and thus read-only.
+ */
 public class KallistiFilesystemAssetedComponent implements Component {
+    /**
+     * The name of the .ZIP filesystem to use as the virtual machine's
+     * filesystem.
+     *
+     * @see org.terasology.kcomputers.assets.KallistiArchive
+     */
     public String assetName;
 }

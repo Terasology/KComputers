@@ -26,6 +26,7 @@ import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.events.NUIKeyEvent;
 
 /**
+ * Default implementation of a computer display screen UI.
  */
 public class ComputerDisplayScreen extends CoreScreenLayer {
     @In
