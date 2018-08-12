@@ -38,6 +38,7 @@ import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.peripherals.PeripheralTransposer;
 import org.terasology.logic.inventory.InventoryManager;
+import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
@@ -90,6 +91,16 @@ public class KallistiPeripheralSystem extends BaseComponentSystem {
 
     @ReceiveEvent
     public void createMemoryComponent(KallistiAttachComponentsEvent event, EntityRef ref, KallistiMemoryComponent component) {
+        if (ref.hasComponent(ItemComponent.class)) {
+            int stackCount = ref.getComponent(ItemComponent.class).stackCount;
+            if (stackCount > 1) {
+                KallistiMemoryComponent combinedComponent = new KallistiMemoryComponent();
+                combinedComponent.amount = component.amount * stackCount;
+                event.addComponent(ref, combinedComponent);
+                return;
+            }
+        }
+
         event.addComponent(ref, component);
     }
 
