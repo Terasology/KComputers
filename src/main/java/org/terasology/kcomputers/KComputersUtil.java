@@ -55,6 +55,7 @@ public final class KComputersUtil {
 
 	/**
 	 * Read an InputStream fully and store it as a byte array.
+	 *
 	 * @param stream The InputStream to read.
 	 * @return The read byte array.
 	 * @throws IOException Upon issues reading the InputStream.
@@ -72,10 +73,10 @@ public final class KComputersUtil {
 	}
 
 	/**
-	 * Internal until a synchronization API is formalized and improved.
-	 *
 	 * Send a synchronization packet for a given target entity
 	 * to a collection of listening entities.
+
+	 * Internal until a synchronization API is formalized and improved.
 	 *
 	 * @param target The target entity.
 	 * @param syncer The Synchronizable instance used to generate the synchronization packet.
@@ -113,7 +114,8 @@ public final class KComputersUtil {
 
 	/**
 	 * Small utility method to emit a KallistiAttachComponentsEvent
-	 * to a given EntityRef and collect its Kallisti components
+	 * to a given EntityRef and collect its Kallisti components.
+	 *
 	 * @param ref The given EntityRef.
 	 * @return A map of component contexts to their Kallisti objects.
 	 */

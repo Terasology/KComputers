@@ -51,7 +51,16 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Internal Kallisti display component.
+ * Internal Kallisti display component. It is instantiated a single time in
+ * either the single-block entity providing a KallistiDisplayCandidateComponent,
+ * or a "master" multi-block entity for multi-block monitors. Candidates then
+ * function as an effective many-to-one mapping to the "main" component.
+ *
+ * LIMITATIONS: KallistiDisplayComponent currently only supports a single image
+ * being blit to it simultaneously. This is fine for as long as Kallisti renderers
+ * do exclusively that.
+ *
+ * @see KallistiDisplayCandidateComponent
  */
 @NoReplicate
 public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver {
@@ -62,6 +71,14 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 	private transient KallistiDisplayCandidateComponent candidate;
 	private transient MeshRenderComponent mesh;
 
+	/**
+	 * Configure the display component.
+	 *
+	 * @param entityManager The EntityManager instance.
+	 * @param self Reference to entity which stores the MeshRenderComponent instance for rendering.
+	 * @param candidate The KallistiDisplayCandidateComponent instance to derive configuration from.
+	 * @param mesh The MeshRenderComponent instance to use for rendering.
+	 */
 	public void configure(EntityManager entityManager, EntityRef self, KallistiDisplayCandidateComponent candidate, MeshRenderComponent mesh) {
 		this.entityManager = entityManager;
 		this.self = self;
@@ -211,19 +228,35 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 		}
 	}
 
+	/**
+	 * @return The texture to be rendered.
+	 */
 	@Nullable
 	public Texture getTexture() {
 		return texture;
 	}
 
+	/**
+	 * @return The width of the texture to be rendered, in pixels.
+	 */
 	public int getPixelWidth() {
 		return pw;
 	}
 
+	/**
+	 * @return The height of the texture to be rendered, in pixels.
+	 */
 	public int getPixelHeight() {
 		return ph;
 	}
 
+	/**
+	 * FIXME: A slight hack used to get the KallistiKeyboardComponent instance
+	 * in ComputerDisplayWidget.
+	 *
+	 * @see org.terasology.kcomputers.rendering.nui.layers.ComputerDisplayWidget
+	 * @return The reference to the display "self" entity.
+	 */
 	public EntityRef getEntityRef() {
 		return self;
 	}
