@@ -22,6 +22,7 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.KComputersUtil;
+import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 

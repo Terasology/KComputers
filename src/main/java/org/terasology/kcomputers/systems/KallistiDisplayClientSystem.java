@@ -26,6 +26,7 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
+import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
 import org.terasology.logic.players.LocalPlayer;
 import org.terasology.registry.In;
@@ -37,6 +38,16 @@ public class KallistiDisplayClientSystem extends BaseComponentSystem {
 	private LocalPlayer player;
 	@In
 	private EntityManager entityManager;
+
+	@ReceiveEvent
+	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
+		event.addComponent(ref, component.getDisplay());
+	}
+
+	@ReceiveEvent
+	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
+		event.addComponent(ref, component);
+	}
 
 	@ReceiveEvent
 	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
