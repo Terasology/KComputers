@@ -89,6 +89,8 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 
 	@ReceiveEvent
 	public void addConnectedEntitiesConnectable(KallistiGatherConnectedEntitiesEvent event, EntityRef ref, BlockComponent blockComponent, KallistiConnectableComponent connectableComponent) {
+		System.out.println("acec " + blockComponent.getPosition());
+
 		Vector3i pos = blockComponent.getPosition();
 
 		for (Side side : Side.values()) {

@@ -2,7 +2,8 @@
   "parent": "engine:iconItem",
   "Item": {
     "icon": "KComputers:RAM",
-    "stackId": "KComputers:RAM256"
+    "stackId": "KComputers:RAM256",
+    "maxStackSize": 1
   },
   "DisplayName": {
     "name": "RAM (256KB)"

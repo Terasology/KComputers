@@ -1,0 +1,7 @@
+{
+    "displayName": "Computer Cable",
+    "entity": {
+        "prefab": "KComputers:ComputerCable",
+        "keepActive": true
+    }
+}

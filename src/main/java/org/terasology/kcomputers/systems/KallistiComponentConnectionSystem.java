@@ -15,6 +15,8 @@
  */
 package org.terasology.kcomputers.systems;
 
+import gnu.trove.set.TLongSet;
+import gnu.trove.set.hash.TLongHashSet;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
@@ -30,6 +32,7 @@ import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
+import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
@@ -47,7 +50,7 @@ import java.util.List;
 import java.util.Map;
 
 @RegisterSystem(RegisterMode.AUTHORITY)
-public class KallistiDynamicComponentSystem extends BaseComponentSystem {
+public class KallistiComponentConnectionSystem extends BaseComponentSystem {
     @In
     private WorldProvider provider;
     @In
@@ -76,19 +79,14 @@ public class KallistiDynamicComponentSystem extends BaseComponentSystem {
         }
     }
 
-    @ReceiveEvent
-    public void componentDeactivated(BeforeDeactivateComponent event, EntityRef entity, BlockComponent component) {
-        // The entity may be in a semi-functioning state, so add neighboring entities instead
-        // TODO: This is a bit of a non-obvious hack
-
+    private void removeNoLongerVisibleComponents(EntityRef entity) {
         KallistiGatherConnectedEntitiesEvent gatherEvent = new KallistiGatherConnectedEntitiesEvent();
-        for (Side side : Side.values()) {
-            Vector3i pos = side.getAdjacentPos(component.getPosition());
-            if (pos != null && provider.isBlockRelevant(pos) && blockEntityRegistry.hasPermanentBlockEntity(pos)) {
-                EntityRef ref = blockEntityRegistry.getBlockEntityAt(pos);
-                if (ref != null && ref.exists()) {
-                    gatherEvent.addEntity(ref);
-                }
+        gatherEvent.addEntity(entity);
+
+        TLongSet entityIds = new TLongHashSet();
+        for (EntityRef ref : gatherEvent.getEntities()) {
+            if (ref.exists()) {
+                entityIds.add(ref.getId());
             }
         }
 
@@ -100,8 +98,7 @@ public class KallistiDynamicComponentSystem extends BaseComponentSystem {
                     List<ComponentContext> contextsToRemove = new ArrayList<>();
 
                     for (ComponentContext c : machine.getAllComponentContexts()) {
-                        if (c instanceof TerasologyEntityContext
-                                && ((TerasologyEntityContext) c).getEntityId() == entity.getId()) {
+                        if (c instanceof TerasologyEntityContext && !entityIds.contains(((TerasologyEntityContext) c).getEntityId())) {
                             contextsToRemove.add(c);
                         }
                     }
@@ -109,6 +106,21 @@ public class KallistiDynamicComponentSystem extends BaseComponentSystem {
                     for (ComponentContext c : contextsToRemove) {
                         machine.removeComponent(c);
                     }
+                }
+            }
+        }
+    }
+
+    @ReceiveEvent
+    public void componentDeactivated(BeforeDeactivateComponent event, EntityRef entity, BlockComponent component) {
+        removeNoLongerVisibleComponents(entity);
+
+        for (Side side : Side.values()) {
+            Vector3i pos = side.getAdjacentPos(component.getPosition());
+            if (pos != null && provider.isBlockRelevant(pos) && blockEntityRegistry.hasPermanentBlockEntity(pos)) {
+                EntityRef ref = blockEntityRegistry.getBlockEntityAt(pos);
+                if (ref != null && ref.exists()) {
+                    removeNoLongerVisibleComponents(ref);
                 }
             }
         }

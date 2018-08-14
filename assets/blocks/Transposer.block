@@ -2,13 +2,6 @@
     "categories": [
         "metal"
     ],
-    "attachmentAllowed": false,
-    // Graphics
-    "tiles": {
-        "sides": "Transposer",
-        "front": "Transposer",
-        "topBottom": "Transposer"
-    },
     "entity": {
         "prefab": "KComputers:Transposer",
         "keepActive": true

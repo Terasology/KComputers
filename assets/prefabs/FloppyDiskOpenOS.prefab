@@ -2,7 +2,8 @@
   "parent": "engine:iconItem",
   "Item": {
     "icon": "KComputers:FloppyDisk",
-    "stackId": "KComputers:FloppyDiskOpenOS"
+    "stackId": "KComputers:FloppyDiskOpenOS",
+    "maxStackSize": 1
   },
   "DisplayName": {
     "name": "Floppy Disk (OpenOS)"

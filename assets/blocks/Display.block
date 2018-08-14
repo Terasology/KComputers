@@ -2,9 +2,7 @@
     "categories": [
         "metal"
     ],
-    "attachmentAllowed": false,
     "family": "horizontal",
-    // Graphics
     "tiles": {
         "sides": "Display",
         "front": "DisplayFront",
