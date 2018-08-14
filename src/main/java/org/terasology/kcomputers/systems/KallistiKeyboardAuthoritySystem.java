@@ -25,6 +25,13 @@ import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
 import org.terasology.logic.characters.CharacterComponent;
 
+/**
+ * This system handles forwarding Kallisti keyboard keypresses from the event
+ * to the component.
+ *
+ * @see KallistiKeyboardComponent
+ * @see KallistiKeyPressedEvent
+ */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiKeyboardAuthoritySystem extends BaseComponentSystem {
 	@ReceiveEvent

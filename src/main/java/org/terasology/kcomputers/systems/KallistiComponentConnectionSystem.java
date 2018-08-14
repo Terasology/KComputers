@@ -49,6 +49,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This system handles dynamic addition and removal of Kallisti components to
+ * Kallisti machines in the Terasology world space.
+ */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiComponentConnectionSystem extends BaseComponentSystem {
     @In

@@ -45,6 +45,12 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
+/**
+ * This system creates Kallisti component objects for KComputers-added
+ * Terasology components.
+ *
+ * @see KallistiAttachComponentsEvent
+ */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiPeripheralSystem extends BaseComponentSystem {
     @In

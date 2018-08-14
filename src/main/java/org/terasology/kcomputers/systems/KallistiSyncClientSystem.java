@@ -28,6 +28,13 @@ import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+/**
+ * This system handles receiving KallistiSync*Events and forwarding them to
+ * the correct receiver.
+ *
+ * @see KallistiSyncDeltaEvent
+ * @see KallistiSyncInitialEvent
+ */
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiSyncClientSystem extends BaseComponentSystem {
 	@ReceiveEvent
