@@ -200,6 +200,8 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 	private void initRenderer() {
 		if (renderer == null) {
 			try {
+				// TODO: Add Kallisti-side API for instantiating renderers
+				// based on the KallistiSyncInitial packet received.
 				renderer = new OCGPURenderer(
 						new OCTextRenderer(
 								CoreRegistry.get(AssetManager.class)

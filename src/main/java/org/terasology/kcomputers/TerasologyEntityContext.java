@@ -28,7 +28,7 @@ import java.util.List;
  * Terasology entities by Kallisti's environment.
  *
  * TODO: Better ways of discerning multiple components in one entity
- * should be discerned than the incrementing "id" field.
+ * should be added. The incrementing "id" field is a stopgap measure.
  *
  * @see org.terasology.kallisti.base.component.ComponentContext
  */

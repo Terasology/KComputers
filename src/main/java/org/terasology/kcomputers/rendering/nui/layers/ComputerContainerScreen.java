@@ -17,7 +17,7 @@ package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
-import org.terasology.kcomputers.events.KallistiSetComputerStateEvent;
+import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.players.LocalPlayer;
 import org.terasology.registry.In;
@@ -63,7 +63,7 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                target.send(new KallistiSetComputerStateEvent(true));
+                target.send(new KallistiChangeComputerStateEvent(localPlayer.getClientEntity(), true));
             }
         });
 
@@ -73,7 +73,7 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                target.send(new KallistiSetComputerStateEvent(false));
+                target.send(new KallistiChangeComputerStateEvent(localPlayer.getClientEntity(), false));
             }
         });
     }

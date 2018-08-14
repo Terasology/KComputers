@@ -15,23 +15,37 @@
  */
 package org.terasology.kcomputers.events;
 
+import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
+import org.terasology.network.NetworkEvent;
 import org.terasology.network.ServerEvent;
+
+import javax.annotation.Nonnull;
 
 /**
  * Event sent from the client to the server, used for setting a computer's
  * on/off state.
  */
 @ServerEvent
-public class KallistiSetComputerStateEvent implements Event {
+public class KallistiChangeComputerStateEvent implements Event {
+    private EntityRef caller = EntityRef.NULL;
     private boolean state;
 
-    public KallistiSetComputerStateEvent() {
+    public KallistiChangeComputerStateEvent() {
 
     }
 
-    public KallistiSetComputerStateEvent(boolean state) {
+    public KallistiChangeComputerStateEvent(EntityRef caller, boolean state) {
+        this.caller = caller;
         this.state = state;
+    }
+
+    /**
+     * Get the entity from which the computer state change call originated, if any.
+     * @return The reference to the entity.
+     */
+    @Nonnull public EntityRef getCaller() {
+        return caller;
     }
 
     /**

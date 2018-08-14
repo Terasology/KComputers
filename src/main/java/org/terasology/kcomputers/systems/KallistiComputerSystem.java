@@ -37,10 +37,12 @@ import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
-import org.terasology.kcomputers.events.KallistiSetComputerStateEvent;
+import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
+import org.terasology.logic.chat.ChatMessageEvent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3i;
+import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
@@ -64,33 +66,57 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	private Set<EntityRef> computers = new HashSet<>();
 
 	@ReceiveEvent
-	public void computerToggle(KallistiSetComputerStateEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
-		if (event.getState()) {
-			if (computerComponent.getMachine() == null) {
-				init(ref, false);
+	public void computerToggle(KallistiChangeComputerStateEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+		try {
+			if (event.getState()) {
+				if (computerComponent.getMachine() == null) {
+					init(ref, false);
+				}
+			} else {
+				if (computerComponent.getMachine() != null) {
+					deinit(ref, computerComponent);
+				}
 			}
-		} else {
-			if (computerComponent.getMachine() != null) {
-				deinit(ref, computerComponent);
+		} catch (Exception e) {
+			String s = "Error " + (event.getState() ? "initializing" : "deinitializing") + " computer!";
+			EntityRef instigator = event.getCaller();
+			if (instigator.exists() && instigator.hasComponent(ClientComponent.class)) {
+				instigator.send(new ChatMessageEvent(s + ": " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()), ref));
+				if (e.getMessage() == null) {
+					KComputersUtil.LOGGER.warn(s, e);
+				}
+			} else {
+				KComputersUtil.LOGGER.error(s, e);
 			}
 		}
 	}
 
-	private void deinit(EntityRef ref, KallistiComputerComponent computerComponent) {
+	private void deinit(EntityRef ref, KallistiComputerComponent computerComponent) throws Exception {
+		Exception exception = null;
+
 		if (computerComponent.getMachine() != null && computerComponent.getMachine().getState() == Machine.MachineState.RUNNING) {
 			try {
 				computerComponent.getMachine().stop();
 			} catch (Exception e) {
-				KComputersUtil.LOGGER.warn("Error stopping machine!", e);
+				exception = e;
 			}
 		}
+
 		computerComponent.setMachine(null);
 		computers.remove(ref);
+
+		if (exception != null) {
+			throw exception;
+		}
 	}
 
 	@ReceiveEvent
 	public void computerDeactivated(BeforeDeactivateComponent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
-		deinit(ref, computerComponent);
+		try {
+			deinit(ref, computerComponent);
+		} catch (Exception e) {
+			KComputersUtil.LOGGER.error("Error deinitializing computer!", e);
+		}
 	}
 
 	@ReceiveEvent
@@ -147,14 +173,14 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		}
 	}
 
-	private boolean init(EntityRef ref, boolean force) {
+	private void init(EntityRef ref, boolean force) throws Exception {
 		if (!ref.hasComponent(KallistiComputerComponent.class)) {
-			return false;
+			throw new Exception("No computer in entity!");
 		}
 
 		KallistiComputerComponent computer = ref.getComponent(KallistiComputerComponent.class);
 		if (computer.getMachine() != null && !force) {
-			return true;
+			return;
 		}
 
 		KallistiGatherConnectedEntitiesEvent gatherEvent = new KallistiGatherConnectedEntitiesEvent();
@@ -192,49 +218,42 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 			}
 		}
 
-		try {
-			int memorySize = 0;
-			KallistiMachineProvider provider = null;
+		int memorySize = 0;
+		KallistiMachineProvider provider = null;
 
-			Iterator<Map.Entry<ComponentContext, Object>> it = kallistiComponents.entrySet().iterator();
-			while (it.hasNext()) {
-				Object o = it.next().getValue();
-				if (o instanceof KallistiMemoryComponent) {
-					memorySize += ((KallistiMemoryComponent) o).amount;
-				} else if (o instanceof KallistiMachineProvider) {
-					if (provider != null && provider != o) {
-						KComputersUtil.LOGGER.error("Provided more than one machine provider!");
-						return false;
-					} else {
-						provider = (KallistiMachineProvider) o;
-					}
+		Iterator<Map.Entry<ComponentContext, Object>> it = kallistiComponents.entrySet().iterator();
+		while (it.hasNext()) {
+			Object o = it.next().getValue();
+			if (o instanceof KallistiMemoryComponent) {
+				memorySize += ((KallistiMemoryComponent) o).amount;
+			} else if (o instanceof KallistiMachineProvider) {
+				if (provider != null && provider != o) {
+					throw new Exception("Found more than one CPU!");
 				} else {
-					continue;
+					provider = (KallistiMachineProvider) o;
 				}
-
-				it.remove();
+			} else {
+				continue;
 			}
 
-			if (provider == null) {
-				KComputersUtil.LOGGER.error("Provided no machine provider!");
-				return false;
-			} else if (memorySize < 256) {
-				KComputersUtil.LOGGER.error("Not enough memory!");
-				return false;
-			}
-
-			Machine machine = provider.create(
-					contextComputer,
-					ref,
-					ref, /* TODO: Actually provide the correct ref */
-					memorySize
-			);
-
-			ref.send(new KallistiRegisterComponentRulesEvent(machine));
-			computer.setMachine(machine);
-		} catch (Exception e) {
-			KComputersUtil.LOGGER.warn("Error initializing machine components!", e);
+			it.remove();
 		}
+
+		if (provider == null) {
+			throw new Exception("No CPU found!");
+		} else if (memorySize < 128) {
+			throw new Exception("Not enough memory!");
+		}
+
+		Machine machine = provider.create(
+				contextComputer,
+				ref,
+				ref, /* TODO: Actually provide the correct ref */
+				memorySize
+		);
+
+		ref.send(new KallistiRegisterComponentRulesEvent(machine));
+		computer.setMachine(machine);
 
 		for (Map.Entry<ComponentContext, Object> entry : kallistiComponents.entrySet()) {
 			KComputersUtil.LOGGER.info("adding " + entry.getValue().getClass().getName());
@@ -245,13 +264,11 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 		try {
 			computer.getMachine().start();
 		} catch (Exception e) {
-			KComputersUtil.LOGGER.warn("Error initializing machine!", e);
 			computer.setMachine(null);
-			return false;
+			throw new Exception(e);
 		}
 
 		computers.add(ref);
 		computer.onMachineChanged(ref);
-		return true;
 	}
 }
