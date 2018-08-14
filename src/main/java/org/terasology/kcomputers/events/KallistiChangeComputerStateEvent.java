@@ -29,15 +29,25 @@ import javax.annotation.Nonnull;
 @ServerEvent
 public class KallistiChangeComputerStateEvent implements Event {
     private EntityRef caller = EntityRef.NULL;
+    private EntityRef machine = EntityRef.NULL;
     private boolean state;
 
     public KallistiChangeComputerStateEvent() {
 
     }
 
-    public KallistiChangeComputerStateEvent(EntityRef caller, boolean state) {
+    public KallistiChangeComputerStateEvent(EntityRef machine, EntityRef caller, boolean state) {
+        this.machine = machine;
         this.caller = caller;
         this.state = state;
+    }
+
+    /**
+     * Get the machine which the state change should be applied to.
+     * @return The reference to the machine entity.
+     */
+    @Nonnull public EntityRef getMachine() {
+        return machine;
     }
 
     /**

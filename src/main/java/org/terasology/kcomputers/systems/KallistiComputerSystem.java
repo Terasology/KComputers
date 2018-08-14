@@ -66,25 +66,30 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 	private Set<EntityRef> computers = new HashSet<>();
 
 	@ReceiveEvent
-	public void computerToggle(KallistiChangeComputerStateEvent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+	public void computerToggle(KallistiChangeComputerStateEvent event, EntityRef target) {
+		// TODO: Disallow faraway toggling of computers
+		if (!event.getMachine().hasComponent(KallistiComputerComponent.class)) {
+			return;
+		}
+
+		KallistiComputerComponent computerComponent = event.getMachine().getComponent(KallistiComputerComponent.class);
+
 		try {
 			if (event.getState()) {
 				if (computerComponent.getMachine() == null) {
-					init(ref, false);
+					init(event.getMachine(), false);
 				}
 			} else {
 				if (computerComponent.getMachine() != null) {
-					deinit(ref, computerComponent);
+					deinit(event.getMachine(), computerComponent);
 				}
 			}
 		} catch (Exception e) {
 			String s = "Error " + (event.getState() ? "initializing" : "deinitializing") + " computer!";
 			EntityRef instigator = event.getCaller();
 			if (instigator.exists() && instigator.hasComponent(ClientComponent.class)) {
-				instigator.send(new ChatMessageEvent(s + ": " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()), ref));
-				if (e.getMessage() == null) {
-					KComputersUtil.LOGGER.warn(s, e);
-				}
+				instigator.send(new ChatMessageEvent(s + ": " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()), event.getMachine()));
+				KComputersUtil.LOGGER.warn(s, e);
 			} else {
 				KComputersUtil.LOGGER.error(s, e);
 			}
