@@ -1,13 +1,13 @@
 {
     "id" : "KComputers",
-    "version" : "0.1.0-SNAPSHOT",
+    "version" : "0.2.0",
     "author" : "Adrian Siekierka <kontakt@asie.pl>",
     "displayName" : "KComputers",
     "description" : "Adds computers powered by the Kallisti library and compatible with OpenComputers.",
     "dependencies" : [
-        {"id" : "Core", "minVersion" : "3.0.0"},
         {"id" : "Kallisti", "minVersion" : "0.1.0"},
         {"id" : "MultiBlock", "minVersion" : "1.0.0"}
     ],
-    "serverSideOnly" : false
+    "serverSideOnly" : false,
+    "isLibrary": true
 }
