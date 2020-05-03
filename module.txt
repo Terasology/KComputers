@@ -6,7 +6,8 @@
     "description" : "Adds computers powered by the Kallisti library and compatible with OpenComputers.",
     "dependencies" : [
         {"id" : "Kallisti", "minVersion" : "0.1.0"},
-        {"id" : "MultiBlock", "minVersion" : "1.0.0"}
+        {"id" : "MultiBlock", "minVersion" : "1.0.0"},
+        {"id" : "Inventory", "minVersion" : "1.1.0"}
     ],
     "serverSideOnly" : false,
     "isLibrary": true
