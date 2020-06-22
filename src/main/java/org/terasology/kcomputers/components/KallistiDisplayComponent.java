@@ -28,6 +28,7 @@ import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.OCTextRenderer;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.assets.HexFont;
+import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.network.NoReplicate;
@@ -170,7 +171,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 			}
 
 			for (int i = 0; i < meshPart.size(); i++) {
-				Vector3f v = new Vector3f(meshPart.getVertex(i));
+				Vector3f v = new Vector3f(JomlUtil.from(meshPart.getVertex(i)));
 				// reduce by border size
 				Vector3f reduction = new Vector3f(
 						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().x))),
@@ -183,7 +184,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 
 				meshBuilder.addVertex(v.sub(.5f, .5f, .5f));
 				meshBuilder.addColor(Color.WHITE);
-				meshBuilder.addTexCoord(meshPart.getTexCoord(i));
+				meshBuilder.addTexCoord(JomlUtil.from(meshPart.getTexCoord(i)));
 			}
 
 			component.mesh = meshBuilder.build();
