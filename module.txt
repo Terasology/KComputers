@@ -1,6 +1,6 @@
 {
     "id": "KComputers",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Adrian Siekierka <kontakt@asie.pl>",
     "displayName": "KComputers",
     "description": "Adds computers powered by the Kallisti library and compatible with OpenComputers.",
