@@ -16,17 +16,14 @@
 package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.input.Keyboard;
 import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
 import org.terasology.kallisti.base.util.keyboard.TranslationAWTLWJGL;
-import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.KallistiKeyboardComponent;
 import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
 import org.terasology.math.geom.Rect2i;
 import org.terasology.math.geom.Vector2i;
 import org.terasology.rendering.assets.texture.Texture;
-import org.terasology.rendering.assets.texture.TextureRegion;
 import org.terasology.rendering.nui.Canvas;
 import org.terasology.rendering.nui.CoreWidget;
 import org.terasology.rendering.nui.databinding.Binding;
@@ -43,50 +40,50 @@ import org.terasology.rendering.nui.events.NUIKeyEvent;
  * sufficiently intuitive for end users.
  */
 public class ComputerDisplayWidget extends CoreWidget {
-	private transient Binding<KallistiDisplayComponent> displayComponent;
-	private transient Binding<EntityRef> localPlayer;
+    private transient Binding<KallistiDisplayComponent> displayComponent;
+    private transient Binding<EntityRef> localPlayer;
 
-	public void bindLocalPlayer(Binding<EntityRef> binding) {
-		this.localPlayer = binding;
-	}
+    public void bindLocalPlayer(Binding<EntityRef> binding) {
+        this.localPlayer = binding;
+    }
 
-	public void bindDisplayComponent(Binding<KallistiDisplayComponent> displayComponent) {
-		this.displayComponent = displayComponent;
-	}
+    public void bindDisplayComponent(Binding<KallistiDisplayComponent> display) {
+        this.displayComponent = display;
+    }
 
-	@Override
-	public void onDraw(Canvas canvas) {
-		Texture texture = displayComponent.get().getTexture();
-		canvas.drawTexture(texture, Rect2i.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight()));
-	}
+    @Override
+    public void onDraw(Canvas canvas) {
+        Texture texture = displayComponent.get().getTexture();
+        canvas.drawTexture(texture, Rect2i.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight()));
+    }
 
-	@Override
-	public Vector2i getPreferredContentSize(Canvas canvas, Vector2i sizeHint) {
-		return new Vector2i(displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight());
-	}
+    @Override
+    public Vector2i getPreferredContentSize(Canvas canvas, Vector2i sizeHint) {
+        return new Vector2i(displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight());
+    }
 
-	private transient int lastCharacter;
+    private transient int lastCharacter;
 
-	@Override
-	public boolean onKeyEvent(NUIKeyEvent event) {
-		EntityRef ref = displayComponent.get().getEntityRef();
-		if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
+    @Override
+    public boolean onKeyEvent(NUIKeyEvent event) {
+        EntityRef ref = displayComponent.get().getEntityRef();
+        if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
 //			KComputersUtil.LOGGER.warn("Known key " + event.getKey().getId());
-			localPlayer.get().send(new KallistiKeyPressedEvent(
-					new KeyboardInputProvider.Key(
-							event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
-							TranslationAWTLWJGL.toAwt(event.getKey().getId()),
-							event.isDown() ? event.getKeyCharacter() : lastCharacter
-					)
-			));
-			if (event.isDown()) {
-				lastCharacter = event.getKeyCharacter();
-			}
-			return true;
-//		} else {
-//			KComputersUtil.LOGGER.warn("Unknown key " + event.getKey().getId());
-		}
+            localPlayer.get().send(new KallistiKeyPressedEvent(
+                new KeyboardInputProvider.Key(
+                    event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
+                    TranslationAWTLWJGL.toAwt(event.getKey().getId()),
+                    event.isDown() ? event.getKeyCharacter() : lastCharacter
+                )
+            ));
+            if (event.isDown()) {
+                lastCharacter = event.getKeyCharacter();
+            }
+            return true;
+//        } else {
+//            KComputersUtil.LOGGER.warn("Unknown key " + event.getKey().getId());
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

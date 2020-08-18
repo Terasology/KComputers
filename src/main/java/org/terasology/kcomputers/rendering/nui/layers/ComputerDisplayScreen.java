@@ -16,7 +16,6 @@
 package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.input.Keyboard;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.players.LocalPlayer;

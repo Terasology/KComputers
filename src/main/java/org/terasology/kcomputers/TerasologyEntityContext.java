@@ -33,40 +33,41 @@ import java.util.List;
  * @see org.terasology.kallisti.base.component.ComponentContext
  */
 public class TerasologyEntityContext implements ComponentContext, ConnectedContext {
-	private final long entityId;
-	private final int id;
-	private final List<ComponentContext> neighbors = new ArrayList<>();
+    private final long entityId;
+    private final int id;
+    private final List<ComponentContext> neighbors = new ArrayList<>();
 
-	/**
-	 * Create a new Terasology entity context
-	 * @param entityId The entity ID
-	 * @param id A value used for discerning between multiple components
-	 *           in one entity.
-	 */
-	public TerasologyEntityContext(long entityId, int id) {
-		this.entityId = entityId;
-		this.id = id;
-	}
+    /**
+     * Create a new Terasology entity context
+     *
+     * @param entityId The entity ID
+     * @param id A value used for discerning between multiple components in one entity.
+     */
+    public TerasologyEntityContext(long entityId, int id) {
+        this.entityId = entityId;
+        this.id = id;
+    }
 
-	/**
-	 * Get the entity ID behind a given component context.
-	 * @return The entity ID.
-	 */
-	public long getEntityId() {
-		return entityId;
-	}
+    /**
+     * Get the entity ID behind a given component context.
+     *
+     * @return The entity ID.
+     */
+    public long getEntityId() {
+        return entityId;
+    }
 
-	public void addNeighbor(TerasologyEntityContext context) {
-		neighbors.add(context);
-	}
+    public void addNeighbor(TerasologyEntityContext context) {
+        neighbors.add(context);
+    }
 
-	@Override
-	public String identifier() {
-		return entityId + ":" + id;
-	}
+    @Override
+    public String identifier() {
+        return entityId + ":" + id;
+    }
 
-	@Override
-	public List<ComponentContext> getNeighbors() {
-		return neighbors;
-	}
+    @Override
+    public List<ComponentContext> getNeighbors() {
+        return neighbors;
+    }
 }

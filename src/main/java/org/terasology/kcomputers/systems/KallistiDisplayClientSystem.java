@@ -34,35 +34,35 @@ import org.terasology.world.block.BlockComponent;
 
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiDisplayClientSystem extends BaseComponentSystem {
-	@In
-	private LocalPlayer player;
-	@In
-	private EntityManager entityManager;
+    @In
+    private LocalPlayer player;
+    @In
+    private EntityManager entityManager;
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
-		event.addComponent(ref, component.getDisplay());
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
+        event.addComponent(ref, component.getDisplay());
+    }
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
-		event.addComponent(ref, component);
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
+        event.addComponent(ref, component);
+    }
 
-	@ReceiveEvent
-	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
-		if (!component.multiBlock) {
-			KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
-			displayComponent.configure(
-					entityManager, entity, component, meshRenderComponent
-			);
-			entity.addComponent(displayComponent);
-			player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
-		}
-	}
+    @ReceiveEvent
+    public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+        if (!component.multiBlock) {
+            KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
+            displayComponent.configure(
+                entityManager, entity, component, meshRenderComponent
+            );
+            entity.addComponent(displayComponent);
+            player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
+        }
+    }
 
-	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
-		meshRenderComponent.clear();
-	}
+    @ReceiveEvent
+    public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+        meshRenderComponent.clear();
+    }
 }

@@ -37,73 +37,76 @@ import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.world.block.BlockComponent;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-	private MultiValueMap<EntityRef, EntityRef> displayListeners = new CollectionBackedMultiValueMap<>(new HashMap<>(), HashSet::new);
-	private Map<EntityRef, Object> lastSource = new HashMap<>();
+    private MultiValueMap<EntityRef, EntityRef> displayListeners = new CollectionBackedMultiValueMap<>(new HashMap<>(), HashSet::new);
+    private Map<EntityRef, Object> lastSource = new HashMap<>();
 
-	@In
-	private EntityManager entityManager;
+    @In
+    private EntityManager entityManager;
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
-		event.addComponent(ref, component.getDisplay());
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
+        event.addComponent(ref, component.getDisplay());
+    }
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
-		event.addComponent(ref, component);
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
+        event.addComponent(ref, component);
+    }
 
-	@Override
-	public void update(float delta) {
-		for (EntityRef machine : displayListeners.keys()) {
-			KallistiDisplayComponent displayComponent = machine.getComponent(KallistiDisplayCandidateComponent.class).getDisplay();
+    @Override
+    public void update(float delta) {
+        for (EntityRef machine : displayListeners.keys()) {
+            KallistiDisplayComponent displayComponent = machine.getComponent(KallistiDisplayCandidateComponent.class).getDisplay();
 
-			if (displayComponent != null) {
-				Object lastSourceObj = lastSource.get(machine);
-				Object sourceObj = displayComponent.getSource();
+            if (displayComponent != null) {
+                Object lastSourceObj = lastSource.get(machine);
+                Object sourceObj = displayComponent.getSource();
 
-				if (lastSourceObj != sourceObj) {
-					lastSource.put(machine, sourceObj);
-					if (sourceObj != null) {
-						KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.INITIAL, displayListeners.values(machine));
-					}
-				} else {
-					if (sourceObj != null) {
-						KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.DELTA, displayListeners.values(machine));
-					}
-				}
-			}
-		}
-	}
+                if (lastSourceObj != sourceObj) {
+                    lastSource.put(machine, sourceObj);
+                    if (sourceObj != null) {
+                        KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.INITIAL, displayListeners.values(machine));
+                    }
+                } else {
+                    if (sourceObj != null) {
+                        KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.DELTA, displayListeners.values(machine));
+                    }
+                }
+            }
+        }
+    }
 
-	@ReceiveEvent
-	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
-		if (!component.multiBlock) {
-			KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
-			displayComponent.configure(
-					entityManager, entity, component, meshRenderComponent
-			);
-			entity.addComponent(displayComponent);
-		}
-	}
+    @ReceiveEvent
+    public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+        if (!component.multiBlock) {
+            KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
+            displayComponent.configure(
+                entityManager, entity, component, meshRenderComponent
+            );
+            entity.addComponent(displayComponent);
+        }
+    }
 
-	@ReceiveEvent(components = ClientComponent.class)
-	public void onRequestInitialUpdate(KallistiRegisterSyncListenerEvent event, EntityRef entity) {
-		for (Object o : event.getSyncEntity().iterateComponents()) {
-			if (o instanceof KallistiDisplayCandidateComponent) {
-				displayListeners.add(event.getSyncEntity(), event.getInstigator());
-				lastSource.put(event.getSyncEntity(), null);
-			}
-		}
-	}
+    @ReceiveEvent(components = ClientComponent.class)
+    public void onRequestInitialUpdate(KallistiRegisterSyncListenerEvent event, EntityRef entity) {
+        for (Object o : event.getSyncEntity().iterateComponents()) {
+            if (o instanceof KallistiDisplayCandidateComponent) {
+                displayListeners.add(event.getSyncEntity(), event.getInstigator());
+                lastSource.put(event.getSyncEntity(), null);
+            }
+        }
+    }
 
-	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component) {
-		displayListeners.remove(entity);
-		lastSource.remove(entity);
-	}
+    @ReceiveEvent
+    public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component) {
+        displayListeners.remove(entity);
+        lastSource.remove(entity);
+    }
 }

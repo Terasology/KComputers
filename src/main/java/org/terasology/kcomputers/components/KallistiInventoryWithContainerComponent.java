@@ -16,14 +16,6 @@
 package org.terasology.kcomputers.components;
 
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.logic.inventory.InventoryComponent;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Marker component. If put on an Entity which also contains an

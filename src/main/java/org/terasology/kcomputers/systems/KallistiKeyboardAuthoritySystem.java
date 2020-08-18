@@ -34,17 +34,17 @@ import org.terasology.logic.characters.CharacterComponent;
  */
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class KallistiKeyboardAuthoritySystem extends BaseComponentSystem {
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiKeyboardComponent component) {
-		event.addComponent(ref, component);
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiKeyboardComponent component) {
+        event.addComponent(ref, component);
+    }
 
-	@ReceiveEvent
-	public void onKeyPressed(KallistiKeyPressedEvent event, EntityRef player) {
-		CharacterComponent characterComponent = player.getComponent(CharacterComponent.class);
-		EntityRef target = characterComponent.authorizedInteractionTarget;
-		if (target != null && target.hasComponent(KallistiKeyboardComponent.class)) {
-			target.getComponent(KallistiKeyboardComponent.class).addKey(event.getKey());
-		}
-	}
+    @ReceiveEvent
+    public void onKeyPressed(KallistiKeyPressedEvent event, EntityRef player) {
+        CharacterComponent characterComponent = player.getComponent(CharacterComponent.class);
+        EntityRef target = characterComponent.authorizedInteractionTarget;
+        if (target != null && target.hasComponent(KallistiKeyboardComponent.class)) {
+            target.getComponent(KallistiKeyboardComponent.class).addKey(event.getKey());
+        }
+    }
 }

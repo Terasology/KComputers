@@ -30,13 +30,11 @@ import java.util.Map;
  */
 public class PeripheralUtils {
     /**
-     * Convert an ItemComponent-containing EntityRef to a Map representation
-     * as understood by OpenComputers methods.
-     *
-     * TODO: This should probably be registered closer to
-     * MachineOpenComputers, but necessary APIs haven't been well-designed
-     * yet on the Kallisti side. For now, however, this suffices, as
-     * all users of it are OpenComputers-specific regardless.
+     * Convert an ItemComponent-containing EntityRef to a Map representation as understood by OpenComputers methods.
+     * <p>
+     * TODO: This should probably be registered closer to MachineOpenComputers, but necessary APIs haven't been
+     * well-designed yet on the Kallisti side. For now, however, this suffices, as all users of it are
+     * OpenComputers-specific regardless.
      *
      * @param item The reference to a given item.
      * @return The OpenComputers-friendly Map.
@@ -56,6 +54,7 @@ public class PeripheralUtils {
 
     /**
      * Get the Terasology Side object based on an OpenComputers side parameter.
+     *
      * @param side The OC side parameter.
      * @return The matching Terasology side object, or null if invalid.
      */

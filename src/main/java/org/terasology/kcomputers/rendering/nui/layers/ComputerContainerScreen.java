@@ -63,7 +63,8 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target, localPlayer.getClientEntity(), true));
+                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target,
+                    localPlayer.getClientEntity(), true));
             }
         });
 
@@ -73,7 +74,8 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target, localPlayer.getClientEntity(), false));
+                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target,
+                    localPlayer.getClientEntity(), false));
             }
         });
     }

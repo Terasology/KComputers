@@ -50,6 +50,7 @@ public class HexFont extends Asset<HexFontData> {
 
     /**
      * Get the font in a Kallisti-usable format.
+     *
      * @return The OCFont instance.
      */
     public OCFont getKallistiFont() {
