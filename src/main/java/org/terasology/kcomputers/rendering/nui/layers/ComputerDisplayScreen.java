@@ -16,14 +16,13 @@
 package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.input.Keyboard;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.players.LocalPlayer;
+import org.terasology.nui.databinding.ReadOnlyBinding;
+import org.terasology.nui.events.NUIKeyEvent;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.CoreScreenLayer;
-import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
-import org.terasology.rendering.nui.events.NUIKeyEvent;
 
 /**
  * Default implementation of a computer display screen UI.
