@@ -15,17 +15,18 @@
  */
 package org.terasology.kcomputers.systems;
 
-import org.terasology.assets.ResourceUrn;
-import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.gestalt.assets.ResourceUrn;
+import org.terasology.gestalt.assets.management.AssetManager;
 import org.terasology.kallisti.base.component.ComponentRule;
 import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.PeripheralOCGPU;
+import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.components.machines.KallistiTransposerComponent;
 import org.terasology.kcomputers.components.parts.KallistiEEPROMAssetedComponent;
 import org.terasology.kcomputers.components.parts.KallistiFilesystemAssetedComponent;
@@ -35,7 +36,6 @@ import org.terasology.kcomputers.components.parts.KallistiOpenComputersGPUCompon
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
 import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
-import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.peripherals.PeripheralTransposer;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.ItemComponent;
