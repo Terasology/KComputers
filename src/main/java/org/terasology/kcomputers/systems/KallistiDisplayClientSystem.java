@@ -1,68 +1,58 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.systems;
 
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
-import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
+import org.terasology.engine.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.players.LocalPlayer;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.MeshRenderComponent;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterSyncListenerEvent;
-import org.terasology.logic.players.LocalPlayer;
-import org.terasology.registry.In;
-import org.terasology.world.block.BlockComponent;
 
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiDisplayClientSystem extends BaseComponentSystem {
-	@In
-	private LocalPlayer player;
-	@In
-	private EntityManager entityManager;
+    @In
+    private LocalPlayer player;
+    @In
+    private EntityManager entityManager;
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayCandidateComponent component) {
-		event.addComponent(ref, component.getDisplay());
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref,
+                                   KallistiDisplayCandidateComponent component) {
+        event.addComponent(ref, component.getDisplay());
+    }
 
-	@ReceiveEvent
-	public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref, KallistiDisplayComponent component) {
-		event.addComponent(ref, component);
-	}
+    @ReceiveEvent
+    public void onAttachComponents(KallistiAttachComponentsEvent event, EntityRef ref,
+                                   KallistiDisplayComponent component) {
+        event.addComponent(ref, component);
+    }
 
-	@ReceiveEvent
-	public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
-		if (!component.multiBlock) {
-			KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
-			displayComponent.configure(
-					entityManager, entity, component, meshRenderComponent
-			);
-			entity.addComponent(displayComponent);
-			player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
-		}
-	}
+    @ReceiveEvent
+    public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent,
+                                 KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+        if (!component.multiBlock) {
+            KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
+            displayComponent.configure(
+                    entityManager, entity, component, meshRenderComponent
+            );
+            entity.addComponent(displayComponent);
+            player.getClientEntity().send(new KallistiRegisterSyncListenerEvent(player.getClientEntity(), entity));
+        }
+    }
 
-	@ReceiveEvent
-	public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
-		meshRenderComponent.clear();
-	}
+    @ReceiveEvent
+    public void displayDeactivated(BeforeDeactivateComponent event, EntityRef entity, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+        meshRenderComponent.clear();
+    }
 }

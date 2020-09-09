@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.assets;
 
 import org.terasology.gestalt.assets.AssetData;
@@ -36,183 +23,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class KallistiArchiveData implements AssetData, FileSystem {
-    public static class VirtualDirectory extends VirtualBase {
-        private final Map<String, VirtualDirectory> subdirs;
-        private final Map<String, VirtualFile> files;
-
-        public VirtualDirectory(ZipEntry entry) {
-            super(entry);
-            this.subdirs = new TreeMap<>(Comparator.naturalOrder());
-            this.files = new TreeMap<>(Comparator.naturalOrder());
-        }
-
-        public void addDirectory(VirtualDirectory directory) {
-            this.subdirs.put(directory.name(), directory);
-        }
-
-        public void addFile(VirtualFile file) {
-            this.files.put(file.name(), file);
-        }
-
-        public Optional<VirtualDirectory> getDirectory(String name) {
-            return Optional.ofNullable(subdirs.get(name));
-        }
-
-        public Optional<VirtualFile> getFile(String name) {
-            return Optional.ofNullable(files.get(name));
-        }
-
-        public Collection<VirtualDirectory> getDirectories() {
-            return Collections.unmodifiableCollection(subdirs.values());
-        }
-
-        public Collection<VirtualFile> getFiles() {
-            return Collections.unmodifiableCollection(files.values());
-        }
-
-        @Override
-        public long size() {
-            return 0;
-        }
-    }
-
-    public static class VirtualFile extends VirtualBase {
-        private final byte[] data;
-
-        public VirtualFile(ZipEntry entry, InputStream stream) throws IOException {
-            super(entry);
-
-            data = KComputersUtil.toByteArray(stream);
-        }
-
-        public byte[] getData() {
-            return data;
-        }
-
-        @Override
-        public long size() {
-            return data.length;
-        }
-    }
-
-    private static abstract class VirtualBase implements FileSystem.Metadata {
-        private final String path, name;
-        private final Date dateCreate, dateModify;
-
-        public VirtualBase(ZipEntry entry) {
-            this.path = entry.getName().endsWith("/") ? entry.getName().substring(0, entry.getName().length() - 1) : entry.getName();
-            String[] pathSplit = path.split("/");
-            this.name = pathSplit[pathSplit.length - 1];
-
-            if (entry.getCreationTime() != null) {
-                this.dateCreate = new Date(entry.getCreationTime().toMillis());
-            } else {
-                this.dateCreate = new Date(0);
-            }
-            if (entry.getLastModifiedTime() != null) {
-                this.dateModify = new Date(entry.getLastModifiedTime().toMillis());
-            } else {
-                this.dateModify = new Date(0);
-            }
-        }
-
-        @Override
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public String path() {
-            return path;
-        }
-
-        @Override
-        public boolean isDirectory() {
-            return (this instanceof VirtualDirectory);
-        }
-
-        @Override
-        public boolean canRead() {
-            return true;
-        }
-
-        @Override
-        public boolean canWrite() {
-            return false;
-        }
-
-        @Override
-        public Date creationTime() {
-            return dateCreate;
-        }
-
-        @Override
-        public Date modificationTime() {
-            return dateModify;
-        }
-    }
-
-    public static class ByteArrayFile implements File {
-        private final byte[] data;
-        private long pos;
-
-        public ByteArrayFile(byte[] data) {
-            this.data = data;
-            this.pos = 0;
-        }
-
-        @Override
-        public boolean isSeekable() {
-            return true;
-        }
-
-        @Override
-        public boolean isReadable() {
-            return true;
-        }
-
-        @Override
-        public boolean isWritable() {
-            return false;
-        }
-
-        @Override
-        public long seek(Whence whence, int offset) throws IOException {
-            switch (whence) {
-                case CURRENT:
-                    pos += offset;
-                    break;
-                case BEGINNING:
-                    pos = offset;
-                    break;
-                case END:
-                    pos = data.length + offset;
-                    break;
-            }
-            return pos;
-        }
-
-        @Override
-        public byte[] read(int bytes) throws IOException {
-            byte[] d = new byte[Math.max(Math.min((int) (data.length - pos), bytes), 0)];
-            if (d.length > 0) {
-                System.arraycopy(data, (int) pos, d, 0, d.length);
-                pos += d.length;
-            }
-            return d;
-        }
-
-        @Override
-        public boolean write(byte[] value, int offset, int len) throws IOException {
-            return false;
-        }
-
-        @Override
-        public void close() throws Exception {
-
-        }
-    }
-
     private final VirtualDirectory root;
 
     public KallistiArchiveData(ZipInputStream stream) throws IOException {
@@ -341,5 +151,183 @@ public class KallistiArchiveData implements AssetData, FileSystem {
 
     public String readFully(String path, Charset charset) {
         return new String(readFully(path), charset);
+    }
+
+    public static class VirtualDirectory extends VirtualBase {
+        private final Map<String, VirtualDirectory> subdirs;
+        private final Map<String, VirtualFile> files;
+
+        public VirtualDirectory(ZipEntry entry) {
+            super(entry);
+            this.subdirs = new TreeMap<>(Comparator.naturalOrder());
+            this.files = new TreeMap<>(Comparator.naturalOrder());
+        }
+
+        public void addDirectory(VirtualDirectory directory) {
+            this.subdirs.put(directory.name(), directory);
+        }
+
+        public void addFile(VirtualFile file) {
+            this.files.put(file.name(), file);
+        }
+
+        public Optional<VirtualDirectory> getDirectory(String name) {
+            return Optional.ofNullable(subdirs.get(name));
+        }
+
+        public Optional<VirtualFile> getFile(String name) {
+            return Optional.ofNullable(files.get(name));
+        }
+
+        public Collection<VirtualDirectory> getDirectories() {
+            return Collections.unmodifiableCollection(subdirs.values());
+        }
+
+        public Collection<VirtualFile> getFiles() {
+            return Collections.unmodifiableCollection(files.values());
+        }
+
+        @Override
+        public long size() {
+            return 0;
+        }
+    }
+
+    public static class VirtualFile extends VirtualBase {
+        private final byte[] data;
+
+        public VirtualFile(ZipEntry entry, InputStream stream) throws IOException {
+            super(entry);
+
+            data = KComputersUtil.toByteArray(stream);
+        }
+
+        public byte[] getData() {
+            return data;
+        }
+
+        @Override
+        public long size() {
+            return data.length;
+        }
+    }
+
+    private static abstract class VirtualBase implements FileSystem.Metadata {
+        private final String path, name;
+        private final Date dateCreate, dateModify;
+
+        public VirtualBase(ZipEntry entry) {
+            this.path = entry.getName().endsWith("/") ? entry.getName().substring(0, entry.getName().length() - 1) :
+                    entry.getName();
+            String[] pathSplit = path.split("/");
+            this.name = pathSplit[pathSplit.length - 1];
+
+            if (entry.getCreationTime() != null) {
+                this.dateCreate = new Date(entry.getCreationTime().toMillis());
+            } else {
+                this.dateCreate = new Date(0);
+            }
+            if (entry.getLastModifiedTime() != null) {
+                this.dateModify = new Date(entry.getLastModifiedTime().toMillis());
+            } else {
+                this.dateModify = new Date(0);
+            }
+        }
+
+        @Override
+        public String name() {
+            return name;
+        }
+
+        @Override
+        public String path() {
+            return path;
+        }
+
+        @Override
+        public boolean isDirectory() {
+            return (this instanceof VirtualDirectory);
+        }
+
+        @Override
+        public boolean canRead() {
+            return true;
+        }
+
+        @Override
+        public boolean canWrite() {
+            return false;
+        }
+
+        @Override
+        public Date creationTime() {
+            return dateCreate;
+        }
+
+        @Override
+        public Date modificationTime() {
+            return dateModify;
+        }
+    }
+
+    public static class ByteArrayFile implements File {
+        private final byte[] data;
+        private long pos;
+
+        public ByteArrayFile(byte[] data) {
+            this.data = data;
+            this.pos = 0;
+        }
+
+        @Override
+        public boolean isSeekable() {
+            return true;
+        }
+
+        @Override
+        public boolean isReadable() {
+            return true;
+        }
+
+        @Override
+        public boolean isWritable() {
+            return false;
+        }
+
+        @Override
+        public long seek(Whence whence, int offset) throws IOException {
+            switch (whence) {
+                case CURRENT:
+                    pos += offset;
+                    break;
+                case BEGINNING:
+                    pos = offset;
+                    break;
+                case END:
+                    pos = data.length + offset;
+                    break;
+            }
+            return pos;
+        }
+
+        @Override
+        public byte[] read(int bytes) throws IOException {
+            byte[] d = new byte[Math.max(Math.min((int) (data.length - pos), bytes), 0)];
+            if (d.length > 0) {
+                System.arraycopy(data, (int) pos, d, 0, d.length);
+                pos += d.length;
+            }
+            return d;
+        }
+
+        @Override
+        public boolean write(byte[] value, int offset, int len) throws IOException {
+            return false;
+        }
+
+        @Override
+        public void close() throws Exception {
+
+        }
     }
 }

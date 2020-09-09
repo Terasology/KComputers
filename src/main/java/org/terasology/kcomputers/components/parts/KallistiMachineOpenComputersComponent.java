@@ -1,23 +1,11 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.components.parts;
 
 import com.google.common.base.Charsets;
-import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.Component;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.gestalt.assets.ResourceUrn;
 import org.terasology.gestalt.assets.management.AssetManager;
 import org.terasology.jnlua.LuaState;
@@ -29,22 +17,21 @@ import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
-import org.terasology.registry.CoreRegistry;
 
 /**
  * Component for an OpenComputers-style machine provider.
  */
 public class KallistiMachineOpenComputersComponent implements Component, KallistiMachineProvider {
     /**
-     * The version of Lua to use for this machine provider, in the form
-     * MAJOR.MINOR (for example "5.2" or "5.3").
+     * The version of Lua to use for this machine provider, in the form MAJOR.MINOR (for example "5.2" or "5.3").
      *
      * @see org.terasology.jnlua.LuaState
      */
     public String luaVersion;
 
     @Override
-    public Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity, int memorySize) {
+    public Machine create(ComponentContext kallistiContext, EntityRef computerEntity, EntityRef providerEntity,
+                          int memorySize) {
         Class<? extends LuaState> luaClass;
 
         if ("5.2".equals(luaVersion)) {
