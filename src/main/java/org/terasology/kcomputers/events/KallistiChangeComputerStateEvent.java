@@ -17,7 +17,6 @@ package org.terasology.kcomputers.events;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
-import org.terasology.network.NetworkEvent;
 import org.terasology.network.ServerEvent;
 
 import javax.annotation.Nonnull;
@@ -44,22 +43,27 @@ public class KallistiChangeComputerStateEvent implements Event {
 
     /**
      * Get the machine which the state change should be applied to.
+     *
      * @return The reference to the machine entity.
      */
-    @Nonnull public EntityRef getMachine() {
+    @Nonnull
+    public EntityRef getMachine() {
         return machine;
     }
 
     /**
      * Get the entity from which the computer state change call originated, if any.
+     *
      * @return The reference to the entity.
      */
-    @Nonnull public EntityRef getCaller() {
+    @Nonnull
+    public EntityRef getCaller() {
         return caller;
     }
 
     /**
      * Get the computer's target state.
+     *
      * @return True if "on", false if "off".
      */
     public boolean getState() {

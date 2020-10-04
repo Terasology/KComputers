@@ -22,7 +22,6 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.KComputersUtil;
-import org.terasology.kcomputers.components.KallistiDisplayCandidateComponent;
 import org.terasology.kcomputers.events.KallistiSyncDeltaEvent;
 import org.terasology.kcomputers.events.KallistiSyncInitialEvent;
 
@@ -38,37 +37,37 @@ import java.io.IOException;
  */
 @RegisterSystem(RegisterMode.CLIENT)
 public class KallistiSyncClientSystem extends BaseComponentSystem {
-	@ReceiveEvent
-	public void onSyncInitial(KallistiSyncInitialEvent event, EntityRef entity) {
-		onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.INITIAL);
-	}
+    @ReceiveEvent
+    public void onSyncInitial(KallistiSyncInitialEvent event, EntityRef entity) {
+        onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.INITIAL);
+    }
 
-	@ReceiveEvent
-	public void onSyncDelta(KallistiSyncDeltaEvent event, EntityRef entity) {
-		onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.DELTA);
-	}
+    @ReceiveEvent
+    public void onSyncDelta(KallistiSyncDeltaEvent event, EntityRef entity) {
+        onSync(event.getSyncEntity(), event.getData(), Synchronizable.Type.DELTA);
+    }
 
-	private void onSync(EntityRef target, byte[] data, Synchronizable.Type type) {
-		Synchronizable.Receiver s = null;
+    private void onSync(EntityRef target, byte[] data, Synchronizable.Type type) {
+        Synchronizable.Receiver s = null;
 
-		for (Object o : KComputersUtil.gatherKallistiComponents(target).values()) {
-			if (o instanceof Synchronizable.Receiver) {
-				if (s != null) {
-					throw new RuntimeException("May only have one Synchronizable per Entity! TODO");
-				} else {
-					s = (Synchronizable.Receiver) o;
-				}
-			}
-		}
+        for (Object o : KComputersUtil.gatherKallistiComponents(target).values()) {
+            if (o instanceof Synchronizable.Receiver) {
+                if (s != null) {
+                    throw new RuntimeException("May only have one Synchronizable per Entity! TODO");
+                } else {
+                    s = (Synchronizable.Receiver) o;
+                }
+            }
+        }
 
-		if (s != null) {
-			try {
-				s.update(new ByteArrayInputStream(data));
-			} catch (IOException e) {
-				KComputersUtil.LOGGER.warn("Error syncing with client!", e);
-			}
-		} else {
-			// TODO: log warning
-		}
-	}
+        if (s != null) {
+            try {
+                s.update(new ByteArrayInputStream(data));
+            } catch (IOException e) {
+                KComputersUtil.LOGGER.warn("Error syncing with client!", e);
+            }
+        } else {
+            // TODO: log warning
+        }
+    }
 }

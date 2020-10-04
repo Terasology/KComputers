@@ -22,7 +22,6 @@ import org.terasology.kallisti.base.util.keyboard.TranslationAWTLWJGL;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.KallistiKeyboardComponent;
 import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
-import org.terasology.math.geom.Rect2i;
 import org.terasology.nui.Canvas;
 import org.terasology.nui.CoreWidget;
 import org.terasology.nui.databinding.Binding;
@@ -69,7 +68,6 @@ public class ComputerDisplayWidget extends CoreWidget {
     public boolean onKeyEvent(NUIKeyEvent event) {
         EntityRef ref = displayComponent.get().getEntityRef();
         if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
-//			KComputersUtil.LOGGER.warn("Known key " + event.getKey().getId());
             localPlayer.get().send(new KallistiKeyPressedEvent(
                 new KeyboardInputProvider.Key(
                     event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
@@ -81,11 +79,7 @@ public class ComputerDisplayWidget extends CoreWidget {
                 lastCharacter = event.getKeyCharacter();
             }
             return true;
-//		} else {
-//			KComputersUtil.LOGGER.warn("Unknown key " + event.getKey().getId());
         }
-
         return false;
     }
-
 }

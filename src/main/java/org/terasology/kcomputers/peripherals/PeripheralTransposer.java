@@ -38,7 +38,8 @@ public class PeripheralTransposer implements Peripheral {
     private final BlockComponent block;
     private final InventoryManager inventoryManager;
 
-    public PeripheralTransposer(WorldProvider provider, BlockEntityRegistry registry, EntityRef self, BlockComponent block, InventoryManager inventoryManager) {
+    public PeripheralTransposer(WorldProvider provider, BlockEntityRegistry registry, EntityRef self,
+                                BlockComponent block, InventoryManager inventoryManager) {
         this.provider = provider;
         this.registry = registry;
         this.self = self;
@@ -48,13 +49,14 @@ public class PeripheralTransposer implements Peripheral {
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getInventorySize(Number side) {
-        return getInventory(side.intValue(), (ref) -> new Object[] { ref.getComponent(InventoryComponent.class).itemSlots.size() });
+        return getInventory(side.intValue(),
+            (ref) -> new Object[]{ref.getComponent(InventoryComponent.class).itemSlots.size()});
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] transferItem(Number sourceSide, Number sinkSide, Number count, Number sourceSlot, Number sinkSlot) {
         if (count.intValue() <= 0) {
-            return new Object[] { null, "invalid count" };
+            return new Object[]{null, "invalid count"};
         }
 
         return getInventory(sourceSide.intValue(), (sourceRef) -> getInventory(sinkSide.intValue(), (sinkRef) -> {
@@ -62,34 +64,37 @@ public class PeripheralTransposer implements Peripheral {
             int sinkSize = sinkRef.getComponent(InventoryComponent.class).itemSlots.size();
 
             if (sourceSlot.intValue() < 0 || sourceSlot.intValue() >= sourceSize) {
-                return new Object[] { null, "invalid source slot" };
+                return new Object[]{null, "invalid source slot"};
             }
 
             if (sinkSlot.intValue() < 0 || sinkSlot.intValue() >= sinkSize) {
-                return new Object[] { null, "invalid sink slot" };
+                return new Object[]{null, "invalid sink slot"};
             }
 
-            if (inventoryManager.moveItem(sourceRef, self, sourceSlot.intValue(), sinkRef, sinkSlot.intValue(), count.intValue())) {
-                return new Object[] { count.intValue() };
+            if (inventoryManager.moveItem(sourceRef, self, sourceSlot.intValue(), sinkRef, sinkSlot.intValue(),
+                count.intValue())) {
+                return new Object[]{count.intValue()};
             } else {
-                return new Object[] { null, "item move failure" };
+                return new Object[]{null, "item move failure"};
             }
         }));
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getSlotStackSize(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref).getOrDefault("size", 99) });
+        return getItem(side.intValue(), slot.intValue(),
+            (ref) -> new Object[]{PeripheralUtils.convertItemOC(ref).getOrDefault("size", 99)});
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getSlotMaxStackSize(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref).getOrDefault("maxSize", 99) });
+        return getItem(side.intValue(), slot.intValue(),
+            (ref) -> new Object[]{PeripheralUtils.convertItemOC(ref).getOrDefault("maxSize", 99)});
     }
 
     @ComponentMethod(returnsMultipleArguments = true)
     public Object[] getStackInSlot(Number side, Number slot) {
-        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[] { PeripheralUtils.convertItemOC(ref) });
+        return getItem(side.intValue(), slot.intValue(), (ref) -> new Object[]{PeripheralUtils.convertItemOC(ref)});
     }
 
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
@@ -97,8 +102,9 @@ public class PeripheralTransposer implements Peripheral {
     public Object[] compareStacks(Number side, Number slotA, Number slotB, Optional<Boolean> checkTag) {
         // ignore checkTag, we're not
 
-        return getItem(side.intValue(), slotA.intValue(), (refA) -> getItem(side.intValue(), slotB.intValue(), (refB) -> {
-            return new Object[] { refA.getComponent(ItemComponent.class).stackId.equals(refB.getComponent(ItemComponent.class).stackId) };
+        return getItem(side.intValue(), slotA.intValue(), (refA) -> getItem(side.intValue(), slotB.intValue(),
+            (refB) -> {
+            return new Object[]{refA.getComponent(ItemComponent.class).stackId.equals(refB.getComponent(ItemComponent.class).stackId)};
         }));
     }
 
@@ -112,7 +118,7 @@ public class PeripheralTransposer implements Peripheral {
             InventoryComponent component = ref.getComponent(InventoryComponent.class);
             int slotI = slot;
             if (slotI < 0 || slotI >= component.itemSlots.size()) {
-                return new Object[]{ null, "invalid slot number" };
+                return new Object[]{null, "invalid slot number"};
             } else {
                 EntityRef item = component.itemSlots.get(slotI);
                 return result.apply(item);
