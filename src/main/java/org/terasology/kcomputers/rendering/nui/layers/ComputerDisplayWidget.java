@@ -15,19 +15,19 @@
  */
 package org.terasology.kcomputers.rendering.nui.layers;
 
+import org.joml.Vector2i;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
 import org.terasology.kallisti.base.util.keyboard.TranslationAWTLWJGL;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
 import org.terasology.kcomputers.components.KallistiKeyboardComponent;
 import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
-import org.terasology.math.geom.Rect2i;
-import org.terasology.math.geom.Vector2i;
+import org.terasology.nui.Canvas;
+import org.terasology.nui.CoreWidget;
+import org.terasology.nui.databinding.Binding;
+import org.terasology.nui.events.NUIKeyEvent;
+import org.terasology.nui.util.RectUtility;
 import org.terasology.rendering.assets.texture.Texture;
-import org.terasology.rendering.nui.Canvas;
-import org.terasology.rendering.nui.CoreWidget;
-import org.terasology.rendering.nui.databinding.Binding;
-import org.terasology.rendering.nui.events.NUIKeyEvent;
 
 /**
  * Widget which allows rendering the buffer of a KallistiDisplayComponent
@@ -54,7 +54,7 @@ public class ComputerDisplayWidget extends CoreWidget {
     @Override
     public void onDraw(Canvas canvas) {
         Texture texture = displayComponent.get().getTexture();
-        canvas.drawTexture(texture, Rect2i.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight()));
+        canvas.drawTexture(texture, RectUtility.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight()));
     }
 
     @Override
@@ -68,7 +68,6 @@ public class ComputerDisplayWidget extends CoreWidget {
     public boolean onKeyEvent(NUIKeyEvent event) {
         EntityRef ref = displayComponent.get().getEntityRef();
         if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
-//			KComputersUtil.LOGGER.warn("Known key " + event.getKey().getId());
             localPlayer.get().send(new KallistiKeyPressedEvent(
                 new KeyboardInputProvider.Key(
                     event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
@@ -80,10 +79,7 @@ public class ComputerDisplayWidget extends CoreWidget {
                 lastCharacter = event.getKeyCharacter();
             }
             return true;
-//        } else {
-//            KComputersUtil.LOGGER.warn("Unknown key " + event.getKey().getId());
         }
-
         return false;
     }
 }

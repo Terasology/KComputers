@@ -39,7 +39,7 @@ import org.terasology.rendering.assets.mesh.MeshBuilder;
 import org.terasology.rendering.assets.texture.Texture;
 import org.terasology.rendering.assets.texture.TextureData;
 import org.terasology.rendering.logic.MeshComponent;
-import org.terasology.rendering.nui.Color;
+import org.terasology.nui.Color;
 import org.terasology.utilities.Assets;
 import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockPart;
