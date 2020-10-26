@@ -72,11 +72,11 @@ public class ComputerDisplayWidget extends CoreWidget {
                 new KeyboardInputProvider.Key(
                     event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
                     TranslationAWTLWJGL.toAwt(event.getKey().getId()),
-                    event.isDown() ? event.getKeyCharacter() : lastCharacter
+                    event.isDown() ? event.getKey().getId() : lastCharacter
                 )
             ));
             if (event.isDown()) {
-                lastCharacter = event.getKeyCharacter();
+                lastCharacter = event.getKey().getId();
             }
             return true;
         }
