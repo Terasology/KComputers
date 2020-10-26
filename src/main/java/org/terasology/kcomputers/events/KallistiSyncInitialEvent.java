@@ -25,26 +25,26 @@ import java.io.IOException;
 
 @OwnerEvent
 public class KallistiSyncInitialEvent implements Event {
-	private EntityRef entity;
-	private byte[] data;
+    private EntityRef entity;
+    private byte[] data;
 
-	public KallistiSyncInitialEvent() {
+    public KallistiSyncInitialEvent() {
 
-	}
+    }
 
-	public KallistiSyncInitialEvent(EntityRef entity, Synchronizable sync) throws IOException {
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		sync.writeSyncPacket(Synchronizable.Type.INITIAL, stream);
+    public KallistiSyncInitialEvent(EntityRef entity, Synchronizable sync) throws IOException {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        sync.writeSyncPacket(Synchronizable.Type.INITIAL, stream);
 
-		this.entity = entity;
-		this.data = stream.toByteArray();
-	}
+        this.entity = entity;
+        this.data = stream.toByteArray();
+    }
 
-	public EntityRef getSyncEntity() {
-		return entity;
-	}
+    public EntityRef getSyncEntity() {
+        return entity;
+    }
 
-	public byte[] getData() {
-		return data;
-	}
+    public byte[] getData() {
+        return data;
+    }
 }

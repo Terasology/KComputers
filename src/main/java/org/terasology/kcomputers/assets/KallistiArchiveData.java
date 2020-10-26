@@ -95,9 +95,11 @@ public class KallistiArchiveData implements AssetData, FileSystem {
         }
     }
 
-    private static abstract class VirtualBase implements FileSystem.Metadata {
-        private final String path, name;
-        private final Date dateCreate, dateModify;
+    private abstract static class VirtualBase implements FileSystem.Metadata {
+        private final String path;
+        private final String name;
+        private final Date dateCreate;
+        private final Date dateModify;
 
         public VirtualBase(ZipEntry entry) {
             this.path = entry.getName().endsWith("/") ? entry.getName().substring(0, entry.getName().length() - 1) : entry.getName();

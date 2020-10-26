@@ -17,7 +17,6 @@ package org.terasology.kcomputers.events;
 
 import org.terasology.entitySystem.event.Event;
 import org.terasology.kallisti.base.component.Machine;
-import org.terasology.network.ServerEvent;
 
 /**
  * Event used for registering classes and objects with @ComponentRule
@@ -33,8 +32,7 @@ public class KallistiRegisterComponentRulesEvent implements Event {
     }
 
     /**
-     * Register all @ComponentRule-annotated methods
-     * provided by a given class.
+     * Register all @ComponentRule-annotated methods provided by a given class.
      *
      * @param c The class.
      */
@@ -43,8 +41,7 @@ public class KallistiRegisterComponentRulesEvent implements Event {
     }
 
     /**
-     * Register all @ComponentRule-annotated methods
-     * provided by a given object.
+     * Register all @ComponentRule-annotated methods provided by a given object.
      *
      * @param o The object.
      */

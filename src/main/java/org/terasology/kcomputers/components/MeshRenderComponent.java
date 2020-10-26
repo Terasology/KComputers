@@ -39,90 +39,93 @@ import java.util.Map;
  * using the provided methods.
  */
 public class MeshRenderComponent implements Component {
-	private final Map<String, EntityRef> meshes = new HashMap<>();
+    private final Map<String, EntityRef> meshes = new HashMap<>();
 
-	/**
-	 * Dispose of a given mesh entity and its sub-elements.
-	 * @param ref The EntityRef to dispose of.
-	 * @return True if the EntityRef was disposed of.
- 	 */
-	private boolean dispose(EntityRef ref) {
-		if (ref != null) {
-			if (ref.getComponent(MeshComponent.class) != null) {
-				ref.getComponent(MeshComponent.class).mesh.dispose();
-				ref.getComponent(MeshComponent.class).material.dispose();
-			}
-			ref.destroy();
-			return true;
-		} else {
-			return false;
-		}
-	}
+    /**
+     * Dispose of a given mesh entity and its sub-elements.
+     *
+     * @param ref The EntityRef to dispose of.
+     * @return True if the EntityRef was disposed of.
+     */
+    private boolean dispose(EntityRef ref) {
+        if (ref != null) {
+            if (ref.getComponent(MeshComponent.class) != null) {
+                ref.getComponent(MeshComponent.class).mesh.dispose();
+                ref.getComponent(MeshComponent.class).material.dispose();
+            }
+            ref.destroy();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * Remove a mesh entity with a given key.
-	 * @param key The key of the mesh entity.
-	 * @return Whether or not the removal was successful.
-	 */
-	public boolean remove(String key) {
-		return dispose(meshes.remove(key));
-	}
+    /**
+     * Remove a mesh entity with a given key.
+     *
+     * @param key The key of the mesh entity.
+     * @return Whether or not the removal was successful.
+     */
+    public boolean remove(String key) {
+        return dispose(meshes.remove(key));
+    }
 
-	/**
-	 * Check if a mesh entity with a given key is present.
-	 * @param key The key of the mesh entity.
-	 * @return True if the mesh entity is present, false otherwise.
-	 */
-	public boolean has(String key) {
-		return meshes.containsKey(key);
-	}
+    /**
+     * Check if a mesh entity with a given key is present.
+     *
+     * @param key The key of the mesh entity.
+     * @return True if the mesh entity is present, false otherwise.
+     */
+    public boolean has(String key) {
+        return meshes.containsKey(key);
+    }
 
-	/**
-	 * Get the MeshComponent of a mesh entity with a given key.
-	 * @param key The key of the mesh entity.
-	 * @return The MeshComponent by the given key, or null if no such key is present.
-	 */
-	public MeshComponent get(String key) {
-		EntityRef ref = meshes.get(key);
-		return ref != null ? ref.getComponent(MeshComponent.class) : null;
-	}
+    /**
+     * Get the MeshComponent of a mesh entity with a given key.
+     *
+     * @param key The key of the mesh entity.
+     * @return The MeshComponent by the given key, or null if no such key is present.
+     */
+    public MeshComponent get(String key) {
+        EntityRef ref = meshes.get(key);
+        return ref != null ? ref.getComponent(MeshComponent.class) : null;
+    }
 
-	/**
-	 * Add a new mesh entity.
-	 *
-	 * TODO: Currently, this will always clear the existing mesh entity.
-	 * While sufficient for KallistiDisplayComponent usage, it should probably
-	 * be improved depending on how well the engine reacts to MeshComponent changes.
-	 *
-	 * @param manager An EntityManager instance.
-	 * @param key The key used for the mesh entity.
-	 * @param location The location of the mesh entity.
-	 * @param component The desired MeshComponent.
-	 * @return True if the addition was successful, false otherwise.
-	 */
-	public boolean add(EntityManager manager, String key, Vector3f location, MeshComponent component) {
-		EntityRef ref = meshes.get(key);
-		if (ref != null) {
-			if (remove(key)) {
-				ref = null;
-			} else {
-				return false;
-			}
-		}
+    /**
+     * Add a new mesh entity.
+     * <p>
+     * TODO: Currently, this will always clear the existing mesh entity. While sufficient for KallistiDisplayComponent
+     * usage, it should probably be improved depending on how well the engine reacts to MeshComponent changes.
+     *
+     * @param manager An EntityManager instance.
+     * @param key The key used for the mesh entity.
+     * @param location The location of the mesh entity.
+     * @param component The desired MeshComponent.
+     * @return True if the addition was successful, false otherwise.
+     */
+    public boolean add(EntityManager manager, String key, Vector3f location, MeshComponent component) {
+        EntityRef ref = meshes.get(key);
+        if (ref != null) {
+            if (remove(key)) {
+                ref = null;
+            } else {
+                return false;
+            }
+        }
 
-		EntityBuilder builder = manager.newBuilder();
-		builder.setPersistent(false);
-		builder.addComponent(new LocationComponent(location));
-		builder.addComponent(component);
-		ref = builder.build();
-		meshes.put(key, ref);
-		return true;
-	}
+        EntityBuilder builder = manager.newBuilder();
+        builder.setPersistent(false);
+        builder.addComponent(new LocationComponent(location));
+        builder.addComponent(component);
+        ref = builder.build();
+        meshes.put(key, ref);
+        return true;
+    }
 
-	public void clear() {
-		for (EntityRef ref : meshes.values()) {
-			dispose(ref);
-		}
-		meshes.clear();
-	}
+    public void clear() {
+        for (EntityRef ref : meshes.values()) {
+            dispose(ref);
+        }
+        meshes.clear();
+    }
 }

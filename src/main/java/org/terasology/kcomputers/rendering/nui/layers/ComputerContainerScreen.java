@@ -20,11 +20,11 @@ import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.logic.characters.CharacterComponent;
 import org.terasology.logic.players.LocalPlayer;
+import org.terasology.nui.databinding.ReadOnlyBinding;
+import org.terasology.nui.widgets.UIButton;
 import org.terasology.registry.In;
 import org.terasology.rendering.nui.CoreScreenLayer;
-import org.terasology.rendering.nui.databinding.ReadOnlyBinding;
 import org.terasology.rendering.nui.layers.ingame.inventory.InventoryGrid;
-import org.terasology.rendering.nui.widgets.UIButton;
 
 /**
  * Default implementation of a computer container UI, complete
@@ -63,7 +63,8 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target, localPlayer.getClientEntity(), true));
+                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target,
+                    localPlayer.getClientEntity(), true));
             }
         });
 
@@ -73,7 +74,8 @@ public class ComputerContainerScreen extends CoreScreenLayer {
             CharacterComponent characterComponent = characterEntity.getComponent(CharacterComponent.class);
             EntityRef target = characterComponent.predictedInteractionTarget;
             if (target.hasComponent(KallistiComputerComponent.class)) {
-                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target, localPlayer.getClientEntity(), false));
+                localPlayer.getClientEntity().send(new KallistiChangeComputerStateEvent(target,
+                    localPlayer.getClientEntity(), false));
             }
         });
     }

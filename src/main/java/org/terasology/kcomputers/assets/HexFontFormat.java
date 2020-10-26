@@ -42,12 +42,12 @@ public class HexFontFormat extends AbstractAssetFileFormat<HexFontData> {
         }
 
         try (InputStream stream = inputs.get(0).openStream()) {
-            OCFont font = new OCFont(new String(KComputersUtil.toByteArray(stream), Charsets.UTF_8), Integer.parseInt(parts[parts.length - 1]));
+            OCFont font = new OCFont(new String(KComputersUtil.toByteArray(stream), Charsets.UTF_8),
+                Integer.parseInt(parts[parts.length - 1]));
 
             return new HexFontData(font);
         } catch (IOException e) {
             throw new IOException("Failed to load font: " + e.getMessage(), e);
         }
     }
-
 }

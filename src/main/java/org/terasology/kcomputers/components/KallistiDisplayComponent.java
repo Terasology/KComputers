@@ -16,6 +16,7 @@
 package org.terasology.kcomputers.components;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.joml.Vector3i;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
 import org.terasology.entitySystem.Component;
@@ -30,7 +31,7 @@ import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Vector3f;
+import org.joml.Vector3f;
 import org.terasology.network.NoReplicate;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.rendering.assets.material.Material;
@@ -39,7 +40,7 @@ import org.terasology.rendering.assets.mesh.MeshBuilder;
 import org.terasology.rendering.assets.texture.Texture;
 import org.terasology.rendering.assets.texture.TextureData;
 import org.terasology.rendering.logic.MeshComponent;
-import org.terasology.rendering.nui.Color;
+import org.terasology.nui.Color;
 import org.terasology.utilities.Assets;
 import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockPart;
@@ -65,202 +66,206 @@ import java.nio.ByteBuffer;
  */
 @NoReplicate
 public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver {
-	private static final String DISPLAY_KEY = "display";
+    private static final String DISPLAY_KEY = "display";
 
-	private transient EntityManager entityManager;
-	private transient EntityRef self;
-	private transient KallistiDisplayCandidateComponent candidate;
-	private transient MeshRenderComponent mesh;
+    private transient EntityManager entityManager;
+    private transient EntityRef self;
+    private transient KallistiDisplayCandidateComponent candidate;
+    private transient MeshRenderComponent mesh;
 
-	/**
-	 * Configure the display component.
-	 *
-	 * @param entityManager The EntityManager instance.
-	 * @param self Reference to entity which stores the MeshRenderComponent instance for rendering.
-	 * @param candidate The KallistiDisplayCandidateComponent instance to derive configuration from.
-	 * @param mesh The MeshRenderComponent instance to use for rendering.
-	 */
-	public void configure(EntityManager entityManager, EntityRef self, KallistiDisplayCandidateComponent candidate, MeshRenderComponent mesh) {
-		this.entityManager = entityManager;
-		this.self = self;
-		this.candidate = candidate;
-		this.mesh = mesh;
+    private transient Synchronizable source;
+    private transient Renderer renderer;
+    private transient Texture texture;
+    private transient int pw;
+    private transient int ph;
 
-		candidate.setDisplay(this);
-	}
+    /**
+     * Configure the display component.
+     *
+     * @param em The EntityManager instance.
+     * @param target Reference to entity which stores the MeshRenderComponent instance for rendering.
+     * @param display The KallistiDisplayCandidateComponent instance to derive configuration from.
+     * @param msh The MeshRenderComponent instance to use for rendering.
+     */
+    public void configure(EntityManager em, EntityRef target, KallistiDisplayCandidateComponent display, MeshRenderComponent msh) {
+        this.entityManager = em;
+        this.self = target;
+        this.candidate = display;
+        this.mesh = msh;
 
-	private transient Synchronizable source;
-	private transient Renderer renderer;
-	private transient Texture texture;
-	private transient int pw, ph;
+        candidate.setDisplay(this);
+    }
 
-	public Synchronizable getSource() {
-		return source;
-	}
+    public Synchronizable getSource() {
+        return source;
+    }
 
-	@Override
-	public void bind(Synchronizable source, Renderer renderer) {
-		this.source = source;
-		this.renderer = renderer;
-	}
+    @Override
+    public void bind(Synchronizable src, Renderer render) {
+        this.source = src;
+        this.renderer = render;
+    }
 
-	@Override
-	public Dimension aspectRatio() {
-		return new Dimension(1, 1);
-	}
+    @Override
+    public Dimension aspectRatio() {
+        return new Dimension(1, 1);
+    }
 
-	private transient ByteBuffer dataBB;
+    private transient ByteBuffer dataBB;
 
-	@Override
-	public void finalize() {
-		dataBB.clear();
-	}
+    @Override
+    public void finalize() {
+        dataBB.clear();
+    }
 
-	@Override
-	public void blit(Image image) {
-		MeshComponent component;
+    @Override
+    public void blit(Image image) {
+        MeshComponent component;
 
-		if (dataBB == null || dataBB.capacity() != 4 * image.size().getX() * image.size().getY()) {
-			if (dataBB != null) {
-				dataBB.clear();
-			}
-			dataBB = ByteBuffer.allocateDirect(4 * image.size().getX() * image.size().getY());
-		}
+        if (dataBB == null || dataBB.capacity() != 4 * image.size().getX() * image.size().getY()) {
+            if (dataBB != null) {
+                dataBB.clear();
+            }
+            dataBB = ByteBuffer.allocateDirect(4 * image.size().getX() * image.size().getY());
+        }
 
-		for (int argb : image.data()) {
-			int r = (argb >> 16) & 0xFF;
-			int g = (argb >> 8) & 0xFF;
-			int b = argb & 0xFF;
-			dataBB.put(UnsignedBytes.checkedCast(r));
-			dataBB.put(UnsignedBytes.checkedCast(g));
-			dataBB.put(UnsignedBytes.checkedCast(b));
-			dataBB.put((byte) 0xFF);
-		}
+        for (int argb : image.data()) {
+            int r = (argb >> 16) & 0xFF;
+            int g = (argb >> 8) & 0xFF;
+            int b = argb & 0xFF;
+            dataBB.put(UnsignedBytes.checkedCast(r));
+            dataBB.put(UnsignedBytes.checkedCast(g));
+            dataBB.put(UnsignedBytes.checkedCast(b));
+            dataBB.put((byte) 0xFF);
+        }
 
-		dataBB.rewind();
+        dataBB.rewind();
 
-		pw = image.size().getX();
-		ph = image.size().getY();
-		texture = Assets.generateAsset(new TextureData(image.size().getX(), image.size().getY(),
-			new ByteBuffer[]{ dataBB }, Texture.WrapMode.REPEAT, Texture.FilterMode.NEAREST), Texture.class);
+        pw = image.size().getX();
+        ph = image.size().getY();
+        texture = Assets.generateAsset(new TextureData(image.size().getX(), image.size().getY(),
+            new ByteBuffer[]{dataBB}, Texture.WrapMode.REPEAT, Texture.FilterMode.NEAREST), Texture.class);
 
-		MaterialData terrainMatData = new MaterialData(Assets.getShader("engine:genericMeshMaterial").get());
-		terrainMatData.setParam("diffuse", texture);
-		terrainMatData.setParam("colorOffset", new float[]{1, 1, 1});
-		terrainMatData.setParam("textured", true);
-		Material material = Assets.generateAsset(terrainMatData, Material.class);
+        MaterialData terrainMatData = new MaterialData(Assets.getShader("engine:genericMeshMaterial").get());
+        terrainMatData.setParam("diffuse", texture);
+        terrainMatData.setParam("colorOffset", new float[]{1, 1, 1});
+        terrainMatData.setParam("textured", true);
+        Material material = Assets.generateAsset(terrainMatData, Material.class);
 
-		component = mesh.get(DISPLAY_KEY);
-		if (component != null) {
-			component.material.dispose();
-			component.material = material;
-		} else {
-			component = new MeshComponent();
-			component.material = material;
+        component = mesh.get(DISPLAY_KEY);
+        if (component != null) {
+            component.material.dispose();
+            component.material = material;
+        } else {
+            component = new MeshComponent();
+            component.material = material;
 
-			Vector3f location = self.getComponent(BlockComponent.class).getPosition().toVector3f().add(0.5f, 0.5f, 0.5f);
-			Side side = self.getComponent(BlockComponent.class).getBlock().getDirection();
-			if (side == null) side = Side.TOP;
+            Vector3f location = new Vector3f(self.getComponent(BlockComponent.class).getPosition(new Vector3i()));
+            location.add(0.5f, 0.5f, 0.5f);
+            Side side = self.getComponent(BlockComponent.class).getBlock().getDirection();
+            if (side == null) {
+                side = Side.TOP;
+            }
 
-			MeshBuilder meshBuilder = new MeshBuilder();
-			BlockShape blockShape = Assets.get("engine:cube", BlockShape.class).get();
-			BlockMeshPart meshPart = blockShape.getMeshPart(BlockPart.fromSide(side));
+            MeshBuilder meshBuilder = new MeshBuilder();
+            BlockShape blockShape = Assets.get("engine:cube", BlockShape.class).get();
+            BlockMeshPart meshPart = blockShape.getMeshPart(BlockPart.fromSide(side));
 
-			for (int i = 0; i < meshPart.indicesSize(); i++) {
-				meshBuilder.addIndices(meshPart.getIndex(i));
-			}
+            for (int i = 0; i < meshPart.indicesSize(); i++) {
+                meshBuilder.addIndices(meshPart.getIndex(i));
+            }
 
-			for (int i = 0; i < meshPart.size(); i++) {
-				Vector3f v = JomlUtil.from(meshPart.getVertex(i));
-				// reduce by border size
-				Vector3f reduction = new Vector3f(
-						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().x))),
-						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().y))),
-						1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().z)))
-				);
+            for (int i = 0; i < meshPart.size(); i++) {
+                Vector3f v = new Vector3f(meshPart.getVertex(i));
+                // reduce by border size
+                Vector3f reduction = new Vector3f(
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().x))),
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().y))),
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().z)))
+                );
 
-				// bring forward to avoid Z-fighting
-				v.mul(reduction.x, reduction.y, reduction.z).add(side.getVector3i().toVector3f().mul(0.01f));
+                // bring forward to avoid Z-fighting
 
-				meshBuilder.addVertex(v.sub(.5f, .5f, .5f));
-				meshBuilder.addColor(Color.WHITE);
-				meshBuilder.addTexCoord(JomlUtil.from(meshPart.getTexCoord(i)));
-			}
+                v.mul(reduction.x, reduction.y, reduction.z).add(new Vector3f(JomlUtil.from(side.getVector3i())).mul(0.01f));
 
-			component.mesh = meshBuilder.build();
-			component.translucent = false;
-			component.hideFromOwner = false;
-			component.color = Color.WHITE;
+                meshBuilder.addVertex(JomlUtil.from(v.sub(.5f, .5f, .5f)));
+                meshBuilder.addColor(Color.WHITE);
+                meshBuilder.addTexCoord(JomlUtil.from(meshPart.getTexCoord(i)));
+            }
 
-			mesh.add(entityManager, DISPLAY_KEY, new Vector3f(location), component);
-		}
+            component.mesh = meshBuilder.build();
+            component.translucent = false;
+            component.hideFromOwner = false;
+            component.color = Color.WHITE;
 
-		self.saveComponent(mesh);
-	}
+            mesh.add(entityManager, DISPLAY_KEY, JomlUtil.from(new Vector3f(location)), component);
+        }
 
-	private void initRenderer() {
-		if (renderer == null) {
-			try {
-				// TODO: Add Kallisti-side API for instantiating renderers
-				// based on the KallistiSyncInitial packet received.
-				renderer = new OCGPURenderer(
-						new OCTextRenderer(
-								CoreRegistry.get(AssetManager.class)
-								.getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
-								.get().getKallistiFont()
-						)
-				);
-			} catch (Exception e) {
-				KComputersUtil.LOGGER.warn("Error initializing display renderer!", e);
-			}
-		}
-	}
+        self.saveComponent(mesh);
+    }
 
-	public void render() {
-		initRenderer();
-		renderer.render(this);
-	}
+    private void initRenderer() {
+        if (renderer == null) {
+            try {
+                // TODO: Add Kallisti-side API for instantiating renderers
+                // based on the KallistiSyncInitial packet received.
+                renderer = new OCGPURenderer(
+                    new OCTextRenderer(
+                        CoreRegistry.get(AssetManager.class)
+                            .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
+                            .get().getKallistiFont()
+                    )
+                );
+            } catch (Exception e) {
+                KComputersUtil.LOGGER.warn("Error initializing display renderer!", e);
+            }
+        }
+    }
 
-	@Override
-	public void update(InputStream stream) throws IOException {
-		initRenderer();
+    public void render() {
+        initRenderer();
+        renderer.render(this);
+    }
 
-		if (renderer != null) {
-			renderer.update(stream);
-			render();
-		}
-	}
+    @Override
+    public void update(InputStream stream) throws IOException {
+        initRenderer();
 
-	/**
-	 * @return The texture to be rendered.
-	 */
-	@Nullable
-	public Texture getTexture() {
-		return texture;
-	}
+        if (renderer != null) {
+            renderer.update(stream);
+            render();
+        }
+    }
 
-	/**
-	 * @return The width of the texture to be rendered, in pixels.
-	 */
-	public int getPixelWidth() {
-		return pw;
-	}
+    /**
+     * @return The texture to be rendered.
+     */
+    @Nullable
+    public Texture getTexture() {
+        return texture;
+    }
 
-	/**
-	 * @return The height of the texture to be rendered, in pixels.
-	 */
-	public int getPixelHeight() {
-		return ph;
-	}
+    /**
+     * @return The width of the texture to be rendered, in pixels.
+     */
+    public int getPixelWidth() {
+        return pw;
+    }
 
-	/**
-	 * FIXME: A slight hack used to get the KallistiKeyboardComponent instance
-	 * in ComputerDisplayWidget.
-	 *
-	 * @see org.terasology.kcomputers.rendering.nui.layers.ComputerDisplayWidget
-	 * @return The reference to the display "self" entity.
-	 */
-	public EntityRef getEntityRef() {
-		return self;
-	}
+    /**
+     * @return The height of the texture to be rendered, in pixels.
+     */
+    public int getPixelHeight() {
+        return ph;
+    }
+
+    /**
+     * FIXME: A slight hack used to get the KallistiKeyboardComponent instance in ComputerDisplayWidget.
+     *
+     * @return The reference to the display "self" entity.
+     * @see org.terasology.kcomputers.rendering.nui.layers.ComputerDisplayWidget
+     */
+    public EntityRef getEntityRef() {
+        return self;
+    }
 }

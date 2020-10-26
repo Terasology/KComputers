@@ -27,33 +27,32 @@ import org.terasology.network.ServerEvent;
  */
 @ServerEvent
 public class KallistiKeyPressedEvent extends NetworkEvent {
-	private int type;
-	private int code;
-	private int chr;
+    private int type;
+    private int code;
+    private int chr;
 
-	public KallistiKeyPressedEvent() {
-		type = 0;
-		code = 0;
-		chr = 0;
-	}
+    public KallistiKeyPressedEvent() {
+        type = 0;
+        code = 0;
+        chr = 0;
+    }
 
-	public KallistiKeyPressedEvent(KeyboardInputProvider.Key key) {
-		type = key.getType().ordinal();
-		code = key.getCode();
-		chr = key.getChar();
-	}
+    public KallistiKeyPressedEvent(KeyboardInputProvider.Key key) {
+        type = key.getType().ordinal();
+        code = key.getCode();
+        chr = key.getChar();
+    }
 
-	/**
-	 * Get a KeyboardInputProvider.Key instance, usable in
-	 * the context of a Kallisti virtual machine.
-	 *
-	 * @return The instance.
-	 */
-	public KeyboardInputProvider.Key getKey() {
-		return new KeyboardInputProvider.Key(
-				KeyboardInputProvider.KeyType.values()[type],
-				code,
-				chr
-		);
-	}
+    /**
+     * Get a KeyboardInputProvider.Key instance, usable in the context of a Kallisti virtual machine.
+     *
+     * @return The instance.
+     */
+    public KeyboardInputProvider.Key getKey() {
+        return new KeyboardInputProvider.Key(
+            KeyboardInputProvider.KeyType.values()[type],
+            code,
+            chr
+        );
+    }
 }

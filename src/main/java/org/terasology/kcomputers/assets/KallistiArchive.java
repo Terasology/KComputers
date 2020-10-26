@@ -29,7 +29,8 @@ import org.terasology.assets.module.annotations.RegisterAssetType;
 public class KallistiArchive extends Asset<KallistiArchiveData> {
     public static class Factory implements AssetFactory<KallistiArchive, KallistiArchiveData> {
         @Override
-        public KallistiArchive build(ResourceUrn urn, AssetType<KallistiArchive, KallistiArchiveData> assetType, KallistiArchiveData data) {
+        public KallistiArchive build(ResourceUrn urn, AssetType<KallistiArchive, KallistiArchiveData> assetType,
+                                     KallistiArchiveData data) {
             return new KallistiArchive(urn, assetType, data);
         }
     }

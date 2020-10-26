@@ -50,6 +50,7 @@ public class KallistiAttachComponentsEvent implements Event {
 
     /**
      * Add a component to be attached.
+     *
      * @param ref The reference to the entity containing the component.
      * @param o The object, which is a Kallisti-compatible component.
      */
@@ -62,9 +63,10 @@ public class KallistiAttachComponentsEvent implements Event {
 
     /**
      * Get the map of component context to their Kallisti objects.
+     *
      * @return The map.
      */
-    public Map<ComponentContext,Object> getComponentMap() {
+    public Map<ComponentContext, Object> getComponentMap() {
         return Collections.unmodifiableMap(components);
     }
 }
