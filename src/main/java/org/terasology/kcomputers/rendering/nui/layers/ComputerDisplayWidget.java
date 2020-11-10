@@ -25,19 +25,18 @@ import org.terasology.kcomputers.events.KallistiKeyPressedEvent;
 import org.terasology.nui.Canvas;
 import org.terasology.nui.CoreWidget;
 import org.terasology.nui.databinding.Binding;
+import org.terasology.nui.events.NUICharEvent;
 import org.terasology.nui.events.NUIKeyEvent;
 import org.terasology.nui.util.RectUtility;
 import org.terasology.rendering.assets.texture.Texture;
 
 /**
- * Widget which allows rendering the buffer of a KallistiDisplayComponent
- * as an in-game UI, as well as proxying key presses to a
- * KallistiKeyboardComponent.
- *
- * TODO: Currently, the keyboard component must be on the same block as the
- * KallistiDisplayComponent. This should probably not have to be the
- * case, but it is not a high priority as the current behaviour is
- * sufficiently intuitive for end users.
+ * Widget which allows rendering the buffer of a KallistiDisplayComponent as an in-game UI, as well as proxying key
+ * presses to a KallistiKeyboardComponent.
+ * <p>
+ * TODO: Currently, the keyboard component must be on the same block as the KallistiDisplayComponent. This should
+ * probably not have to be the case, but it is not a high priority as the current behaviour is sufficiently intuitive
+ * for end users.
  */
 public class ComputerDisplayWidget extends CoreWidget {
     private transient Binding<KallistiDisplayComponent> displayComponent;
@@ -54,7 +53,8 @@ public class ComputerDisplayWidget extends CoreWidget {
     @Override
     public void onDraw(Canvas canvas) {
         Texture texture = displayComponent.get().getTexture();
-        canvas.drawTexture(texture, RectUtility.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight()));
+        canvas.drawTexture(texture, RectUtility.createFromMinAndSize(0, 0, displayComponent.get().getPixelWidth(),
+                displayComponent.get().getPixelHeight()));
     }
 
     @Override
@@ -69,14 +69,37 @@ public class ComputerDisplayWidget extends CoreWidget {
         EntityRef ref = displayComponent.get().getEntityRef();
         if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
             localPlayer.get().send(new KallistiKeyPressedEvent(
-                new KeyboardInputProvider.Key(
-                    event.isDown() ? KeyboardInputProvider.KeyType.PRESSED : KeyboardInputProvider.KeyType.RELEASED,
-                    TranslationAWTLWJGL.toAwt(event.getKey().getId()),
-                    event.isDown() ? event.getKeyCharacter() : lastCharacter
-                )
+                    new KeyboardInputProvider.Key(
+                            event.isDown() ? KeyboardInputProvider.KeyType.PRESSED :
+                                    KeyboardInputProvider.KeyType.RELEASED,
+                            TranslationAWTLWJGL.toAwt(event.getKey().getId()),
+                            event.isDown() ? event.getKey().getId() : lastCharacter
+                    )
             ));
             if (event.isDown()) {
-                lastCharacter = event.getKeyCharacter();
+                lastCharacter = event.getKey().getId();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onCharEvent(NUICharEvent event) {
+
+        EntityRef ref = displayComponent.get().getEntityRef();
+        char character = event.getCharacter();
+        if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(character)) {
+            localPlayer.get().send(new KallistiKeyPressedEvent(
+                    new KeyboardInputProvider.Key(
+                            event.getKeyboard().isKeyDown(character) ? KeyboardInputProvider.KeyType.PRESSED :
+                                    KeyboardInputProvider.KeyType.RELEASED,
+                            TranslationAWTLWJGL.toAwt(character),
+                            event.getKeyboard().isKeyDown(character) ? character : lastCharacter
+                    )
+            ));
+            if (event.getKeyboard().isKeyDown(character)) {
+                lastCharacter = character;
             }
             return true;
         }
