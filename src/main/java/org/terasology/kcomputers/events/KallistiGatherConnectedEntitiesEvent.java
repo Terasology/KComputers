@@ -17,16 +17,10 @@ package org.terasology.kcomputers.events;
 
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.Event;
-import org.terasology.kallisti.base.component.ComponentContext;
-import org.terasology.kcomputers.TerasologyEntityContext;
-import org.terasology.network.ServerEvent;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**

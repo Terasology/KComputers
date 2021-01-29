@@ -17,8 +17,6 @@ package org.terasology.kcomputers;
 
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.interfaces.ConnectedContext;
-import org.terasology.math.geom.Vector3i;
-import org.terasology.world.BlockEntityRegistry;
 
 import java.util.ArrayList;
 import java.util.List;

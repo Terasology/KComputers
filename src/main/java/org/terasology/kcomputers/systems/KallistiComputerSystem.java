@@ -35,9 +35,9 @@ import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
+import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
-import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.logic.chat.ChatMessageEvent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.math.Side;
@@ -48,7 +48,12 @@ import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This system handles computer initialization, as well as - currently - entity

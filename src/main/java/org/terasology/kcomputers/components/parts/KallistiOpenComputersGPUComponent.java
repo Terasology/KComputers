@@ -15,16 +15,8 @@
  */
 package org.terasology.kcomputers.components.parts;
 
-import com.google.common.collect.ImmutableSet;
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.ComponentInterface;
-import org.terasology.kallisti.base.component.ComponentRule;
-import org.terasology.kallisti.oc.MachineOpenComputers;
-import org.terasology.kallisti.oc.OCGPURenderer;
-import org.terasology.kallisti.oc.PeripheralOCGPU;
-
-import java.util.Collection;
 
 /**
  * Component providing an OpenComputers-style GPU peripheral.

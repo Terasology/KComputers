@@ -16,12 +16,10 @@
 package org.terasology.kcomputers.components;
 
 import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 
 /**
  * Component provided by blocks which
