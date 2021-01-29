@@ -16,6 +16,7 @@
 package org.terasology.kcomputers.components;
 
 import com.google.common.primitives.UnsignedBytes;
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
@@ -31,8 +32,8 @@ import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
-import org.joml.Vector3f;
 import org.terasology.network.NoReplicate;
+import org.terasology.nui.Color;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.rendering.assets.material.Material;
 import org.terasology.rendering.assets.material.MaterialData;
@@ -40,7 +41,6 @@ import org.terasology.rendering.assets.mesh.MeshBuilder;
 import org.terasology.rendering.assets.texture.Texture;
 import org.terasology.rendering.assets.texture.TextureData;
 import org.terasology.rendering.logic.MeshComponent;
-import org.terasology.nui.Color;
 import org.terasology.utilities.Assets;
 import org.terasology.world.block.BlockComponent;
 import org.terasology.world.block.BlockPart;
@@ -198,7 +198,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
             component.hideFromOwner = false;
             component.color = Color.WHITE;
 
-            mesh.add(entityManager, DISPLAY_KEY, JomlUtil.from(new Vector3f(location)), component);
+            mesh.add(entityManager, DISPLAY_KEY, new Vector3f(location), component);
         }
 
         self.saveComponent(mesh);

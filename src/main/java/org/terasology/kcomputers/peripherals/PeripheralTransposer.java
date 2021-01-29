@@ -15,6 +15,7 @@
  */
 package org.terasology.kcomputers.peripherals;
 
+import org.joml.Vector3i;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.ComponentMethod;
 import org.terasology.kallisti.base.component.Peripheral;
@@ -22,7 +23,6 @@ import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
@@ -141,8 +141,9 @@ public class PeripheralTransposer implements Peripheral {
     @Nullable
     protected Vector3i getNeighborPos(int side) {
         Side sideT = PeripheralUtils.sideOCToTerasology(side);
+        Vector3i tmp = new Vector3i();
 
-        return sideT != null ? sideT.getAdjacentPos(block.getPosition()) : null;
+        return sideT != null ? sideT.getAdjacentPos(block.getPosition(tmp), tmp) : null;
     }
 
     @Override

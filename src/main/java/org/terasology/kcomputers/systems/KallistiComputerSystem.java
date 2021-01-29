@@ -15,6 +15,8 @@
  */
 package org.terasology.kcomputers.systems;
 
+import org.joml.Vector3i;
+import org.joml.Vector3ic;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -35,20 +37,24 @@ import org.terasology.kcomputers.components.KallistiConnectableComponent;
 import org.terasology.kcomputers.components.KallistiInventoryWithContainerComponent;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.components.parts.KallistiMemoryComponent;
+import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
-import org.terasology.kcomputers.events.KallistiChangeComputerStateEvent;
 import org.terasology.logic.chat.ChatMessageEvent;
 import org.terasology.logic.inventory.InventoryComponent;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.BlockComponent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This system handles computer initialization, as well as - currently - entity
@@ -126,10 +132,10 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
 
     @ReceiveEvent
     public void addConnectedEntitiesConnectable(KallistiGatherConnectedEntitiesEvent event, EntityRef ref, BlockComponent blockComponent, KallistiConnectableComponent connectableComponent) {
-        Vector3i pos = blockComponent.getPosition();
-
+        Vector3ic pos = blockComponent.getPosition(new Vector3i());
+        Vector3i location = new Vector3i();
         for (Side side : Side.values()) {
-            Vector3i location = new Vector3i(pos).add(side.getVector3i());
+            pos.add(side.direction(), location);
             if (provider.isBlockRelevant(location) && blockEntityRegistry.hasPermanentBlockEntity(location)) {
                 event.addEntity(blockEntityRegistry.getBlockEntityAt(location));
             }
@@ -195,7 +201,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
         MultiValueMap<Vector3i, TerasologyEntityContext> contextsPerPos = new CollectionBackedMultiValueMap<>(new HashMap<>(), ArrayList::new);
 
         TerasologyEntityContext contextComputer = new TerasologyEntityContext(ref.getId(), -1);
-        contextsPerPos.add(ref.getComponent(BlockComponent.class).getPosition(), contextComputer);
+        contextsPerPos.add(ref.getComponent(BlockComponent.class).getPosition(new Vector3i()), contextComputer);
 
         for (EntityRef lref : gatherEvent.getEntities()) {
             kallistiComponents.putAll(KComputersUtil.gatherKallistiComponents(lref));
@@ -212,7 +218,7 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
             }
             // add neighbors
             for (Side side : Side.values()) {
-                Vector3i vecSided = new Vector3i(vec).add(side.getVector3i());
+                Vector3i vecSided = new Vector3i(vec).add(side.direction());
                 for (TerasologyEntityContext to : contextsPerPos.values(vecSided)) {
                     for (TerasologyEntityContext from : contextsPerPos.values(vec)) {
                         // It will add both ways, as we will be iterating through the parameters

@@ -15,12 +15,12 @@
  */
 package org.terasology.kcomputers.components;
 
+import org.joml.Vector3f;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityBuilder;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.location.LocationComponent;
-import org.terasology.math.geom.Vector3f;
 import org.terasology.rendering.logic.MeshComponent;
 
 import java.util.HashMap;

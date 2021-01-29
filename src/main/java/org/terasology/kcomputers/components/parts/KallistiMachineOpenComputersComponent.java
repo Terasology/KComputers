@@ -26,9 +26,9 @@ import org.terasology.jnlua.LuaState53;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 import org.terasology.kallisti.oc.MachineOpenComputers;
-import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.kcomputers.assets.KallistiArchive;
+import org.terasology.kcomputers.components.KallistiMachineProvider;
 import org.terasology.registry.CoreRegistry;
 
 /**
