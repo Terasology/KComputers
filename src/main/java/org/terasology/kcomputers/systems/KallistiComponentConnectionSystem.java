@@ -17,6 +17,7 @@ package org.terasology.kcomputers.systems;
 
 import gnu.trove.set.TLongSet;
 import gnu.trove.set.hash.TLongHashSet;
+import org.joml.Vector3i;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
@@ -31,7 +32,6 @@ import org.terasology.kcomputers.TerasologyEntityContext;
 import org.terasology.kcomputers.components.KallistiComputerComponent;
 import org.terasology.kcomputers.events.KallistiGatherConnectedEntitiesEvent;
 import org.terasology.math.Side;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.BlockEntityRegistry;
 import org.terasology.world.WorldProvider;
@@ -110,10 +110,10 @@ public class KallistiComponentConnectionSystem extends BaseComponentSystem {
     @ReceiveEvent
     public void componentDeactivated(BeforeDeactivateComponent event, EntityRef entity, BlockComponent component) {
         removeNoLongerVisibleComponents(entity);
-
+        Vector3i pos = new Vector3i();
         for (Side side : Side.values()) {
-            Vector3i pos = side.getAdjacentPos(component.getPosition());
-            if (pos != null && provider.isBlockRelevant(pos) && blockEntityRegistry.hasPermanentBlockEntity(pos)) {
+            side.getAdjacentPos(component.getPosition(pos), pos);
+            if (provider.isBlockRelevant(pos) && blockEntityRegistry.hasPermanentBlockEntity(pos)) {
                 EntityRef ref = blockEntityRegistry.getBlockEntityAt(pos);
                 if (ref != null && ref.exists()) {
                     removeNoLongerVisibleComponents(ref);
