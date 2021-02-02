@@ -30,7 +30,6 @@ import org.terasology.kallisti.oc.OCGPURenderer;
 import org.terasology.kallisti.oc.OCTextRenderer;
 import org.terasology.kcomputers.KComputersUtil;
 import org.terasology.kcomputers.assets.HexFont;
-import org.terasology.math.JomlUtil;
 import org.terasology.math.Side;
 import org.terasology.network.NoReplicate;
 import org.terasology.nui.Color;
@@ -179,18 +178,18 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
                 Vector3f v = new Vector3f(meshPart.getVertex(i));
                 // reduce by border size
                 Vector3f reduction = new Vector3f(
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().x))),
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().y))),
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.getVector3i().z)))
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().x()))),
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().y()))),
+                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().z())))
                 );
 
                 // bring forward to avoid Z-fighting
 
-                v.mul(reduction.x, reduction.y, reduction.z).add(new Vector3f(JomlUtil.from(side.getVector3i())).mul(0.01f));
+                v.mul(reduction.x, reduction.y, reduction.z).add(new Vector3f(side.direction()).mul(0.01f));
 
-                meshBuilder.addVertex(JomlUtil.from(v.sub(.5f, .5f, .5f)));
+                meshBuilder.addVertex(v.sub(.5f, .5f, .5f, new Vector3f()));
                 meshBuilder.addColor(Color.WHITE);
-                meshBuilder.addTexCoord(JomlUtil.from(meshPart.getTexCoord(i)));
+                meshBuilder.addTexCoord(meshPart.getTexCoord(i));
             }
 
             component.mesh = meshBuilder.build();
