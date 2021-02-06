@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.components;
 
 import com.google.common.primitives.UnsignedBytes;
@@ -161,7 +148,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 
             Vector3f location = new Vector3f(self.getComponent(BlockComponent.class).getPosition(new Vector3i()));
             location.add(0.5f, 0.5f, 0.5f);
-            Side side = self.getComponent(BlockComponent.class).getBlock().getDirection();
+            Side side = self.getComponent(BlockComponent.class).block.getDirection();
             if (side == null) {
                 side = Side.TOP;
             }
