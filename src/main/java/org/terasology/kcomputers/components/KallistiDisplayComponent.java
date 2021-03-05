@@ -148,7 +148,7 @@ public class KallistiDisplayComponent implements Component, FrameBuffer, Synchro
 
             Vector3f location = new Vector3f(self.getComponent(BlockComponent.class).getPosition(new Vector3i()));
             location.add(0.5f, 0.5f, 0.5f);
-            Side side = self.getComponent(BlockComponent.class).block.getDirection();
+            Side side = self.getComponent(BlockComponent.class).getBlock().getDirection();
             if (side == null) {
                 side = Side.TOP;
             }
