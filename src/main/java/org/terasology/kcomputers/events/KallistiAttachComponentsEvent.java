@@ -15,8 +15,8 @@
  */
 package org.terasology.kcomputers.events;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.Event;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kcomputers.TerasologyEntityContext;
 

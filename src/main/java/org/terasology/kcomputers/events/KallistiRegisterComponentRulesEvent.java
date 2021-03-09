@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.events;
 
-import org.terasology.entitySystem.event.Event;
+import org.terasology.engine.entitySystem.event.Event;
 import org.terasology.kallisti.base.component.Machine;
 
 /**

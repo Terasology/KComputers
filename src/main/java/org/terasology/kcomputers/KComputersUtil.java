@@ -16,7 +16,7 @@
 package org.terasology.kcomputers;
 
 import org.slf4j.Logger;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;

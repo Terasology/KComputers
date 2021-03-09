@@ -16,16 +16,16 @@
 package org.terasology.kcomputers.peripherals;
 
 import org.joml.Vector3i;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.inventory.InventoryComponent;
+import org.terasology.engine.logic.inventory.InventoryManager;
+import org.terasology.engine.logic.inventory.ItemComponent;
+import org.terasology.engine.math.Side;
+import org.terasology.engine.world.BlockEntityRegistry;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.kallisti.base.component.ComponentMethod;
 import org.terasology.kallisti.base.component.Peripheral;
-import org.terasology.logic.inventory.InventoryComponent;
-import org.terasology.logic.inventory.InventoryManager;
-import org.terasology.logic.inventory.ItemComponent;
-import org.terasology.math.Side;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.BlockComponent;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

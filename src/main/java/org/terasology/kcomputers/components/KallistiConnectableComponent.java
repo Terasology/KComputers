@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.components;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * Component provided by blocks which connect to Kallisti component neighbors.

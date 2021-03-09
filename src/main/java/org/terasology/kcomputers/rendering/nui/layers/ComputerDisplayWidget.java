@@ -16,7 +16,8 @@
 package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.joml.Vector2i;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.rendering.assets.texture.Texture;
 import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
 import org.terasology.kallisti.base.util.keyboard.TranslationAWTLWJGL;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
@@ -28,7 +29,6 @@ import org.terasology.nui.databinding.Binding;
 import org.terasology.nui.events.NUICharEvent;
 import org.terasology.nui.events.NUIKeyEvent;
 import org.terasology.nui.util.RectUtility;
-import org.terasology.rendering.assets.texture.Texture;
 
 /**
  * Widget which allows rendering the buffer of a KallistiDisplayComponent as an in-game UI, as well as proxying key

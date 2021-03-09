@@ -15,9 +15,9 @@
  */
 package org.terasology.kcomputers.peripherals;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.logic.inventory.ItemComponent;
-import org.terasology.math.Side;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.inventory.ItemComponent;
+import org.terasology.engine.math.Side;
 
 import javax.annotation.Nullable;
 import java.util.Collections;

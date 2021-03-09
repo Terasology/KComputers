@@ -16,12 +16,12 @@
 package org.terasology.kcomputers.components;
 
 import org.joml.Vector3f;
-import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityBuilder;
-import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.logic.location.LocationComponent;
-import org.terasology.rendering.logic.MeshComponent;
+import org.terasology.engine.entitySystem.Component;
+import org.terasology.engine.entitySystem.entity.EntityBuilder;
+import org.terasology.engine.entitySystem.entity.EntityManager;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.location.LocationComponent;
+import org.terasology.engine.rendering.logic.MeshComponent;
 
 import java.util.HashMap;
 import java.util.Map;

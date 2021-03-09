@@ -15,9 +15,9 @@
  */
 package org.terasology.kcomputers.events;
 
+import org.terasology.engine.network.NetworkEvent;
+import org.terasology.engine.network.ServerEvent;
 import org.terasology.kallisti.base.interfaces.KeyboardInputProvider;
-import org.terasology.network.NetworkEvent;
-import org.terasology.network.ServerEvent;
 
 /**
  * This event is sent from the client to the server upon a KallistiKeyboard

@@ -18,8 +18,9 @@ package org.terasology.kcomputers.components.parts;
 import com.google.common.base.Charsets;
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
-import org.terasology.entitySystem.Component;
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.Component;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.jnlua.LuaState;
 import org.terasology.jnlua.LuaState52;
 import org.terasology.jnlua.LuaState53;
@@ -29,7 +30,6 @@ import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kcomputers.assets.HexFont;
 import org.terasology.kcomputers.assets.KallistiArchive;
 import org.terasology.kcomputers.components.KallistiMachineProvider;
-import org.terasology.registry.CoreRegistry;
 
 /**
  * Component for an OpenComputers-style machine provider.

@@ -15,10 +15,10 @@
  */
 package org.terasology.kcomputers.events;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.engine.network.OwnerEvent;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
-import org.terasology.network.OwnerEvent;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

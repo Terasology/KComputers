@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.components;
 
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.kallisti.base.component.ComponentContext;
 import org.terasology.kallisti.base.component.Machine;
 

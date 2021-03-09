@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.components.machines;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * Marker component for the Transposer peripheral.

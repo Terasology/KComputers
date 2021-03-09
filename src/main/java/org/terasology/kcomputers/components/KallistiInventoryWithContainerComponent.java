@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.components;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * Marker component. If put on an Entity which also contains an

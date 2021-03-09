@@ -17,11 +17,18 @@ package org.terasology.kcomputers.systems;
 
 import org.terasology.assets.ResourceUrn;
 import org.terasology.assets.management.AssetManager;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.ReceiveEvent;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterMode;
-import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterMode;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.inventory.InventoryManager;
+import org.terasology.engine.logic.inventory.ItemComponent;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.world.BlockEntityRegistry;
+import org.terasology.engine.world.WorldProvider;
+import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.kallisti.base.component.ComponentRule;
 import org.terasology.kallisti.oc.MachineOpenComputers;
 import org.terasology.kallisti.oc.OCGPURenderer;
@@ -37,13 +44,6 @@ import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
 import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.peripherals.PeripheralTransposer;
-import org.terasology.logic.inventory.InventoryManager;
-import org.terasology.logic.inventory.ItemComponent;
-import org.terasology.registry.CoreRegistry;
-import org.terasology.registry.In;
-import org.terasology.world.BlockEntityRegistry;
-import org.terasology.world.WorldProvider;
-import org.terasology.world.block.BlockComponent;
 
 /**
  * This system creates Kallisti component objects for KComputers-added

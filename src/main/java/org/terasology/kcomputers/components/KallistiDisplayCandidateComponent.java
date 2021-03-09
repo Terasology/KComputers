@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.components;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 
 import java.io.IOException;

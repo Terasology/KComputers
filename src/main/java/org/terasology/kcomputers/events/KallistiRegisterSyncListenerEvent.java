@@ -15,9 +15,9 @@
  */
 package org.terasology.kcomputers.events;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.network.NetworkEvent;
-import org.terasology.network.ServerEvent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.network.NetworkEvent;
+import org.terasology.engine.network.ServerEvent;
 
 @ServerEvent
 public class KallistiRegisterSyncListenerEvent extends NetworkEvent {

@@ -15,14 +15,14 @@
  */
 package org.terasology.kcomputers.rendering.nui.layers;
 
-import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.characters.CharacterComponent;
+import org.terasology.engine.logic.players.LocalPlayer;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.rendering.nui.CoreScreenLayer;
 import org.terasology.kcomputers.components.KallistiDisplayComponent;
-import org.terasology.logic.characters.CharacterComponent;
-import org.terasology.logic.players.LocalPlayer;
 import org.terasology.nui.databinding.ReadOnlyBinding;
 import org.terasology.nui.events.NUIKeyEvent;
-import org.terasology.registry.In;
-import org.terasology.rendering.nui.CoreScreenLayer;
 
 /**
  * Default implementation of a computer display screen UI.
