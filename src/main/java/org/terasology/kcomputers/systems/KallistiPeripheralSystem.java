@@ -43,7 +43,7 @@ import org.terasology.kcomputers.events.KallistiAttachComponentsEvent;
 import org.terasology.kcomputers.events.KallistiRegisterComponentRulesEvent;
 import org.terasology.kcomputers.peripherals.ByteArrayStaticByteStorage;
 import org.terasology.kcomputers.peripherals.PeripheralTransposer;
-import org.terasology.logic.inventory.InventoryManager;
+import org.terasology.module.inventory.systems.InventoryManager;
 
 /**
  * This system creates Kallisti component objects for KComputers-added

@@ -25,7 +25,7 @@ import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
 import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.engine.logic.chat.ChatMessageEvent;
-import org.terasology.logic.inventory.InventoryComponent;
+import org.terasology.module.inventory.components.InventoryComponent;
 import org.terasology.engine.math.Side;
 import org.terasology.engine.network.ClientComponent;
 import org.terasology.engine.registry.In;
