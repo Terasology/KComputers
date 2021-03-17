@@ -17,8 +17,8 @@ package org.terasology.kcomputers.peripherals;
 
 import org.joml.Vector3i;
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.logic.inventory.InventoryComponent;
-import org.terasology.engine.logic.inventory.InventoryManager;
+import org.terasology.module.inventory.components.InventoryComponent;
+import org.terasology.module.inventory.systems.InventoryManager;
 import org.terasology.engine.logic.inventory.ItemComponent;
 import org.terasology.engine.math.Side;
 import org.terasology.engine.world.BlockEntityRegistry;
