@@ -15,7 +15,7 @@
  */
 package org.terasology.kcomputers.assets;
 
-import org.terasology.assets.AssetData;
+import org.terasology.gestalt.assets.AssetData;
 import org.terasology.kallisti.base.interfaces.FileSystem;
 import org.terasology.kcomputers.KComputersUtil;
 
