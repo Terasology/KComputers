@@ -15,11 +15,11 @@
  */
 package org.terasology.kcomputers.assets;
 
-import org.terasology.assets.Asset;
-import org.terasology.assets.AssetFactory;
-import org.terasology.assets.AssetType;
-import org.terasology.assets.ResourceUrn;
-import org.terasology.assets.module.annotations.RegisterAssetType;
+import org.terasology.gestalt.assets.Asset;
+import org.terasology.gestalt.assets.AssetFactory;
+import org.terasology.gestalt.assets.AssetType;
+import org.terasology.gestalt.assets.ResourceUrn;
+import org.terasology.gestalt.assets.module.annotations.RegisterAssetType;
 
 /**
  * Asset type used for making read-only ZIP files available as filesystem
