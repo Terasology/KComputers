@@ -5,9 +5,6 @@ package org.terasology.kcomputers.components;
 import com.google.common.primitives.UnsignedBytes;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
-import org.terasology.gestalt.assets.ResourceUrn;
-import org.terasology.gestalt.assets.management.AssetManager;
-import org.terasology.engine.entitySystem.Component;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.math.Side;
@@ -24,6 +21,9 @@ import org.terasology.engine.world.block.BlockComponent;
 import org.terasology.engine.world.block.BlockPart;
 import org.terasology.engine.world.block.shapes.BlockMeshPart;
 import org.terasology.engine.world.block.shapes.BlockShape;
+import org.terasology.gestalt.assets.ResourceUrn;
+import org.terasology.gestalt.assets.management.AssetManager;
+import org.terasology.gestalt.entitysystem.component.Component;
 import org.terasology.kallisti.base.interfaces.FrameBuffer;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kallisti.base.util.Dimension;
@@ -51,7 +51,7 @@ import java.nio.ByteBuffer;
  * @see KallistiDisplayCandidateComponent
  */
 @NoReplicate
-public class KallistiDisplayComponent implements Component, FrameBuffer, Synchronizable.Receiver {
+public class KallistiDisplayComponent implements Component<KallistiDisplayComponent>, FrameBuffer, Synchronizable.Receiver {
     private static final String DISPLAY_KEY = "display";
 
     private transient EntityManager entityManager;
