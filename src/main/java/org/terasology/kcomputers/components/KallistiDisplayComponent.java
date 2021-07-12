@@ -130,7 +130,7 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
         pw = image.size().getX();
         ph = image.size().getY();
         texture = Assets.generateAsset(new TextureData(image.size().getX(), image.size().getY(),
-            new ByteBuffer[]{dataBB}, Texture.WrapMode.REPEAT, Texture.FilterMode.NEAREST), Texture.class);
+                new ByteBuffer[]{dataBB}, Texture.WrapMode.REPEAT, Texture.FilterMode.NEAREST), Texture.class);
 
         MaterialData terrainMatData = new MaterialData(Assets.getShader("engine:genericMeshMaterial").get());
         terrainMatData.setParam("diffuse", texture);
@@ -165,9 +165,9 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
                 Vector3f v = new Vector3f(meshPart.getVertex(i));
                 // reduce by border size
                 Vector3f reduction = new Vector3f(
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().x()))),
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().y()))),
-                    1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().z())))
+                        1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().x()))),
+                        1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().y()))),
+                        1 - (candidate.borderThickness * 2 * (1 - Math.abs(side.direction().z())))
                 );
 
                 // bring forward to avoid Z-fighting
@@ -196,11 +196,11 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
                 // TODO: Add Kallisti-side API for instantiating renderers
                 // based on the KallistiSyncInitial packet received.
                 renderer = new OCGPURenderer(
-                    new OCTextRenderer(
-                        CoreRegistry.get(AssetManager.class)
-                            .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
-                            .get().getKallistiFont()
-                    )
+                        new OCTextRenderer(
+                                CoreRegistry.get(AssetManager.class)
+                                        .getAsset(new ResourceUrn("KComputers:unicode-8x16"), HexFont.class)
+                                        .get().getKallistiFont()
+                        )
                 );
             } catch (Exception e) {
                 KComputersUtil.LOGGER.warn("Error initializing display renderer!", e);
@@ -253,5 +253,18 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
      */
     public EntityRef getEntityRef() {
         return self;
+    }
+
+    @Override
+    public void copy(KallistiDisplayComponent other) {
+        this.source = other.source;
+        this.renderer = other.renderer;
+        this.texture = other.texture;
+        this.pw = other.pw;
+        this.ph = other.ph;
+        this.entityManager = other.entityManager;
+        this.self = other.self;
+        this.candidate = other.candidate;
+        this.mesh = other.mesh;
     }
 }

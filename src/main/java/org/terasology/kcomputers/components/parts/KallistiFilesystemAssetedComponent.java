@@ -16,4 +16,9 @@ public class KallistiFilesystemAssetedComponent implements Component<KallistiFil
      * @see org.terasology.kcomputers.assets.KallistiArchive
      */
     public String assetName;
+
+    @Override
+    public void copy(KallistiFilesystemAssetedComponent other) {
+        this.assetName = other.assetName;
+    }
 }

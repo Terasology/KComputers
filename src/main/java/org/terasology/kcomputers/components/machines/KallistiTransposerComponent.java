@@ -8,4 +8,8 @@ import org.terasology.gestalt.entitysystem.component.Component;
  * Marker component for the Transposer peripheral.
  */
 public class KallistiTransposerComponent implements Component<KallistiTransposerComponent> {
+    @Override
+    public void copy(KallistiTransposerComponent other) {
+
+    }
 }

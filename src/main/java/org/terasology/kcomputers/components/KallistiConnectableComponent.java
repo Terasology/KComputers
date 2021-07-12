@@ -8,4 +8,8 @@ import org.terasology.gestalt.entitysystem.component.Component;
  * Component provided by blocks which connect to Kallisti component neighbors.
  */
 public class KallistiConnectableComponent implements Component<KallistiConnectableComponent> {
+    @Override
+    public void copy(KallistiConnectableComponent other) {
+
+    }
 }

@@ -62,4 +62,13 @@ public class KallistiDisplayCandidateComponent implements Component<KallistiDisp
     public void setDisplay(KallistiDisplayComponent displayComponent) {
         this.display = displayComponent;
     }
+
+    @Override
+    public void copy(KallistiDisplayCandidateComponent other) {
+        this.borderThickness = other.borderThickness;
+        this.maxWidth = other.maxWidth;
+        this.maxHeight = other.maxHeight;
+        this.multiBlock = other.multiBlock;
+        this.display = other.display;
+    }
 }

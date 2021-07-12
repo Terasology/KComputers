@@ -19,4 +19,10 @@ public class KallistiOpenComputersGPUComponent implements Component<KallistiOpen
      * The maximum (and default) height supported by the GPU, in characters.
      */
     public int height = 50;
+
+    @Override
+    public void copy(KallistiOpenComputersGPUComponent other) {
+        this.width = other.width;
+        this.height = other.height;
+    }
 }

@@ -10,4 +10,8 @@ import org.terasology.gestalt.entitysystem.component.Component;
  * searching for Kallisti components for a virtual machine.
  */
 public class KallistiInventoryWithContainerComponent implements Component<KallistiInventoryWithContainerComponent> {
+    @Override
+    public void copy(KallistiInventoryWithContainerComponent other) {
+
+    }
 }

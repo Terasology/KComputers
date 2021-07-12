@@ -57,4 +57,9 @@ public class KallistiMachineOpenComputersComponent implements Component<Kallisti
 
         return machineOpenComputers;
     }
+
+    @Override
+    public void copy(KallistiMachineOpenComputersComponent other) {
+        this.luaVersion = other.luaVersion;
+    }
 }

@@ -115,4 +115,10 @@ public class MeshRenderComponent implements Component<MeshRenderComponent> {
         }
         meshes.clear();
     }
+
+    @Override
+    public void copy(MeshRenderComponent other) {
+        this.meshes.clear();
+        this.meshes.putAll(other.meshes);
+    }
 }

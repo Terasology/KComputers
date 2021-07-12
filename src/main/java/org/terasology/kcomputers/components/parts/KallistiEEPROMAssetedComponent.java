@@ -21,4 +21,10 @@ public class KallistiEEPROMAssetedComponent implements Component<KallistiEEPROMA
      * The name of the file to read as the EEPROM.
      */
     public String filename;
+
+    @Override
+    public void copy(KallistiEEPROMAssetedComponent other) {
+        this.assetName = other.assetName;
+        this.filename = other.filename;
+    }
 }

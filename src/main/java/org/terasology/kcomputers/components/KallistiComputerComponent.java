@@ -44,4 +44,10 @@ public class KallistiComputerComponent implements Component<KallistiComputerComp
             ref.saveComponent(this);
         }
     }
+
+    @Override
+    public void copy(KallistiComputerComponent other) {
+        this.on = other.on;
+        this.machine = other.machine;
+    }
 }
