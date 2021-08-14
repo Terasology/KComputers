@@ -23,7 +23,7 @@ public class KallistiEEPROMAssetedComponent implements Component<KallistiEEPROMA
     public String filename;
 
     @Override
-    public void copy(KallistiEEPROMAssetedComponent other) {
+    public void copyFrom(KallistiEEPROMAssetedComponent other) {
         this.assetName = other.assetName;
         this.filename = other.filename;
     }

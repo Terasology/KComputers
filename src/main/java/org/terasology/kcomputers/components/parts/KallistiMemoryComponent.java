@@ -15,7 +15,7 @@ public class KallistiMemoryComponent implements Component<KallistiMemoryComponen
     public int amount;
 
     @Override
-    public void copy(KallistiMemoryComponent other) {
+    public void copyFrom(KallistiMemoryComponent other) {
         this.amount = other.amount;
     }
 }

@@ -21,7 +21,7 @@ public class KallistiOpenComputersGPUComponent implements Component<KallistiOpen
     public int height = 50;
 
     @Override
-    public void copy(KallistiOpenComputersGPUComponent other) {
+    public void copyFrom(KallistiOpenComputersGPUComponent other) {
         this.width = other.width;
         this.height = other.height;
     }

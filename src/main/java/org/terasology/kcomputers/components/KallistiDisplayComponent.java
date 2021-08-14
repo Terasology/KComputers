@@ -256,7 +256,7 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
     }
 
     @Override
-    public void copy(KallistiDisplayComponent other) {
+    public void copyFrom(KallistiDisplayComponent other) {
         this.source = other.source;
         this.renderer = other.renderer;
         this.texture = other.texture;

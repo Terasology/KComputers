@@ -117,7 +117,7 @@ public class MeshRenderComponent implements Component<MeshRenderComponent> {
     }
 
     @Override
-    public void copy(MeshRenderComponent other) {
+    public void copyFrom(MeshRenderComponent other) {
         this.meshes.clear();
         this.meshes.putAll(other.meshes);
     }

@@ -9,7 +9,7 @@ import org.terasology.gestalt.entitysystem.component.Component;
  */
 public class KallistiConnectableComponent implements Component<KallistiConnectableComponent> {
     @Override
-    public void copy(KallistiConnectableComponent other) {
+    public void copyFrom(KallistiConnectableComponent other) {
 
     }
 }

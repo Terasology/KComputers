@@ -9,7 +9,7 @@ import org.terasology.gestalt.entitysystem.component.Component;
  */
 public class KallistiTransposerComponent implements Component<KallistiTransposerComponent> {
     @Override
-    public void copy(KallistiTransposerComponent other) {
+    public void copyFrom(KallistiTransposerComponent other) {
 
     }
 }

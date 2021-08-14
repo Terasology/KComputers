@@ -64,7 +64,7 @@ public class KallistiDisplayCandidateComponent implements Component<KallistiDisp
     }
 
     @Override
-    public void copy(KallistiDisplayCandidateComponent other) {
+    public void copyFrom(KallistiDisplayCandidateComponent other) {
         this.borderThickness = other.borderThickness;
         this.maxWidth = other.maxWidth;
         this.maxHeight = other.maxHeight;

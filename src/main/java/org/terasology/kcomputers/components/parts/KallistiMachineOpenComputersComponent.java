@@ -59,7 +59,7 @@ public class KallistiMachineOpenComputersComponent implements Component<Kallisti
     }
 
     @Override
-    public void copy(KallistiMachineOpenComputersComponent other) {
+    public void copyFrom(KallistiMachineOpenComputersComponent other) {
         this.luaVersion = other.luaVersion;
     }
 }

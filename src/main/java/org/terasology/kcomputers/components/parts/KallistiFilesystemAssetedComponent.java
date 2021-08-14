@@ -18,7 +18,7 @@ public class KallistiFilesystemAssetedComponent implements Component<KallistiFil
     public String assetName;
 
     @Override
-    public void copy(KallistiFilesystemAssetedComponent other) {
+    public void copyFrom(KallistiFilesystemAssetedComponent other) {
         this.assetName = other.assetName;
     }
 }

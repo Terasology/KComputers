@@ -11,7 +11,7 @@ import org.terasology.gestalt.entitysystem.component.Component;
  */
 public class KallistiInventoryWithContainerComponent implements Component<KallistiInventoryWithContainerComponent> {
     @Override
-    public void copy(KallistiInventoryWithContainerComponent other) {
+    public void copyFrom(KallistiInventoryWithContainerComponent other) {
 
     }
 }

@@ -35,7 +35,7 @@ public class KallistiKeyboardComponent implements Component<KallistiKeyboardComp
     }
 
     @Override
-    public void copy(KallistiKeyboardComponent other) {
+    public void copyFrom(KallistiKeyboardComponent other) {
         keyQueue.clear();
         keyQueue.addAll(other.keyQueue);
     }

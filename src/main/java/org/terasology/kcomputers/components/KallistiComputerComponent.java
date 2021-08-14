@@ -46,7 +46,7 @@ public class KallistiComputerComponent implements Component<KallistiComputerComp
     }
 
     @Override
-    public void copy(KallistiComputerComponent other) {
+    public void copyFrom(KallistiComputerComponent other) {
         this.on = other.on;
         this.machine = other.machine;
     }
