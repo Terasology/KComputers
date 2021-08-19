@@ -264,7 +264,11 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
         this.ph = other.ph;
         this.entityManager = other.entityManager;
         this.self = other.self;
-        this.candidate = other.candidate;
-        this.mesh = other.mesh;
+
+        this.candidate = new KallistiDisplayCandidateComponent();
+        this.candidate.copyFrom(other.candidate);
+
+        this.mesh = new MeshRenderComponent();
+        this.mesh.copyFrom(other.mesh);
     }
 }
