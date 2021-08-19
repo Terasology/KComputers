@@ -2,14 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.components;
 
-import org.terasology.gestalt.entitysystem.component.Component;
+import org.terasology.gestalt.entitysystem.component.EmptyComponent;
 
 /**
  * Component provided by blocks which connect to Kallisti component neighbors.
  */
-public class KallistiConnectableComponent implements Component<KallistiConnectableComponent> {
-    @Override
-    public void copyFrom(KallistiConnectableComponent other) {
-
-    }
+public class KallistiConnectableComponent extends EmptyComponent<KallistiConnectableComponent> {
 }
