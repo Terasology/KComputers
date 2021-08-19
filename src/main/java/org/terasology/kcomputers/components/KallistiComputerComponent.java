@@ -48,6 +48,8 @@ public class KallistiComputerComponent implements Component<KallistiComputerComp
     @Override
     public void copyFrom(KallistiComputerComponent other) {
         this.on = other.on;
+        //FIXME: this is **not** a deep copy, and Machine is a mutable class. only doing a shallow copy of the object reference may lead to
+        //       bugs or undesired effects.
         this.machine = other.machine;
     }
 }
