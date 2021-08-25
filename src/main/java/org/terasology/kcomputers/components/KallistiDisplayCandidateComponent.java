@@ -1,21 +1,8 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.components;
 
-import org.terasology.engine.entitySystem.Component;
+import org.terasology.gestalt.entitysystem.component.Component;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 
 import java.io.IOException;
@@ -24,7 +11,7 @@ import java.io.InputStream;
 /**
  * Component provided by blocks which
  */
-public class KallistiDisplayCandidateComponent implements Component, Synchronizable.Receiver {
+public class KallistiDisplayCandidateComponent implements Component<KallistiDisplayCandidateComponent>, Synchronizable.Receiver {
     /**
      * The thickness of the texture's border, used to make the display
      * not render over it, in blocks.
@@ -74,5 +61,14 @@ public class KallistiDisplayCandidateComponent implements Component, Synchroniza
      */
     public void setDisplay(KallistiDisplayComponent displayComponent) {
         this.display = displayComponent;
+    }
+
+    @Override
+    public void copyFrom(KallistiDisplayCandidateComponent other) {
+        this.borderThickness = other.borderThickness;
+        this.maxWidth = other.maxWidth;
+        this.maxHeight = other.maxHeight;
+        this.multiBlock = other.multiBlock;
+        this.display = other.display;
     }
 }
