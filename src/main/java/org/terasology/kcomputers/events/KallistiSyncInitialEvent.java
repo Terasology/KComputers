@@ -16,8 +16,8 @@
 package org.terasology.kcomputers.events;
 
 import org.terasology.engine.entitySystem.entity.EntityRef;
-import org.terasology.engine.entitySystem.event.Event;
 import org.terasology.engine.network.OwnerEvent;
+import org.terasology.gestalt.entitysystem.event.Event;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 
 import java.io.ByteArrayOutputStream;
