@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.rendering.nui.layers;
 
 import org.joml.Vector2i;
@@ -41,6 +28,7 @@ import org.terasology.nui.util.RectUtility;
 public class ComputerDisplayWidget extends CoreWidget {
     private transient Binding<KallistiDisplayComponent> displayComponent;
     private transient Binding<EntityRef> localPlayer;
+    private transient int lastCharacter;
 
     public void bindLocalPlayer(Binding<EntityRef> binding) {
         this.localPlayer = binding;
@@ -62,16 +50,14 @@ public class ComputerDisplayWidget extends CoreWidget {
         return new Vector2i(displayComponent.get().getPixelWidth(), displayComponent.get().getPixelHeight());
     }
 
-    private transient int lastCharacter;
-
     @Override
     public boolean onKeyEvent(NUIKeyEvent event) {
         EntityRef ref = displayComponent.get().getEntityRef();
         if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(event.getKey().getId())) {
             localPlayer.get().send(new KallistiKeyPressedEvent(
                     new KeyboardInputProvider.Key(
-                            event.isDown() ? KeyboardInputProvider.KeyType.PRESSED :
-                                    KeyboardInputProvider.KeyType.RELEASED,
+                            event.isDown() ? KeyboardInputProvider.KeyType.PRESSED
+                                    : KeyboardInputProvider.KeyType.RELEASED,
                             TranslationAWTLWJGL.toAwt(event.getKey().getId()),
                             event.isDown() ? event.getKey().getId() : lastCharacter
                     )
@@ -92,8 +78,8 @@ public class ComputerDisplayWidget extends CoreWidget {
         if (ref.hasComponent(KallistiKeyboardComponent.class) && TranslationAWTLWJGL.hasLwjgl(character)) {
             localPlayer.get().send(new KallistiKeyPressedEvent(
                     new KeyboardInputProvider.Key(
-                            event.getKeyboard().isKeyDown(character) ? KeyboardInputProvider.KeyType.PRESSED :
-                                    KeyboardInputProvider.KeyType.RELEASED,
+                            event.getKeyboard().isKeyDown(character) ? KeyboardInputProvider.KeyType.PRESSED
+                                    : KeyboardInputProvider.KeyType.RELEASED,
                             TranslationAWTLWJGL.toAwt(character),
                             event.getKeyboard().isKeyDown(character) ? character : lastCharacter
                     )

@@ -1,18 +1,5 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.systems;
 
 import org.joml.Vector3i;
@@ -94,7 +81,9 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
             String s = "Error " + (event.getState() ? "initializing" : "deinitializing") + " computer!";
             EntityRef instigator = event.getCaller();
             if (instigator.exists() && instigator.hasComponent(ClientComponent.class)) {
-                instigator.send(new ChatMessageEvent(s + ": " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()), event.getMachine()));
+                instigator.send(new ChatMessageEvent(
+                        s + ": " + (e.getMessage() != null ? e.getMessage() : e.getClass().getName()),
+                        event.getMachine()));
                 KComputersUtil.LOGGER.warn(s, e);
             } else {
                 KComputersUtil.LOGGER.error(s, e);
@@ -122,7 +111,10 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
     }
 
     @ReceiveEvent
-    public void computerDeactivated(BeforeDeactivateComponent event, EntityRef ref, BlockComponent blockComponent, KallistiComputerComponent computerComponent) {
+    public void computerDeactivated(BeforeDeactivateComponent event,
+                                    EntityRef ref,
+                                    BlockComponent blockComponent,
+                                    KallistiComputerComponent computerComponent) {
         try {
             deinit(ref, computerComponent);
         } catch (Exception e) {
@@ -131,7 +123,10 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
     }
 
     @ReceiveEvent
-    public void addConnectedEntitiesConnectable(KallistiGatherConnectedEntitiesEvent event, EntityRef ref, BlockComponent blockComponent, KallistiConnectableComponent connectableComponent) {
+    public void addConnectedEntitiesConnectable(KallistiGatherConnectedEntitiesEvent event,
+                                                EntityRef ref,
+                                                BlockComponent blockComponent,
+                                                KallistiConnectableComponent connectableComponent) {
         Vector3ic pos = blockComponent.getPosition(new Vector3i());
         Vector3i location = new Vector3i();
         for (Side side : Side.values()) {
@@ -143,7 +138,9 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
     }
 
     @ReceiveEvent
-    public void addConnectedEntitiesInventory(KallistiGatherConnectedEntitiesEvent event, EntityRef entity, KallistiInventoryWithContainerComponent component) {
+    public void addConnectedEntitiesInventory(KallistiGatherConnectedEntitiesEvent event,
+                                              EntityRef entity,
+                                              KallistiInventoryWithContainerComponent component) {
         if (entity.hasComponent(InventoryComponent.class)) {
             InventoryComponent inv = entity.getComponent(InventoryComponent.class);
 
@@ -257,10 +254,10 @@ public class KallistiComputerSystem extends BaseComponentSystem implements Updat
         }
 
         Machine machine = provider.create(
-            contextComputer,
-            ref,
-            ref, /* TODO: Actually provide the correct ref */
-            memorySize
+                contextComputer,
+                ref,
+                ref, /* TODO: Actually provide the correct ref */
+                memorySize
         );
 
         ref.send(new KallistiRegisterComponentRulesEvent(machine));
