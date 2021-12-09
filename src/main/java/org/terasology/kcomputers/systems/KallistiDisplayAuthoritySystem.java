@@ -1,25 +1,11 @@
-/*
- * Copyright 2018 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2021 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.kcomputers.systems;
 
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
 import org.terasology.engine.entitySystem.entity.lifecycleEvents.OnActivatedComponent;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
 import org.terasology.engine.entitySystem.systems.RegisterMode;
 import org.terasology.engine.entitySystem.systems.RegisterSystem;
@@ -27,6 +13,7 @@ import org.terasology.engine.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.engine.network.ClientComponent;
 import org.terasology.engine.registry.In;
 import org.terasology.engine.world.block.BlockComponent;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.kallisti.base.interfaces.Synchronizable;
 import org.terasology.kallisti.base.util.CollectionBackedMultiValueMap;
 import org.terasology.kallisti.base.util.MultiValueMap;
@@ -72,11 +59,17 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
                 if (lastSourceObj != sourceObj) {
                     lastSource.put(machine, sourceObj);
                     if (sourceObj != null) {
-                        KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.INITIAL, displayListeners.values(machine));
+                        KComputersUtil.synchronize(machine,
+                                displayComponent.getSource(),
+                                Synchronizable.Type.INITIAL,
+                                displayListeners.values(machine));
                     }
                 } else {
                     if (sourceObj != null) {
-                        KComputersUtil.synchronize(machine, displayComponent.getSource(), Synchronizable.Type.DELTA, displayListeners.values(machine));
+                        KComputersUtil.synchronize(machine,
+                                displayComponent.getSource(),
+                                Synchronizable.Type.DELTA,
+                                displayListeners.values(machine));
                     }
                 }
             }
@@ -84,7 +77,11 @@ public class KallistiDisplayAuthoritySystem extends BaseComponentSystem implemen
     }
 
     @ReceiveEvent
-    public void displayActivated(OnActivatedComponent event, EntityRef entity, BlockComponent blockComponent, KallistiDisplayCandidateComponent component, MeshRenderComponent meshRenderComponent) {
+    public void displayActivated(OnActivatedComponent event,
+                                 EntityRef entity,
+                                 BlockComponent blockComponent,
+                                 KallistiDisplayCandidateComponent component,
+                                 MeshRenderComponent meshRenderComponent) {
         if (!component.multiBlock) {
             KallistiDisplayComponent displayComponent = new KallistiDisplayComponent();
             displayComponent.configure(

@@ -39,14 +39,12 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * Internal Kallisti display component. It is instantiated a single time in
- * either the single-block entity providing a KallistiDisplayCandidateComponent,
- * or a "master" multi-block entity for multi-block monitors. Candidates then
- * function as an effective many-to-one mapping to the "main" component.
- *
- * LIMITATIONS: KallistiDisplayComponent currently only supports a single image
- * being blit to it simultaneously. This is fine for as long as Kallisti renderers
- * do exclusively that.
+ * Internal Kallisti display component. It is instantiated a single time in either the single-block entity providing a
+ * KallistiDisplayCandidateComponent, or a "master" multi-block entity for multi-block monitors. Candidates then function as an effective
+ * many-to-one mapping to the "main" component.
+ * <p>
+ * LIMITATIONS: KallistiDisplayComponent currently only supports a single image being blit to it simultaneously. This is fine for as long as
+ * Kallisti renderers do exclusively that.
  *
  * @see KallistiDisplayCandidateComponent
  */
@@ -64,6 +62,7 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
     private transient Texture texture;
     private transient int pw;
     private transient int ph;
+    private transient ByteBuffer dataBB;
 
     /**
      * Configure the display component.
@@ -96,8 +95,6 @@ public class KallistiDisplayComponent implements Component<KallistiDisplayCompon
     public Dimension aspectRatio() {
         return new Dimension(1, 1);
     }
-
-    private transient ByteBuffer dataBB;
 
     @Override
     public void finalize() {
