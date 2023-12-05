@@ -40,7 +40,7 @@ public class KallistiDisplayCandidateComponent implements Component<KallistiDisp
      */
     public boolean multiBlock = false;
 
-    private transient KallistiDisplayComponent display;
+    public transient KallistiDisplayComponent display;
 
     /**
      * Get the KallistiDisplayComponent instance.

@@ -50,7 +50,7 @@ import java.nio.ByteBuffer;
  */
 @NoReplicate
 public class KallistiDisplayComponent implements Component<KallistiDisplayComponent>, FrameBuffer, Synchronizable.Receiver {
-    private static final String DISPLAY_KEY = "display";
+    public static final String DISPLAY_KEY = "display";
 
     private transient EntityManager entityManager;
     private transient EntityRef self;
