@@ -11,8 +11,8 @@ import org.terasology.kallisti.base.component.Machine;
  * instance.
  */
 public class KallistiComputerComponent implements Component<KallistiComputerComponent> {
-    private boolean on;
-    private transient Machine machine;
+    public boolean on;
+    public transient Machine machine;
 
     /**
      * Get the Kallisti virtual machine instance held in this component.

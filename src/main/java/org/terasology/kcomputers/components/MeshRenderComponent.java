@@ -26,7 +26,7 @@ import java.util.Map;
  * using the provided methods.
  */
 public class MeshRenderComponent implements Component<MeshRenderComponent> {
-    private final Map<String, EntityRef> meshes = new HashMap<>();
+    public final Map<String, EntityRef> meshes = new HashMap<>();
 
     /**
      * Dispose of a given mesh entity and its sub-elements.
